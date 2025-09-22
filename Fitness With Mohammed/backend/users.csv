@@ -1,0 +1,4 @@
+id,name,email,membership_type,created_at
+1,John Doe,john.doe@email.com,Premium,2024-01-10T10:30:00
+2,Jane Smith,jane.smith@email.com,Basic,2024-01-10T11:15:00
+3,Mike Wilson,mike.wilson@email.com,VIP,2024-01-10T12:45:00

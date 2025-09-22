@@ -1,0 +1,7 @@
+id,exercise_name,duration,calories_burn,description,difficulty
+1,Strength Training,45 minutes,350,"Build muscle and strength with comprehensive weight training",Intermediate
+2,Cardio Blast,30 minutes,400,"High-intensity cardio workout to boost heart rate",Beginner
+3,Yoga Flow,60 minutes,250,"Improve flexibility, balance, and mindfulness",Beginner
+4,Personal Training,50 minutes,450,"One-on-one training sessions customized to your goals",Advanced
+5,HIIT Circuit,35 minutes,500,"High-Intensity Interval Training for maximum calorie burn",Advanced
+6,Pilates Core,45 minutes,300,"Strengthen your core and improve posture",Intermediate
