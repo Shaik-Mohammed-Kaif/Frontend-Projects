@@ -12,7 +12,7 @@ A modern, responsive gym website with a **React frontend** and **Flask backend**
 
 ## 🚀 Live Demo
 
-Check out the live website: [GymPro Demo](https://lovable.dev/projects/a263f965-03d2-4978-83d7-5f0168edf9ff)
+Check out the live website: [GymPro Demo](https://fitness-with-mohammed.lovable.app/)
 
 ---
 
@@ -220,7 +220,7 @@ MIT License – see [LICENSE](LICENSE)
 **S Mohammed Kaif**
 
 * GitHub: [@Shaik-Mohammed-Kaif](https://github.com/Shaik-Mohammed-Kaif)
-* Project: [GymPro-Website](https://github.com/Shaik-Mohammed-Kaif/GymPro-Website)
+* Project: [GymPro-Website](https://github.com/Shaik-Mohammed-Kaif/Frontend Peojects/Fitness With Mohammed)
 
 ---
 
