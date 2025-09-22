@@ -12,13 +12,13 @@ A modern, responsive automotive service management website with a React frontend
 
 ## 🚀 Live Demo
 
-Check out the live project here: [Kaif Auto Care Hub Demo](https://kaif-auto-care-hub.lovable.app/)
+Check out the live project here: [Kaif Auto Care Hub Demo](https://kirana-store-mohammed.lovable.app/)
 
 ---
 
 ## 📝 Project Info
 
-**URL:** [https://kaif-auto-care-hub.lovable.app/](https://kaif-auto-care-hub.lovable.app/)  
+**URL:** [https://kaif-auto-care-hub.lovable.app/](https://kirana-store-mohammed.lovable.app/)
 **GitHub Repo:** [https://github.com/Shaik-Mohammed-Kaif](https://github.com/Shaik-Mohammed-Kaif)  
 
 ---
