@@ -1,7 +1,7 @@
 # Cakery - Modern Bakery Website
 
 [![Projects](https://img.shields.io/badge/Projects-1+-orange?style=for-the-badge)](https://github.com/Shaik-Mohammed-Kaif)
-[![Cakery](https://img.shields.io/badge/Cakery-BakeryStore-red?style=for-the-badge)](https://cakery-store.lovable.app)
+[![Cakery](https://img.shields.io/badge/Cakery-BakeryStore-red?style=for-the-badge)](https://cakery-modern-bakery-dr0x.bolt.host/)
 
 A beautiful, fully responsive modern bakery website built with React and TypeScript, featuring a complete user management system and order processing capabilities.
 
@@ -60,6 +60,7 @@ Cakery is a premium bakery website that showcases freshly baked delights includi
 ## 📁 Project Structure
 
 ```
+
 cakery/
 ├── src/
 │   ├── components/
@@ -77,7 +78,8 @@ cakery/
 │   └── App.tsx               # Main application
 ├── csv-structure.md          # Backend data structure
 └── README.md                 # This file
-```
+
+````
 
 ## 🎨 Design Philosophy
 
@@ -105,21 +107,24 @@ cakery/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd cakery
-   ```
+   git clone https://github.com/Shaik-Mohammed-Kaif/Frontend-Projects.git
+   cd "ClickCart Store"
+````
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
 
 4. **Build for production**
+
    ```bash
    npm run build
    ```
@@ -129,80 +134,92 @@ cakery/
 The application uses localStorage to simulate a CSV-based backend system:
 
 ### Data Storage
-- **Users**: Registration and authentication data
-- **Orders**: Customer orders with event details
-- **Contacts**: Contact form submissions
-- **Newsletter**: Email subscriptions
-- **Products**: Bakery item catalog
+
+* **Users**: Registration and authentication data
+* **Orders**: Customer orders with event details
+* **Contacts**: Contact form submissions
+* **Newsletter**: Email subscriptions
+* **Products**: Bakery item catalog
 
 ### CSV Structure
+
 See `csv-structure.md` for detailed information about data models and Java backend implementation notes.
 
 ## 🎯 Key Features Implementation
 
 ### User Authentication
-- Secure registration with password validation
-- Login system with error handling
-- User session management
-- Protected routes for order placement
+
+* Secure registration with password validation
+* Login system with error handling
+* User session management
+* Protected routes for order placement
 
 ### Order System
-- Product selection with quantity
-- Event type categorization
-- Customer information capture
-- Order confirmation and tracking
-- Price calculation with totals
+
+* Product selection with quantity
+* Event type categorization
+* Customer information capture
+* Order confirmation and tracking
+* Price calculation with totals
 
 ### Search & Filter
-- Real-time product search
-- Category-based filtering
-- Price and availability sorting
-- Best sellers highlighting
+
+* Real-time product search
+* Category-based filtering
+* Price and availability sorting
+* Best sellers highlighting
 
 ### Contact Management
-- Multiple contact methods
-- Form validation and submission
-- Business inquiry handling
-- Location and hours information
+
+* Multiple contact methods
+* Form validation and submission
+* Business inquiry handling
+* Location and hours information
 
 ## 📱 Mobile Experience
 
-- **Touch-Optimized**: All interactions work seamlessly on mobile
-- **Fast Loading**: Optimized images and code splitting
-- **Offline-Ready**: Core functionality works offline
-- **App-Like Feel**: Smooth animations and transitions
+* **Touch-Optimized**: All interactions work seamlessly on mobile
+* **Fast Loading**: Optimized images and code splitting
+* **Offline-Ready**: Core functionality works offline
+* **App-Like Feel**: Smooth animations and transitions
 
 ## 🎉 Special Features
 
 ### Newsletter System
-- Email subscription management
-- Welcome messages for new subscribers
-- Integration with contact system
+
+* Email subscription management
+* Welcome messages for new subscribers
+* Integration with contact system
 
 ### Event Customization
-- Multiple event types supported
-- Custom decoration requests
-- Special dietary accommodations
-- Bulk order capabilities
+
+* Multiple event types supported
+* Custom decoration requests
+* Special dietary accommodations
+* Bulk order capabilities
 
 ### Business Features
-- Corporate catering options
-- Wedding cake specialization
-- Custom order consultations
-- Wholesale inquiries
+
+* Corporate catering options
+* Wedding cake specialization
+* Custom order consultations
+* Wholesale inquiries
 
 ## 🔮 Future Enhancements
 
-- **Payment Integration**: Stripe payment processing
-- **Real Backend**: Java Spring Boot with MySQL
-- **Mobile App**: React Native companion app
-- **Admin Panel**: Order management dashboard
-- **Inventory System**: Real-time stock tracking
-- **Delivery Tracking**: Order status updates
+* **Payment Integration**: Stripe payment processing
+* **Real Backend**: Java Spring Boot with MySQL
+* **Mobile App**: React Native companion app
+* **Admin Panel**: Order management dashboard
+* **Inventory System**: Real-time stock tracking
+* **Delivery Tracking**: Order status updates
 
 ## 🏆 About the Developer
 
-This project showcases modern web development practices and attention to detail in creating production-ready applications. The implementation demonstrates expertise in React, TypeScript, responsive design, and user experience optimization.
+* **GitHub**: [Shaik-Mohammed-Kaif](https://github.com/Shaik-Mohammed-Kaif)
+* **LinkedIn**: [Shaik Mohammed Kaif](https://www.linkedin.com/in/shaik-mohammed-kaif/)
+* **Portfolio**: [https://s-mohammed-kaif.netlify.app/](https://s-mohammed-kaif.netlify.app/)
+* **Live Demo**: [Cakery Modern Bakery](https://cakery-modern-bakery-dr0x.bolt.host/)
 
 ---
 
