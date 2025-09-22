@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mohammed Kaif Auto Care Design System */
+
+@layer base {
+  :root {
+    /* Core Brand Colors */
+    --background: 0 0% 100%;
+    --foreground: 213 31% 17%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 213 31% 17%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 31% 17%;
+
+    /* Automotive Blue Primary */
+    --primary: 213 84% 38%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 213 84% 32%;
+
+    /* Warm Orange Accent */
+    --accent: 43 96% 48%;
+    --accent-foreground: 213 31% 17%;
+    --accent-hover: 43 96% 42%;
+
+    /* Secondary Gray */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 213 31% 17%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 213 84% 38%;
+
+    --radius: 0.75rem;
+
+    /* Auto Care Specific Colors */
+    --garage-dark: 213 31% 17%;
+    --garage-medium: 213 20% 35%;
+    --garage-light: 213 15% 85%;
+    --tool-metal: 220 13% 65%;
+    --engine-red: 0 75% 55%;
+    --oil-amber: 43 96% 48%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-hover)) 100%);
+    --gradient-service: linear-gradient(145deg, hsl(var(--accent)) 0%, hsl(var(--accent-hover)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--background)) 0%, hsl(var(--garage-light)) 100%);
+
+    /* Shadows */
+    --shadow-card: 0 4px 16px -4px hsl(var(--primary) / 0.1);
+    --shadow-tool: 0 8px 32px -8px hsl(var(--garage-dark) / 0.2);
+    --shadow-hero: 0 20px 40px -12px hsl(var(--primary) / 0.3);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer components {
+  /* Hero Button Variants */
+  .btn-hero {
+    @apply bg-gradient-to-r from-primary to-primary-hover text-primary-foreground px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105;
+    box-shadow: 0 20px 40px -12px hsl(var(--primary) / 0.3);
+  }
+  
+  .btn-hero:hover {
+    box-shadow: 0 25px 50px -12px hsl(var(--primary) / 0.4);
+  }
+
+  .btn-service {
+    @apply bg-gradient-to-r from-accent to-accent-hover text-accent-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105;
+  }
+
+  /* Card Variants */
+  .card-service {
+    @apply bg-gradient-to-br from-background to-garage-light p-6 rounded-xl border border-border transition-all duration-300 hover:-translate-y-2;
+    box-shadow: 0 4px 16px -4px hsl(var(--primary) / 0.1);
+  }
+  
+  .card-service:hover {
+    box-shadow: 0 8px 32px -8px hsl(var(--garage-dark) / 0.2);
+  }
+
+  .card-product {
+    @apply bg-card border border-border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1;
+    box-shadow: 0 4px 16px -4px hsl(var(--primary) / 0.1);
+  }
+  
+  .card-product:hover {
+    box-shadow: 0 8px 32px -8px hsl(var(--garage-dark) / 0.2);
+  }
+
+  /* Automotive specific styles */
+  .tool-shine {
+    @apply relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700;
+  }
+
+  .garage-bg {
+    @apply bg-gradient-to-br from-garage-dark to-garage-medium;
+  }
+}
