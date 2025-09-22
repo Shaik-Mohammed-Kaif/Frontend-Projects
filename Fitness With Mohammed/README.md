@@ -220,8 +220,7 @@ MIT License – see [LICENSE](LICENSE)
 **S Mohammed Kaif**
 
 * GitHub: [@Shaik-Mohammed-Kaif](https://github.com/Shaik-Mohammed-Kaif)
-* Project: [GymPro-Website](https://github.com/Shaik-Mohammed-Kaif/Frontend Peojects/Fitness With Mohammed)
-
+* Project: [GymPro-Website][(https://github.com/Shaik-Mohammed-Kaif/Frontend-Projects/tree/main/Fitness%20With%20Mohammed)
 ---
 
 ## 🙏 Acknowledgments
