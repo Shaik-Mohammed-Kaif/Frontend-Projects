@@ -144,6 +144,3 @@ ClickCart Store is an **attractive, responsive, and functional Flipkart clone** 
 
 [![Live Website](https://img.shields.io/badge/Live%20Website-Visit-blue?style=for-the-badge)](https://flipkart-store-with-mohammed.lovable.app/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge\&logo=github)](https://github.com/Shaik-Mohammed-Kaif/Frontend-Projects/tree/main/ClickCart%20Store)  
-
-Kya mai woh version bhi ready kar doon?
-```
