@@ -1,0 +1,172 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Neural Infrastructure Codex (Docs){% endblock %}
+
+{% block admin_content %}
+<style>
+    .tech-pulse {
+        animation: tech-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes tech-glow {
+
+        0%,
+        100% {
+            opacity: 0.6;
+            filter: hue-rotate(0deg);
+        }
+
+        50% {
+            opacity: 1;
+            filter: hue-rotate(10deg) brightness(1.2);
+        }
+    }
+
+    .scan-line {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .scan-line::after {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: linear-gradient(to bottom, transparent, rgba(99, 102, 241, 0.2), transparent);
+        animation: scan 6s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes scan {
+        0% {
+            top: -100%;
+        }
+
+        100% {
+            top: 200%;
+        }
+    }
+</style>
+
+<div class="max-w-6xl mx-auto space-y-12 pb-32">
+    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-8">
+        <div class="hub-card !p-0 !bg-transparent !border-0 text-left">
+            <h2 class="text-3xl font-black uppercase tracking-tighter mb-2 text-[var(--hub-text)]">Infrastructure
+                Documentation</h2>
+            <p class="text-[10px] text-[var(--hub-sub)] font-bold uppercase tracking-widest leading-relaxed opacity-80">
+                Admin Resource: Master Hybrid Scalable Core</p>
+        </div>
+        <a href="{{ url_for('admin.dashboard') }}"
+            class="px-10 py-4 bg-[var(--hub-card)] border border-[var(--hub-border)] rounded-2xl text-[11px] font-black uppercase text-[var(--hub-text)] hover:scale-105 hover:border-indigo-500/50 transition-all shadow-2xl flex items-center gap-3">
+            <i class="fas fa-th-large text-indigo-500"></i> Return to Command Dashboard
+        </a>
+    </div>
+
+    <!-- 🌐 INFRASTRUCTURE VISUAL HUB -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-7 space-y-8">
+            <div class="hub-card !items-start text-left border-l-4 border-indigo-500 bg-[var(--hub-card)]">
+                <h3 class="text-2xl font-black uppercase tracking-widest mb-6 text-[var(--hub-text)]">🧱 Infrastructure
+                    Core</h3>
+                <p
+                    class="text-[13px] text-[var(--hub-sub)] font-black leading-relaxed uppercase tracking-wider text-justify opacity-90">
+                    The core engine of EmotionAI is designed using <span class="text-indigo-500 font-black">hybrid
+                        neural architectures</span> combining deep learning and real-time processing.
+                    This foundation ensures high accuracy, fast response time, and multi-modal intelligence across the
+                    entire behavioral grid.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div
+                    class="p-6 bg-[var(--hub-card)] rounded-3xl border border-[var(--hub-border)] hover:border-indigo-500/20 transition-all">
+                    <i class="fas fa-microchip text-indigo-500 mb-4 text-xl"></i>
+                    <h5 class="text-[11px] font-black uppercase mb-3 text-indigo-600">CNN Visual Core</h5>
+                    <p class="text-[10px] text-[var(--hub-sub)] font-black leading-relaxed uppercase opacity-70">
+                        Integrated CNN architectures for high-precision image & webcam emotion detection.</p>
+                </div>
+                <div
+                    class="p-6 bg-[var(--hub-card)] rounded-3xl border border-[var(--hub-border)] hover:border-emerald-500/20 transition-all">
+                    <i class="fas fa-brain text-emerald-500 mb-4 text-xl"></i>
+                    <h5 class="text-[11px] font-black uppercase mb-3 text-emerald-600">Transformer NLP</h5>
+                    <p class="text-[10px] text-[var(--hub-sub)] font-black leading-relaxed uppercase opacity-70">
+                        Transformer-based pipelines for context-aware text sentiment & linguistic audit.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5">
+            <div
+                class="relative group p-4 bg-indigo-500/5 rounded-[3rem] border border-indigo-500/20 scan-line shadow-[0_0_50px_rgba(99,102,241,0.05)]">
+                <img src="/admin/internal/visuals/ai_infrastructure_visual_1774882244899.png"
+                    class="w-full h-auto rounded-[2.5rem] tech-pulse filter contrast-125 saturate-125 shadow-2xl"
+                    alt="Infrastructure Visualization">
+                <div
+                    class="absolute inset-0 rounded-[2.5rem] bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-8">
+                    <div class="mt-auto">
+                        <span
+                            class="px-4 py-1.5 bg-indigo-600 text-[9px] font-black uppercase rounded-lg tracking-widest text-white shadow-xl">Active
+                            Neural Link</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 💡 TECHNICAL ARCHITECTURE -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mt-16">
+        <div class="hub-card !items-start text-left bg-[var(--hub-card)] border border-[var(--hub-border)]">
+            <i class="fas fa-stream text-rose-500 text-2xl mb-6"></i>
+            <h4 class="text-[12px] font-black uppercase tracking-[0.3em] mb-4 text-rose-600">Webcam Engines</h4>
+            <p class="text-[10px] text-[var(--hub-sub)] font-black uppercase leading-loose opacity-70">Real-time
+                streaming engines for zero-latency webcam processing and frame-by-frame anomaly detection.</p>
+        </div>
+        <div class="hub-card !items-start text-left bg-[var(--hub-card)] border border-[var(--hub-border)]">
+            <i class="fas fa-database text-amber-500 text-2xl mb-6"></i>
+            <h4 class="text-[12px] font-black uppercase tracking-[0.3em] mb-4 text-amber-600">Bulk Analytics</h4>
+            <p class="text-[10px] text-[var(--hub-sub)] font-black uppercase leading-loose opacity-70">Distributed data
+                pipelines for large-scale dataset analytics using high-throughput batch processing.</p>
+        </div>
+        <div class="hub-card !items-start text-left bg-[var(--hub-card)] border border-[var(--hub-border)]">
+            <i class="fas fa-server text-sky-500 text-2xl mb-6"></i>
+            <h4 class="text-[12px] font-black uppercase tracking-[0.3em] mb-4 text-sky-600">Backend Core</h4>
+            <p class="text-[10px] text-[var(--hub-sub)] font-black uppercase leading-loose opacity-70">Built using
+                Python Flask APIs, ensuring seamless communication with model inference and alert systems.</p>
+        </div>
+    </div>
+
+    <!-- 📊 PERFORMANCE METRICS -->
+    <div class="p-12 bg-[var(--hub-card)] border border-[var(--hub-border)] rounded-[4rem] text-center shadow-xl">
+        <h4 class="text-[11px] font-black uppercase tracking-[0.5em] mb-12 text-[var(--hub-text)] opacity-60">Platform
+            Optimization Targets</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+            <div>
+                <p class="text-4xl font-black text-indigo-600 mb-2">99.8%</p>
+                <p class="text-[10px] font-black uppercase text-[var(--hub-sub)] tracking-widest opacity-80">Accuracy
+                </p>
+            </div>
+            <div>
+                <p class="text-4xl font-black text-emerald-600 mb-2">12ms</p>
+                <p class="text-[10px] font-black uppercase text-[var(--hub-sub)] tracking-widest opacity-80">Latency</p>
+            </div>
+            <div>
+                <p class="text-4xl font-black text-amber-600 mb-2">∞ Nodes</p>
+                <p class="text-[10px] font-black uppercase text-[var(--hub-sub)] tracking-widest opacity-80">Scalability
+                </p>
+            </div>
+            <div>
+                <p class="text-4xl font-black text-rose-600 mb-2">E2EE</p>
+                <p class="text-[10px] font-black uppercase text-[var(--hub-sub)] tracking-widest opacity-80">Security
+                </p>
+            </div>
+        </div>
+        <div
+            class="mt-20 p-10 bg-indigo-500/5 rounded-[3rem] border border-indigo-500/10 text-[12px] font-black leading-relaxed uppercase tracking-wider text-[var(--hub-sub)] text-justify opacity-80">
+            This infrastructure enables EmotionAI to operate as a next-generation intelligent emotional analytics
+            system, continuously optimized for low-latency detection, modular AI upgrades, and secure API-based scaling.
+        </div>
+    </div>
+</div>
+{% endblock %}

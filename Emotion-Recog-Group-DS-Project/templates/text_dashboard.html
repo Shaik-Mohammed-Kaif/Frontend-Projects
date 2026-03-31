@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-panel"
+    style="margin-bottom: 40px; padding: 40px; border-left: 6px solid var(--accent); position: relative; overflow: hidden; border-radius: 20px;">
+    <div
+        style="position: absolute; top: 0; left: 0; right: 0; height: 100%; background: linear-gradient(90deg, rgba(58, 134, 255, 0.1), transparent); pointer-events: none;">
+    </div>
+
+    <div style="position: relative; z-index: 10;">
+        <h1 style="font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px;">Macro Activity
+            Overview</h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px;">Enterprise Mission Control:
+            Aggregating all multi-modal structural insights into your deep semantic node.</p>
+    </div>
+</div>
+
+<div class="dashboard-metrics">
+    <div class="glass-panel metric-card tilt" data-tilt data-tilt-max="2" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.05">
+        <p>Total Assays</p>
+        <div class="val">{{ total }}</div>
+        <div class="badge badge-neutral" style="margin-top: 16px; align-self: flex-start;">Text Modality</div>
+    </div>
+    <div class="glass-panel metric-card tilt" data-tilt data-tilt-max="2" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.05">
+        <p>Dominant Pattern</p>
+        <div class="val" style="color: var(--emo-{{ frequent|default('neutral') }}); text-transform: capitalize;">{{
+            frequent|default('N/A') }}</div>
+        <div style="margin-top: 16px; font-size: 0.85rem; color: var(--text-secondary);">Historical Bias</div>
+    </div>
+    <div class="glass-panel metric-card tilt" data-tilt data-tilt-max="2" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.05">
+        <p>Avg Absolute Confidence</p>
+        <div id="metric-conf" class="val" style="color: var(--emo-joy);">--%</div>
+        <div style="margin-top: 16px; font-size: 0.85rem; color: var(--text-secondary);">Transformer Aggregation</div>
+    </div>
+    <div class="glass-panel metric-card tilt" data-tilt data-tilt-max="2" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.05">
+        <p>Network Stability Matrix</p>
+        <div id="metric-stab" class="val" style="color: var(--accent);">--</div>
+        <div style="margin-top: 16px; font-size: 0.85rem; color: var(--text-secondary);">Variance Entropy Log</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
+    <div class="glass-panel tilt" data-tilt data-tilt-max="1" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.02" style="padding: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h3
+                style="color: var(--text-secondary); font-size: 1rem; letter-spacing: 0.5px; text-transform: uppercase; margin: 0;">
+                Confidence Flow Architecture (Line)</h3>
+            <button onclick="downloadChart('chart-line')"
+                class="w-8 h-8 rounded-lg bg-[var(--bg-main)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--btn-primary)] transition-all">
+                <i class="fas fa-download text-[10px]"></i>
+            </button>
+        </div>
+        <div id="chart-line" style="height: 320px;"></div>
+    </div>
+    <div class="glass-panel tilt" data-tilt data-tilt-max="1" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.02" style="padding: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h3
+                style="color: var(--text-secondary); font-size: 1rem; letter-spacing: 0.5px; text-transform: uppercase; margin: 0;">
+                Sentiment Density Splitting (Pie)</h3>
+            <button onclick="downloadChart('chart-pie')"
+                class="w-8 h-8 rounded-lg bg-[var(--bg-main)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--btn-primary)] transition-all">
+                <i class="fas fa-download text-[10px]"></i>
+            </button>
+        </div>
+        <div id="chart-pie" style="height: 320px;"></div>
+    </div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
+    <div class="glass-panel tilt" data-tilt data-tilt-max="1" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.02" style="padding: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h3
+                style="color: var(--text-secondary); font-size: 1rem; letter-spacing: 0.5px; text-transform: uppercase; margin: 0;">
+                Emotion Distribution (Bar)</h3>
+            <button onclick="downloadChart('chart-bar')"
+                class="w-8 h-8 rounded-lg bg-[var(--bg-main)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--btn-primary)] transition-all">
+                <i class="fas fa-download text-[10px]"></i>
+            </button>
+        </div>
+        <div id="chart-bar" style="height: 320px;"></div>
+    </div>
+    <div class="glass-panel tilt" data-tilt data-tilt-max="1" data-tilt-speed="400" data-tilt-glare="true"
+        data-tilt-max-glare="0.02" style="padding: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h3
+                style="color: var(--text-secondary); font-size: 1rem; letter-spacing: 0.5px; text-transform: uppercase; margin: 0;">
+                Confidence Histogram (Data Density)</h3>
+            <button onclick="downloadChart('chart-hist')"
+                class="w-8 h-8 rounded-lg bg-[var(--bg-main)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--btn-primary)] transition-all">
+                <i class="fas fa-download text-[10px]"></i>
+            </button>
+        </div>
+        <div id="chart-hist" style="height: 320px;"></div>
+    </div>
+</div>
+
+<!-- 🔥 TASK: RECENT DECODINGS TABLE (STEP 10) -->
+<div class="glass-panel" style="padding: 32px; border-radius: 20px; margin-top: 40px;">
+    <h3
+        style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1rem; letter-spacing: 0.5px; text-transform: uppercase;">
+        Recent Deep Decodings
+    </h3>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr
+                    style="border-bottom: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">
+                    <th style="padding: 12px;">Input Sequence (AI Context)</th>
+                    <th style="padding: 12px; text-align: center;">Emotion Meta</th>
+                    <th style="padding: 12px; text-align: right;">Conf. Vector</th>
+                    <th style="padding: 12px; text-align: right;">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody id="decoding-body"
+                style="font-size: 0.9rem; color: var(--text-primary); divide-y: 1px solid var(--border);">
+                <tr>
+                    <td colspan="4" style="padding: 40px; text-align: center; color: var(--text-secondary);">Awaiting
+                        System Intel...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentData = historyData;
+
+    // 🔥 STEP 5: APPLY TO MODULE PAGE (GLOBAL SYNC)
+    window.updatePageAnalytics = function (data) {
+        if (!data || data.length === 0) return;
+
+        // Filter for Text module data
+        const textOnlyData = data.filter(d => d.module === "text" || d.module === "text_analysis");
+        if (textOnlyData.length > 0) {
+            currentData = textOnlyData;
+            renderCharts();
+        }
+    };
+
+    function renderCharts() {
+        if (!currentData || currentData.length === 0) {
+            // ... (keep fallback)
+            return;
+        }
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const fg = isDark ? '#e2e8f0' : '#0f172a';
+        const bg = 'transparent';
+        const grid = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+        const confs = currentData.map(d => d.confidence);
+        const avg = confs.reduce((a, b) => a + b, 0) / confs.length;
+        if (document.getElementById('metric-conf')) {
+            document.getElementById('metric-conf').innerText = (avg * 100).toFixed(1) + '%';
+        }
+
+        let sumSq = 0; confs.forEach(c => { sumSq += Math.pow(c - avg, 2); });
+        const variance = (confs.length > 1) ? (sumSq / (confs.length - 1)) : 0;
+        if (document.getElementById('metric-stab')) {
+            document.getElementById('metric-stab').innerText = (1 - variance).toFixed(3);
+        }
+
+        const modalities = currentData.map(d => d.emotion);
+        const modCounts = {}; modalities.forEach(m => modCounts[m] = (modCounts[m] || 0) + 1);
+
+        const layoutBase = { paper_bgcolor: bg, plot_bgcolor: bg, font: { color: fg, family: 'Inter' }, margin: { t: 10, b: 40, l: 40, r: 10 } };
+        const layoutPie = { paper_bgcolor: bg, plot_bgcolor: bg, font: { color: fg, family: 'Inter' }, margin: { t: 10, b: 10, l: 10, r: 10 } };
+
+        Plotly.newPlot('chart-line', [{
+            x: currentData.map(d => d.timestamp).reverse(), y: confs.reverse(),
+            type: 'scatter', mode: 'lines+markers', line: { shape: 'spline', color: '#3a86ff', width: 3 },
+            marker: { size: 8, color: '#8338ec', line: { width: 2, color: bg } }
+        }], { ...layoutBase, xaxis: { gridcolor: grid }, yaxis: { gridcolor: grid } }, { responsive: true });
+
+        Plotly.newPlot('chart-pie', [{
+            values: Object.values(modCounts), labels: Object.keys(modCounts),
+            type: 'pie', hole: .5, marker: { colors: ['#10b981', '#3a86ff', '#ef4444', '#8b5cf6', '#64748b'] }
+        }], layoutPie, { responsive: true });
+
+        Plotly.newPlot('chart-bar', [{
+            x: Object.keys(modCounts), y: Object.values(modCounts), type: 'bar', marker: { color: '#0ea5e9' }
+        }], { ...layoutBase, xaxis: { gridcolor: grid }, yaxis: { gridcolor: grid } }, { responsive: true });
+
+        Plotly.newPlot('chart-hist', [{
+            x: confs, type: 'histogram', marker: { color: '#8b5cf6' }
+        }], { ...layoutBase, xaxis: { gridcolor: grid }, yaxis: { gridcolor: grid } }, { responsive: true });
+
+        // Populate Table
+        const body = document.getElementById('decoding-body');
+        if (body) {
+            body.innerHTML = currentData.slice(0, 10).map(d => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);">
+                    <td style="padding: 15px; font-style: italic; color: #94a3b8; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">"${d.text || 'N/A'}"</td>
+                    <td style="padding: 15px; text-align: center;"><span class="badge" style="background: var(--emo-${d.emotion.toLowerCase()}); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem;">${d.emotion}</span></td>
+                    <td style="padding: 15px; text-align: right; font-weight: bold;">${(d.confidence * 100).toFixed(1)}%</td>
+                    <td style="padding: 15px; text-align: right; color: var(--text-secondary); font-size: 0.8rem;">${d.timestamp}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    window.onload = () => {
+        renderCharts();
+    };
+
+    window.addEventListener('themeChanged', () => { setTimeout(renderCharts, 100); });
+</script>
+{% endblock %}

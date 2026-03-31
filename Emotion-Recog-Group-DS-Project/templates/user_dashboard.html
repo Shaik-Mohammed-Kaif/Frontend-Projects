@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="top-bar" style="margin-bottom: 32px;">
+    <div>
+        <h1 class="page-title">Emotion Intelligence Overview</h1>
+        <p style="color: var(--text-secondary); margin-top: 8px;">Macro activity summary across all connected sentiment
+            nodes.</p>
+    </div>
+</div>
+
+<div class="dashboard-grid" style="margin-bottom: 32px;">
+    <div class="analytics-card span-3">
+        <div class="eval-label">Total Analyses</div>
+        <div class="eval-value">{{ total }}</div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">Macro Log Count</div>
+    </div>
+    <div class="analytics-card span-3">
+        <div class="eval-label">Dominant Pattern</div>
+        <div class="eval-value" style="color: var(--accent); text-transform: capitalize;">{{ frequent|default('N/A') }}
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">Historical Bias</div>
+    </div>
+    <div class="analytics-card span-3">
+        <div class="eval-label">Avg Confidence</div>
+        <div class="eval-value" id="metric-conf">--%</div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">Model Weight Avg</div>
+    </div>
+    <div class="analytics-card span-3">
+        <div class="eval-label">Network Stability</div>
+        <div class="eval-value" id="metric-stab" style="color: var(--success);">--</div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">Variance Entropy</div>
+    </div>
+</div>
+
+<div class="dashboard-grid" style="margin-bottom: 32px;">
+    <div class="analytics-card span-6">
+        <div class="card-header">
+            <span class="card-title">Confidence Flow Architecture</span>
+            <div class="flex gap-2">
+                <button onclick="downloadChart('chart-line')"
+                    class="w-8 h-8 rounded-lg bg-[var(--bg-main)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--btn-primary)] transition-all">
+                    <i class="fas fa-download text-[10px]"></i>
+                </button>
+                <div class="card-icon">📈</div>
+            </div>
+        </div>
+        <div id="chart-line" class="plotly-graph-div" style="min-height: 400px;"></div>
+    </div>
+    <div class="analytics-card span-6">
+        <div class="card-header">
+            <span class="card-title">Sentiment Density Splitting</span>
+            <div class="flex gap-2">
+                <button onclick="downloadChart('chart-pie')"
+                    class="w-8 h-8 rounded-lg bg-[var(--bg-main)] border border-[var(--border)] border-none flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--btn-primary)] transition-all">
+                    <i class="fas fa-download text-[10px]"></i>
+                </button>
+                <div class="card-icon">🍩</div>
+            </div>
+        </div>
+        <div id="chart-pie" class="plotly-graph-div" style="min-height: 400px;"></div>
+    </div>
+</div>
+
+<div class="analytics-card span-12" style="margin-bottom: 40px;">
+    <div class="card-header">
+        <span class="card-title">System Deep Inference Logs (Last 10)</span>
+        <div class="card-icon">📜</div>
+    </div>
+    {% if history %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; text-align: left; border-collapse: separate; border-spacing: 0;">
+            <thead>
+                <tr style="color: var(--text-secondary); letter-spacing: 0.5px;">
+                    <th
+                        style="padding: 16px 12px; border-bottom: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">
+                        Timestamp Log</th>
+                    <th
+                        style="padding: 16px 12px; border-bottom: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">
+                        Text Content</th>
+                    <th
+                        style="padding: 16px 12px; border-bottom: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">
+                        Extracted Output</th>
+                    <th
+                        style="padding: 16px 12px; border-bottom: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">
+                        Abs. Confidence</th>
+                    <th
+                        style="padding: 16px 12px; border-bottom: 1px solid var(--border-color); font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">
+                        Neural Engine</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in history[:10] %}
+                <tr style="transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'"
+                    onmouseout="this.style.background='transparent'">
+                    <td
+                        style="padding: 16px 12px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem;">
+                        {{ row.timestamp[:16] }}</td>
+                    <td
+                        style="padding: 16px 12px; color: var(--text-primary); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-bottom: 1px solid rgba(255,255,255,0.03);">
+                        {{ row.text_content }}</td>
+                    <td style="padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.03);"><span
+                            class="badge badge-{{ row.emotion }}">{{ row.emotion }}</span></td>
+                    <td
+                        style="padding: 16px 12px; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--accent);">
+                        {{ (row.confidence*100)|round(1) }}%</td>
+                    <td
+                        style="padding: 16px 12px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem;">
+                        {{ row.model_used }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 60px 0; color: var(--text-secondary);">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="margin-bottom: 16px; opacity: 0.5;">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <p>No inferences present in enterprise storage. Run your first text semantic node analysis.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Overview Hub Initialization
+    const historyData = {{ history | tojson | safe }};
+
+    function renderCharts() {
+        if (historyData.length === 0) {
+            document.getElementById('chart-line').innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding-top:120px;">Insufficient Data</p>';
+            document.getElementById('chart-pie').innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding-top:120px;">Insufficient Data</p>';
+            return;
+        }
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const fg = isDark ? '#e2e8f0' : '#0f172a';
+        const bg = 'transparent';
+        const grid = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+        const confs = historyData.map(d => d.confidence);
+        const avg = confs.reduce((a, b) => a + b, 0) / confs.length;
+        document.getElementById('metric-conf').innerText = (avg * 100).toFixed(1) + '%';
+
+        let sumSq = 0; confs.forEach(c => { sumSq += Math.pow(c - avg, 2); });
+        const variance = (confs.length > 1) ? (sumSq / (confs.length - 1)) : 0;
+        document.getElementById('metric-stab').innerText = (1 - variance).toFixed(3);
+
+        const modalities = historyData.map(d => d.emotion);
+        const modCounts = {}; modalities.forEach(m => modCounts[m] = (modCounts[m] || 0) + 1);
+
+        const layoutBase = {
+            paper_bgcolor: bg, plot_bgcolor: bg,
+            font: { color: fg, family: 'Inter' },
+            margin: { t: 10, b: 40, l: 40, r: 10 }
+        };
+
+        // Line Chart
+        Plotly.newPlot('chart-line', [{
+            x: historyData.map(d => d.timestamp).reverse(),
+            y: confs.reverse(),
+            type: 'scatter', mode: 'lines+markers',
+            line: { shape: 'spline', color: '#3a86ff', width: 3 },
+            marker: { size: 8, color: '#8338ec', line: { width: 2, color: bg } }
+        }], {
+            ...layoutBase,
+            xaxis: { gridcolor: grid, title: 'Inference Timestamp' },
+            yaxis: { gridcolor: grid, title: 'Confidence %' }
+        }, { responsive: true });
+
+        // Pie Chart
+        Plotly.newPlot('chart-pie', [{
+            values: Object.values(modCounts), labels: Object.keys(modCounts),
+            type: 'pie', hole: .5, textinfo: 'percent+label',
+            marker: { colors: ['#10b981', '#3a86ff', '#ef4444', '#8b5cf6', '#64748b'] }
+        }], { ...layoutBase, margin: { t: 10, b: 10, l: 10, r: 10 } }, { responsive: true });
+    }
+
+    // Initial render
+    renderCharts();
+
+    // Re-render entirely on theme change trigger from base.html
+    window.addEventListener('themeChanged', () => { setTimeout(renderCharts, 100); });
+</script>
+{% endblock %}

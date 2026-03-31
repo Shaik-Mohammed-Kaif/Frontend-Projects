@@ -1,0 +1,191 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Node Operator Intelligence{% endblock %}
+
+{% block admin_content %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8 items-start">
+    <!-- User Selection Sidebar -->
+    <div class="lg:col-span-1 admin-card h-[calc(100vh-250px)] overflow-y-auto pr-2">
+        <div class="sticky top-0 bg-[var(--bg-panel)] z-10 pb-4 mb-4 border-b border-[var(--border)]">
+            <input type="text" id="userListSearch" placeholder="Search entity..."
+                class="w-full bg-[var(--bg-main)] border border-[var(--border)] rounded-xl py-2 px-4 text-[10px] font-black uppercase tracking-widest focus:border-indigo-500 transition-all outline-none">
+        </div>
+        <div id="userIntelligenceList" class="space-y-4">
+            <!-- User selection list -->
+            <div class="animate-pulse space-y-3">
+                <div class="h-10 bg-indigo-500/5 rounded"></div>
+                <div class="h-10 bg-indigo-500/5 rounded"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Analysis Cockpit -->
+    <div class="lg:col-span-3 space-y-8" id="analysisCockpit" style="display:none;">
+        <div
+            class="admin-card relative overflow-hidden flex flex-col md:flex-row gap-8 items-center bg-gradient-to-tr from-[var(--bg-panel)] to-indigo-500/5">
+            <div class="w-32 h-32 rounded-[24px] bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-5xl font-black text-white shadow-xl shadow-indigo-600/20"
+                id="cockpitUserAvatar">-</div>
+            <div class="flex-1 text-center md:text-left">
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-3">
+                    <h2 class="text-3xl font-black tracking-tight" id="cockpitUserName">Neural Entity</h2>
+                    <span
+                        class="px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20"
+                        id="cockpitStatus">ACTIVE NODE</span>
+                </div>
+                <div class="flex gap-6 opacity-60 text-[10px] font-bold uppercase tracking-widest">
+                    <span><i class="fas fa-envelope mr-2"></i> <span id="cockpitEmail">email@domain.ai</span></span>
+                    <span><i class="fas fa-calendar mr-2"></i> CREATED: <span id="cockpitDate">-</span></span>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button
+                    class="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all text-sm"
+                    title="DE-PROVISION NODE"><i class="fas fa-ban"></i></button>
+                <button
+                    class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 hover:bg-indigo-500 hover:text-white transition-all text-sm"
+                    title="RESET PROTOCOL"><i class="fas fa-rotate"></i></button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Personality Breakdown -->
+            <div class="admin-card h-[400px] flex flex-col">
+                <h3 class="font-black text-xs uppercase tracking-[0.2em] text-[var(--accent)] mb-8">Personality Spectrum
+                </h3>
+                <div class="flex-1" id="cockpitChartContainer">
+                    <canvas id="userPersonalityChart"></canvas>
+                </div>
+            </div>
+            <!-- Behavioral Intelligence Summary -->
+            <div class="admin-card h-[400px] border-l-4 border-indigo-500 relative flex flex-col">
+                <h3 class="font-black text-xs uppercase tracking-[0.2em] text-indigo-500 mb-8">Intelligence Story</h3>
+                <div
+                    class="p-8 bg-indigo-500/5 rounded-[24px] border border-indigo-500/10 flex-1 flex flex-col justify-center text-center">
+                    <i class="fas fa-brain text-4xl text-indigo-500/20 mb-6 mx-auto"></i>
+                    <p class="text-sm font-medium leading-relaxed italic opacity-80" id="cockpitStory">Intelligence
+                        nodes are synchronising...</p>
+                    <div class="mt-8 flex justify-center gap-4">
+                        <div class="flex flex-col items-center">
+                            <span class="text-xs font-black text-indigo-500" id="cockpitDomEmotion">-</span>
+                            <span class="text-[8px] font-bold opacity-40 uppercase tracking-widest">Dominant
+                                Pulse</span>
+                        </div>
+                        <div class="w-px h-8 bg-indigo-500/20"></div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-xs font-black text-rose-500" id="cockpitRiskLevel">STABLE</span>
+                            <span class="text-[8px] font-bold opacity-40 uppercase tracking-widest">Current Risk</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State Analysis -->
+    <div class="lg:col-span-3 flex flex-col items-center justify-center opacity-30 h-[calc(100vh-250px)]"
+        id="emptyAnalysis" style="display:flex;">
+        <i class="fas fa-user-robot text-8xl mb-8"></i>
+        <h2 class="text-xl font-black uppercase tracking-[0.4em]">SELECT NEURAL ENTITY TO ANALYSE</h2>
+        <p class="text-[10px] font-black mt-4 uppercase">Direct Ingestion of User Behavioral Data Logs</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let usersList = [];
+    let personalityChart = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        async function fetchUserList() {
+            const resp = await fetch("/admin/api/users");
+            usersList = await resp.json();
+            renderUserList();
+        }
+
+        function renderUserList() {
+            const container = document.getElementById('userIntelligenceList');
+            container.innerHTML = usersList.map(u => `
+                <div class="flex items-center gap-4 p-4 rounded-2xl border border-[var(--border)] hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all group cursor-pointer" onclick="selectUserForAnalysis(${u.id})">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center font-black text-xs text-indigo-500 group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                        ${u.full_name[0]}
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] font-black truncate">${u.full_name}</span>
+                            <span class="text-[8px] font-black text-emerald-500 uppercase">${u.is_active ? 'Online' : 'Off'}</span>
+                        </div>
+                        <p class="text-[9px] opacity-40 truncate">${u.email}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.selectUserForAnalysis = async (userId) => {
+            document.getElementById('emptyAnalysis').style.display = 'none';
+            document.getElementById('analysisCockpit').style.display = 'block';
+
+            const resp = await fetch(`/admin/api/user-intelligence/${userId}`);
+            const data = await resp.json();
+
+            // Render Cockpit
+            document.getElementById('cockpitUserName').innerText = data.user_info.full_name;
+            document.getElementById('cockpitUserAvatar').innerText = data.user_info.full_name[0];
+            document.getElementById('cockpitEmail').innerText = data.user_info.email;
+            document.getElementById('cockpitStatus').innerText = data.user_info.is_active ? 'ACTIVE NODE' : 'INACTIVE';
+            document.getElementById('cockpitDate').innerText = data.user_info.created_at;
+            document.getElementById('cockpitStory').innerText = `"${data.story}"`;
+            document.getElementById('cockpitRiskLevel').innerText = data.risk_level;
+
+            const dom = data.emotion_breakdown.sort((a, b) => b.count - a.count)[0];
+            document.getElementById('cockpitDomEmotion').innerText = dom ? dom.emotion_label.toUpperCase() : 'NEUTRAL';
+
+            // Charting
+            const ctx = document.getElementById('userPersonalityChart').getContext('2d');
+            if (personalityChart) personalityChart.destroy();
+
+            personalityChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.emotion_breakdown.map(e => e.emotion_label.toUpperCase()),
+                    datasets: [{
+                        data: data.emotion_breakdown.map(e => e.count),
+                        backgroundColor: ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#0ea5e9', '#ec4899'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { weight: '800', size: 9 }, usePointStyle: true } } }
+                }
+            });
+        };
+
+        // Live Search
+        document.getElementById('userListSearch').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = usersList.filter(u => u.full_name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query));
+            // Just rerender with filter - simplified
+            const container = document.getElementById('userIntelligenceList');
+            container.innerHTML = filtered.map(u => `
+                <div class="flex items-center gap-4 p-4 rounded-2xl border border-[var(--border)] hover:border-indigo-500/50 transition-all group cursor-pointer" onclick="selectUserForAnalysis(${u.id})">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center font-black text-xs text-indigo-500 group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                        ${u.full_name[0]}
+                    </div>
+                     <div class="flex-1 overflow-hidden">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] font-black truncate">${u.full_name}</span>
+                            <span class="text-[8px] font-black text-emerald-500 uppercase">${u.is_active ? 'Online' : 'Off'}</span>
+                        </div>
+                        <p class="text-[9px] opacity-40 truncate">${u.email}</p>
+                    </div>
+                </div>
+            `).join('');
+        });
+
+        fetchUserList();
+    });
+</script>
+{% endblock %}

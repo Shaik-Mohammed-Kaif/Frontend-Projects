@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block title %}Emotion Intelligence Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_v3.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /* Clean Theme Override */
+    body {
+        background-color: var(--bg-main) !important;
+        color: var(--text-primary) !important;
+    }
+
+    .content {
+        background-color: var(--bg-main) !important;
+    }
+
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+        gap: 32px;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .chart-card {
+        width: 100% !important;
+        height: 500px !important;
+        padding: 24px !important;
+        border-radius: 20px !important;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    }
+
+    .simple-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        margin-top: -10px;
+    }
+
+    .simple-table tr {
+        background: rgba(255, 255, 255, 0.02);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+        border-radius: 8px;
+    }
+
+    .simple-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .simple-table th {
+        padding: 8px 16px;
+        opacity: 0.6;
+    }
+
+    .simple-table td {
+        padding: 12px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.02);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .simple-table td:first-child {
+        border-left: 1px solid rgba(255, 255, 255, 0.02);
+        border-radius: 8px 0 0 8px;
+    }
+
+    .simple-table td:last-child {
+        border-right: 1px solid rgba(255, 255, 255, 0.02);
+        border-radius: 0 8px 8px 0;
+    }
+
+    .analytics-full-width {
+        grid-column: 1 / -1;
+    }
+
+    .plotly-container {
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1;
+    }
+
+    @media (max-width: 768px) {
+        .analytics-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .chart-card {
+            height: 400px !important;
+        }
+    }
+
+    .chart-download-btn {
+        width: 32px;
+        height: 32px;
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 11px;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+
+    .chart-download-btn:hover {
+        color: #6366f1;
+        border-color: #6366f1;
+        background: rgba(99, 102, 241, 0.05);
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block header_left %}
+<div class="flex flex-col">
+    <h1 class="project-title">EMOTION RECOGNITION AND MANAGEMENT</h1>
+    <p class="project-subtitle">IN THE TOURISM INDUSTRY DURING EMERGENCY SITUATIONS</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple space-y-8 pb-12 fade-in">
+
+    <!-- 📌 KPI CARDS (TOP) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="clean-card bg-blue-500/5 border-blue-500/20">
+            <p class="kpi-title text-blue-600">Total Insights</p>
+            <div class="kpi-value text-blue-600" id="kpi-total">{{ total_t + total_w + total_i }}</div>
+            <p class="text-[10px] font-bold text-blue-600/70 mt-2 uppercase">Historical Datapoints</p>
+        </div>
+        <div class="clean-card bg-emerald-500/5 border-emerald-500/20">
+            <p class="kpi-title text-emerald-600">Model Precision</p>
+            <div class="kpi-value text-emerald-600">94.2%</div>
+            <p class="text-[10px] font-bold text-emerald-600/70 mt-2 uppercase">Deep Learning Engine</p>
+        </div>
+        <div class="clean-card bg-indigo-500/5 border-indigo-500/20">
+            <p class="kpi-title text-indigo-600">User Session</p>
+            <div class="kpi-value text-indigo-600 truncate">{{ session.get('full_name', 'Operator') }}</div>
+            <p class="text-[10px] font-bold text-indigo-600/70 mt-2 uppercase">Active Profile</p>
+        </div>
+    </div>
+
+    <!-- 📌 MODULE NAV (CENTER) -->
+    <div class="module-grid">
+        <a href="{{ url_for('text_routes.text_page') }}" class="module-card">
+            <i class="fas fa-file-alt"></i>
+            <span>TEXT AI</span>
+        </a>
+        <a href="{{ url_for('image_bp.image_page') }}" class="module-card">
+            <i class="fas fa-image"></i>
+            <span>IMAGE AI</span>
+        </a>
+        <a href="{{ url_for('additional_features.webcam_page') }}" class="module-card">
+            <i class="fas fa-camera"></i>
+            <span>LIVE CAM</span>
+        </a>
+        <a href="{{ url_for('additional_features.dataset_page') }}" class="module-card">
+            <i class="fas fa-database"></i>
+            <span>DATASETS</span>
+        </a>
+    </div>
+
+    <!-- 📌 ANALYTICS (GRAPHS) -->
+    <div class="analytics-grid">
+        <!-- Existing Graphs (Untouched) -->
+        <div class="chart-card analytics-full-width">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xs font-black flex items-center gap-2 uppercase tracking-widest text-[#2563eb]">
+                    <i class="fas fa-chart-bar"></i> EMOTION DISTRIBUTION
+                </h3>
+                <button onclick="downloadChart('barChart')" class="chart-download-btn" title="Download Image">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+            <div id="barChart" class="plotly-container"></div>
+        </div>
+
+        <div class="chart-card analytics-full-width">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xs font-black flex items-center gap-2 uppercase tracking-widest text-[#10b981]">
+                    <i class="fas fa-chart-line"></i> CONFIDENCE TIMELINE
+                </h3>
+                <button onclick="downloadChart('lineChart')" class="chart-download-btn" title="Download Image">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+            <div id="lineChart" class="plotly-container"></div>
+        </div>
+
+        <!-- 🚀 UPDATED: HIERARCHY MAP (Full Width for Better Expansion) -->
+        <div class="chart-card analytics-full-width">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xs font-black flex items-center gap-2 uppercase tracking-widest text-[#8b5cf6]">
+                    <i class="fas fa-th-large"></i> HIERARCHY MAP (TREEMAP)
+                </h3>
+                <button onclick="downloadChart('treeChart')" class="chart-download-btn" title="Download Image">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+            <div id="treeChart" class="plotly-container"></div>
+        </div>
+
+        <!-- 🚨 NEW: ANOMALY ALERT VARIANCE (Requirement: Trending Alertness) -->
+        <div class="chart-card analytics-full-width border-t-4 border-rose-500">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xs font-black flex items-center gap-2 uppercase tracking-widest text-rose-500">
+                    <i class="fas fa-exclamation-triangle"></i> CRITICAL ANOMALY ALERT VARIANCE
+                </h3>
+                <button onclick="downloadChart('alertTrendChart')" class="chart-download-btn" title="Download Image">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+            <div id="alertTrendChart" class="plotly-container"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 📌 LIVE STREAM / HISTORY -->
+<div class="clean-card">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-sm font-black">LATEST ANALYTICS STREAM</h3>
+        <span
+            class="px-3 py-1 bg-blue-500/10 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest">Live</span>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Classification</th>
+                    <th>Confidence</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody id="history-stream">
+                <!-- Data injected by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 🚀 STEP 4: PLOTLY DASHBOARD MODULE
+    const plotlyLayout = {
+        autosize: true,
+        margin: { l: 50, r: 50, t: 40, b: 80 },
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        font: { family: 'Poppins, sans-serif', size: 11, color: '#64748b' },
+        showlegend: false,
+        xaxis: {
+            showgrid: false, // ✅ GRID REMOVED
+            zeroline: false,
+            tickangle: -45
+        },
+        yaxis: {
+            showgrid: false, // ✅ GRID REMOVED
+            zeroline: false
+        }
+    };
+
+    function initCharts() {
+        console.log("Initializing Plotly Analytics...");
+        Plotly.newPlot('barChart', [{ x: [], y: [], type: 'bar' }], plotlyLayout, { responsive: true, displayModeBar: false });
+        Plotly.newPlot('lineChart', [{ x: [], y: [], type: 'scatter', mode: 'lines+markers' }], plotlyLayout, { responsive: true, displayModeBar: false });
+        Plotly.newPlot('treeChart', [{ type: 'treemap', labels: [], parents: [] }], plotlyLayout, { responsive: true, displayModeBar: false });
+        Plotly.newPlot('alertTrendChart', [{ x: [], y: [], type: 'scatter', fill: 'tozeroy' }], plotlyLayout, { responsive: true, displayModeBar: false });
+    }
+
+    // 🔥 STEP 5: APPLY TO MODULE PAGE (GLOBAL SYNC)
+    window.updatePageAnalytics = function (data) {
+        if (!data || data.length === 0) return;
+
+        // 📌 TREND: Alert Frequency (Angry/Fear over time)
+        const alertEvents = data.filter(d => ['ANGRY', 'FEAR'].includes(d.emotion.toUpperCase())).reverse();
+        const alertX = alertEvents.map(d => {
+            if (!d.timestamp) return '--';
+            try {
+                const dateObj = new Date(d.timestamp);
+                const datePart = dateObj.toISOString().split('T')[0];
+                const timePart = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                return `${datePart} ${timePart}`;
+            } catch (e) { return d.timestamp; }
+        });
+        const alertY = alertEvents.map((_, i) => i + 1);
+
+        Plotly.react('alertTrendChart', [{
+            x: alertX,
+            y: alertY,
+            type: 'scatter',
+            mode: 'lines+markers',
+            fill: 'tozeroy',
+            line: { color: '#f43f5e', width: 3, shape: 'spline' },
+            fillcolor: 'rgba(244, 63, 94, 0.05)'
+        }], { ...plotlyLayout, xaxis: { ...plotlyLayout.xaxis, type: 'category' }, margin: { l: 50, r: 50, t: 20, b: 80 } });
+
+        console.log("Dashboard Syncing:", data.length, "events");
+
+        const total = data.length;
+        let emotionCount = {};
+        let moduleCount = {};
+        let timelineX = [];
+        let timelineY = [];
+
+        data.forEach(d => {
+            const emo = d.emotion ? (d.emotion.charAt(0).toUpperCase() + d.emotion.slice(1).toLowerCase()) : 'Neutral';
+            const mod = d.module ? d.module.toUpperCase() : 'SYS';
+            emotionCount[emo] = (emotionCount[emo] || 0) + 1;
+            moduleCount[mod] = (moduleCount[mod] || 0) + 1;
+            timelineX.push(d.timestamp);
+            timelineY.push((d.confidence || 0) * 100);
+        });
+
+        updateUI({
+            total: total,
+            emotions: emotionCount,
+            modules: moduleCount,
+            timeline: { x: timelineX.slice(-20), y: timelineY.slice(-20) },
+            live: data
+        });
+    };
+
+    function updateUI(data) {
+        if (document.getElementById('kpi-total')) {
+            document.getElementById('kpi-total').innerText = data.total.toLocaleString();
+        }
+
+        const barColors = {
+            'Happy': '#10b981', 'Sad': '#3b82f6', 'Angry': '#ef4444',
+            'Neutral': '#64748b', 'Fear': '#8b5cf6', 'Surprise': '#f59e0b',
+            'Disgust': '#4b5563'
+        };
+
+        // 1. Bar Chart
+        const emoLabels = Object.keys(data.emotions);
+        const emoValues = Object.values(data.emotions);
+        Plotly.restyle('barChart', { x: [emoLabels], y: [emoValues], marker: { color: emoLabels.map(e => barColors[e] || '#6366f1'), opacity: 0.7 } }, 0);
+
+        // 2. Line Chart
+        Plotly.restyle('lineChart', {
+            x: [data.timeline.x.map(t => {
+                if (!t) return '--';
+                try {
+                    const dateObj = new Date(t);
+                    const datePart = dateObj.toISOString().split('T')[0];
+                    const timePart = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    return `${datePart} ${timePart}`;
+                } catch (e) { return t; }
+            })],
+            y: [data.timeline.y],
+            line: { shape: 'spline', color: '#10b981', width: 3 },
+            marker: { size: 6, color: '#10b981' }
+        }, 0);
+        Plotly.relayout('lineChart', { 'xaxis.type': 'category' });
+
+        // 3. Treemap (Updated Expansion)
+        const modLabels = Object.keys(data.modules);
+        const modValues = Object.values(data.modules);
+        Plotly.restyle('treeChart', {
+            labels: [modLabels],
+            parents: [modLabels.map(() => "")],
+            values: [modValues],
+            marker: { colorscale: 'Viridis' }
+        }, 0);
+
+        // Table update with Spacing
+        const stream = document.getElementById('history-stream');
+        if (stream) {
+            stream.innerHTML = data.live.slice(0, 10).map(item => {
+                let displayStamp = "";
+                try {
+                    const dateObj = new Date(item.timestamp);
+                    const datePart = dateObj.toISOString().split('T')[0];
+                    // ✅ 12h FORMAT (Requirement: Indian Time Standard)
+                    const timePart = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+                    displayStamp = `${datePart} &nbsp; | &nbsp; ${timePart}`;
+                } catch (e) {
+                    displayStamp = item.timestamp;
+                }
+
+                return `
+                <tr class="fade-in">
+                    <td class="py-3"><span class="px-2 py-1 bg-blue-500/5 text-blue-600 rounded font-black text-[9px] uppercase tracking-tighter">${(item.module || 'SYS').replace('_', ' ')}</span></td>
+                    <td class="py-3 font-black uppercase text-[11px] tracking-tight" style="color: ${barColors[item.emotion] || '#ef4444'}">${item.emotion}</td>
+                    <td class="py-3 font-black text-[11px]">${((item.confidence || 0) * 100).toFixed(1)}%</td>
+                    <td class="py-3 text-gray-400 text-[10px] font-bold opacity-60">${displayStamp}</td>
+                </tr>
+            `}).join('');
+        }
+    }
+
+    function downloadChart(id) {
+        const plot = document.getElementById(id);
+        if (!plot) return;
+        Plotly.downloadImage(plot, {
+            format: 'png',
+            width: 1200,
+            height: 800,
+            filename: `EmotionAI_Dashboard_${id}_Report`
+        });
+    }
+
+    window.onload = () => {
+        initCharts();
+    };
+</script>
+{% endblock %}

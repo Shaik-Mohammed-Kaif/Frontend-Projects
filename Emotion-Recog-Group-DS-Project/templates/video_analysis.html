@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 900px; padding: 16px;">
+    <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Video Frame-Fusion Analytics</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 32px;">Extracts continuous frames mapping to FER2013-CNN
+        matrices, dynamically computing the fusion timeline of the dominant scenario.</p>
+
+    <div class="glass-panel"
+        style="margin-bottom: 32px; border: 2px dashed var(--border-color); text-align: center; padding: 48px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="color: var(--accent); margin-bottom: 16px;">
+            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+            <line x1="7" y1="2" x2="7" y2="22" />
+            <line x1="17" y1="2" x2="17" y2="22" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <line x1="2" y1="7" x2="7" y2="7" />
+            <line x1="2" y1="17" x2="7" y2="17" />
+            <line x1="17" y1="17" x2="22" y2="17" />
+            <line x1="17" y1="7" x2="22" y2="7" />
+        </svg>
+        <h3 style="margin-bottom: 8px;">Upload Event Source (MP4)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px;">Automatically capped at 5
+            seconds for enterprise demo processing speeds.</p>
+        <input type="file" id="vid-input" style="display: none;" accept="video/mp4,video/x-m4v,video/*">
+        <button class="neon-btn primary" onclick="document.getElementById('vid-input').click()">Initialize Fusion
+            Pipeline</button>
+    </div>
+
+    <div id="vid-loading" style="display:none; text-align:center; padding: 32px;">
+        <div class="loader" style="width: 48px; border-width: 6px; margin: 0 auto 16px;"></div>
+        <p style="color: var(--accent);">Processing Frames via Deep Tensor CNN...</p>
+    </div>
+
+    <div id="vid-results" class="glass-panel" style="display:none;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;">Fusion
+            Dominance Result</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;">
+            <div>
+                <span style="color: var(--text-secondary); display:block; margin-bottom:4px;">Cumulative
+                    Dominance</span>
+                <span id="vid-dom" class="badge badge-neutral" style="font-size: 1.1rem; padding: 8px 16px;"></span>
+            </div>
+            <div>
+                <span style="color: var(--text-secondary); display:block; margin-bottom:4px;">Macro Confidence
+                    Index</span>
+                <span id="vid-conf" style="font-weight: 800; font-size: 1.5rem; color: var(--accent);"></span>
+            </div>
+        </div>
+        <div id="vid-timeline" style="width: 100%; height: 300px;"></div>
+    </div>
+</div>
+
+<script>
+    const inp = document.getElementById('vid-input');
+    inp.addEventListener('change', async () => {
+        if (!inp.files[0]) return;
+        const fd = new FormData(); fd.append('file', inp.files[0]);
+
+        document.getElementById('vid-loading').style.display = 'block';
+        document.getElementById('vid-results').style.display = 'none';
+
+        try {
+            const resp = await fetch('/video', { method: 'POST', body: fd });
+            const data = await resp.json();
+
+            document.getElementById('vid-loading').style.display = 'none';
+            if (!data.error) {
+                document.getElementById('vid-results').style.display = 'block';
+                document.getElementById('vid-dom').innerText = data.emotion;
+                document.getElementById('vid-dom').className = `badge badge-${data.emotion}`;
+                document.getElementById('vid-conf').innerText = data.confidence;
+                if (typeof handleAlert === 'function') handleAlert(data.alert);
+
+                // Plotly Timeline
+                const times = data.timeline.map(d => d.time);
+                const confs = data.timeline.map(d => d.conf);
+                const emos = data.timeline.map(d => d.emotion);
+
+                Plotly.newPlot('vid-timeline', [{
+                    x: times, y: confs, text: emos,
+                    type: 'bar', marker: { color: '#8b5cf6' },
+                    hovertemplate: '<b>%{text}</b><br>Conf: %{y:.2f}<br>Time: %{x}s<extra></extra>'
+                }], {
+                    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                    font: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') },
+                    xaxis: { title: 'Timeline (Seconds)', gridcolor: 'rgba(255,255,255,0.05)' },
+                    yaxis: { title: 'Confidence', gridcolor: 'rgba(255,255,255,0.05)' },
+                    margin: { t: 10, b: 40, l: 40, r: 10 }
+                }, { responsive: true });
+            } else {
+                alert('Failure processing video framework: ' + data.error);
+            }
+        } catch (e) {
+            document.getElementById('vid-loading').style.display = 'none';
+            alert('Critial API Error.');
+        }
+    });
+</script>
+{% endblock %}

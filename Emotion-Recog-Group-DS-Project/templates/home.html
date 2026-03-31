@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion AI Intelligence Platform | Advanced Human Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #ec4899;
+            --bg: #030712;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            cursor: default;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .cursor-pointer,
+        a,
+        button {
+            cursor: pointer !important;
+        }
+
+        /* Animations */
+        @keyframes blob {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0px, 0px) scale(1);
+            }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite alternate ease-in-out;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        .floating {
+            animation: float 5s infinite ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: slideIn 0.8s forwards ease-out;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .glass-hover:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Logo Glow */
+        .logo-glow {
+            filter: drop-shadow(0 0 8px var(--primary));
+            transition: all 0.3s ease;
+        }
+
+        .logo-glow:hover {
+            filter: drop-shadow(0 0 15px var(--accent));
+            transform: scale(1.05);
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-effect 0.6s linear;
+        }
+
+        @keyframes ripple-effect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+        }
+
+        /* Home Theme Overrides */
+        body.dark-theme {
+            --bg: #000000;
+        }
+
+        body.cream-theme {
+            --bg: #fdfaf3;
+            --glass: rgba(0, 0, 0, 0.04);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            color: #1f2937;
+        }
+
+        body.cream-theme .text-slate-400 {
+            color: #4b5563;
+        }
+
+        body.cream-theme .glass {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.cream-theme .bg-black\/20 {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.cream-theme .text-white {
+            color: #1a1a1a !important;
+        }
+
+        body {
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-[#030712]">
+    <!-- RIPPLE HANDLER -->
+    <script>
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('.ripple-btn, button, .glass-hover');
+            if (target) {
+                const circle = document.createElement('span');
+                const diameter = Math.max(target.clientWidth, target.clientHeight);
+                const radius = diameter / 2;
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${e.clientX - target.getBoundingClientRect().left - radius}px`;
+                circle.style.top = `${e.clientY - target.getBoundingClientRect().top - radius}px`;
+                circle.classList.add('ripple');
+                const ripple = target.querySelector('.ripple');
+                if (ripple) ripple.remove();
+                target.appendChild(circle);
+            }
+        });
+    </script>
+
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 backdrop-blur-xl bg-black/20">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="{{ url_for('auth.home') }}" class="flex items-center gap-3 group logo-glow cursor-pointer">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-brain text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tighter bg-clip-text text-white">EmotionAI</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features"
+                    class="text-sm font-medium text-slate-400 hover:text-white transition-colors cursor-pointer">Features</a>
+                <a href="#demo"
+                    class="text-sm font-medium text-slate-400 hover:text-white transition-colors cursor-pointer">Live
+                    Demo</a>
+                <a href="#why-us"
+                    class="text-sm font-medium text-slate-400 hover:text-white transition-colors cursor-pointer">Why
+                    Us</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button id="themeToggle" title="Switch Theme"
+                    class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all ripple-btn cursor-pointer">
+                    <i class="fas fa-palette"></i>
+                </button>
+                <a href="{{ url_for('auth.login_page') }}"
+                    class="text-sm font-semibold hover:text-blue-400 transition-all cursor-pointer">Log
+                    In</a>
+                <a href="{{ url_for('dashboard.dashboard_page') }}"
+                    class="px-5 py-2.5 bg-white text-black text-sm font-bold rounded-full hover:scale-105 transition-transform ripple-btn cursor-pointer">Go
+                    to Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Animated Background Blobs -->
+        <div
+            class="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob">
+        </div>
+        <div
+            class="absolute top-1/4 -right-20 w-96 h-96 bg-purple-600/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000">
+        </div>
+        <div
+            class="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-pink-600/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000">
+        </div>
+
+        <!-- Floating Emojis -->
+        <span class="absolute top-1/3 left-1/4 text-5xl floating opacity-30">😊</span>
+        <span class="absolute top-1/2 right-1/4 text-4xl floating animation-delay-2000 opacity-20">😡</span>
+        <span class="absolute bottom-1/4 left-1/3 text-4xl floating animation-delay-4000 opacity-25">😢</span>
+        <span class="absolute top-1/4 right-1/3 text-5xl floating animation-delay-2000 opacity-20">😲</span>
+
+        <div class="relative z-10 text-center px-6 max-w-4xl fade-in">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 glass mb-8 animate-pulse">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                <span class="text-xs font-bold tracking-widest uppercase text-slate-400">Next Gen Emotion AI
+                    Platform</span>
+            </div>
+
+            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight tracking-tight">
+                Emotion AI <br>
+                <span class="gradient-text">Intelligence Platform</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                Analyze human emotions with state-of-the-art precision across <span
+                    class="text-white font-semibold">text, image, and live webcam streams</span> in real-time.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
+                <a href="{{ url_for('auth.register_page') }}"
+                    class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl font-extrabold text-lg shadow-2xl shadow-blue-500/20 hover:scale-105 transition-all ripple-btn cursor-pointer">
+                    Start AI Analysis
+                </a>
+                <a href="{{ url_for('dashboard.dashboard_page') }}"
+                    class="w-full sm:w-auto px-8 py-4 glass text-white rounded-2xl font-extrabold text-lg hover:bg-white/10 transition-all ripple-btn cursor-pointer">
+                    View Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODULES SECTION -->
+    <section id="features" class="py-24 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 underline-offset-8">
+                <h2 class="text-4xl font-extrabold mb-4">Multi-Modal Modules</h2>
+                <div class="w-20 h-1.5 bg-gradient-to-r from-blue-600 to-pink-600 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Text Emotion -->
+                <a href="{{ url_for('text_routes.text_page') }}"
+                    class="glass glass-hover p-8 rounded-[32px] group transition-all cursor-pointer">
+                    <div
+                        class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
+                        <i class="fas fa-file-lines text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Text Emotion</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6">Analyze sentiment and emotional tone in sentences,
+                        paragraphs, or large documents.</p>
+                    <div class="text-blue-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">
+                        Try Module <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- Image Emotion -->
+                <a href="{{ url_for('image_bp.image_page') }}"
+                    class="glass glass-hover p-8 rounded-[32px] group transition-all cursor-pointer">
+                    <div
+                        class="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-500/20 transition-colors">
+                        <i class="fas fa-image text-2xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Image Emotion</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6">Capture or upload photos to detect facial expressions
+                        and emotional states instantly.</p>
+                    <div class="text-indigo-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">
+                        Try Module <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- Live Emotion -->
+                <a href="{{ url_for('additional_features.webcam_page') }}"
+                    class="glass glass-hover p-8 rounded-[32px] group transition-all cursor-pointer">
+                    <div
+                        class="w-14 h-14 bg-pink-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-pink-500/20 transition-colors">
+                        <i class="fas fa-camera text-2xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Live Emotion</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6">Stream live video from your webcam for real-time
+                        engagement and reaction monitoring.</p>
+                    <div class="text-pink-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">
+                        Try Module <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+
+                <!-- Dataset Analytics -->
+                <a href="{{ url_for('additional_features.dataset_page') }}"
+                    class="glass glass-hover p-8 rounded-[32px] group transition-all cursor-pointer">
+                    <div
+                        class="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fas fa-database text-2xl text-amber-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Dataset Analytics</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6">Process massive CSSV/Excel datasets to find
+                        macroscopic emotional trends.</p>
+                    <div class="text-amber-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">
+                        Try Module <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE DEMO SECTION -->
+    <section id="demo" class="py-24 px-6 bg-slate-950/50 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-4xl md:text-5xl font-black mb-6">Real-Time Detection <br><span class="gradient-text">In
+                        Action</span></h2>
+                <p class="text-lg text-slate-400 mb-8 leading-relaxed">Our proprietary CNN algorithms can track over 7
+                    different emotional states with 98.4% accuracy across diverse lighting and demographics.</p>
+
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4 p-4 glass rounded-2xl border-l-4 border-blue-500">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0">
+                            <i class="fas fa-check text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Face Landmark Tracking</h4>
+                            <p class="text-sm text-slate-400">Sub-pixel precision for micro-expression extraction.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 glass rounded-2xl border-l-4 border-purple-500">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center shrink-0">
+                            <i class="fas fa-bolt text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Instant Latency</h4>
+                            <p class="text-sm text-slate-400">Processing speeds under 50ms for live interactions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative glass rounded-[40px] p-4 border border-white/10 aspect-video overflow-hidden group">
+                <!-- Simulation SVG -->
+                <div class="absolute inset-0 bg-[#030712] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=1000"
+                        class="w-full h-full object-cover opacity-60 filter grayscale group-hover:grayscale-0 transition-all duration-1000"
+                        alt="Demo">
+
+                    <!-- Detection Box -->
+                    <div
+                        class="absolute top-[20%] left-[30%] w-[40%] h-[50%] border-2 border-blue-400 rounded-lg box-border shadow-[0_0_20px_rgba(59,130,246,0.5)]">
+                        <div
+                            class="absolute -top-10 left-0 bg-blue-600 px-3 py-1 rounded text-[10px] font-black uppercase tracking-wider text-white">
+                            Detecting Face...</div>
+                        <div
+                            class="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2 glass px-4 py-2 rounded-full whitespace-nowrap">
+                            <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+                            <span id="demo-emotion" class="text-xs font-bold text-blue-400">Analyzing: Neutral</span>
+                        </div>
+                        <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-white/50"></div>
+                        <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-white/50"></div>
+                        <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-white/50"></div>
+                        <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-white/50"></div>
+                    </div>
+
+                    <!-- Mini Analytics in Demo -->
+                    <div class="absolute bottom-4 right-4 w-40 h-24 glass rounded-xl p-3 border border-white/5">
+                        <div class="text-[8px] font-extrabold uppercase text-slate-500 mb-2">Confidence Scale</div>
+                        <div class="space-y-1.5">
+                            <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                <div id="demo-bar-1" class="h-full bg-blue-500 w-3/4 transition-all duration-1000">
+                                </div>
+                            </div>
+                            <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                <div id="demo-bar-2" class="h-full bg-purple-500 w-1/2 transition-all duration-1000">
+                                </div>
+                            </div>
+                            <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                <div id="demo-bar-3" class="h-full bg-pink-500 w-1/4 transition-all duration-1000">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ANALYTICS PREVIEW SECTION -->
+    <section class="py-24 px-6 bg-slate-950">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-extrabold mb-4">Deep Analytics Preview</h2>
+                <p class="text-slate-400">Powerful visualizations to help you understand emotional patterns over time.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-[40px] flex flex-col items-center">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-6">Sentiment Mix</h4>
+                    <div id="mini-donut" class="w-full aspect-square"></div>
+                </div>
+                <div class="glass p-8 rounded-[40px] flex flex-col items-center">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-6">Emotion Timeline</h4>
+                    <div id="mini-line" class="w-full aspect-square"></div>
+                </div>
+                <div class="glass p-8 rounded-[40px] flex flex-col items-center">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-6">Module Efficiency</h4>
+                    <div id="mini-bar" class="w-full aspect-square"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section id="why-us" class="py-24 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="glass-hover p-8 rounded-[32px] glass text-center border-t-2 border-blue-500">
+                    <div class="text-3xl font-black mb-2 stat-counter">98%</div>
+                    <div class="text-sm font-bold uppercase text-slate-400">High Accuracy AI</div>
+                </div>
+                <div class="glass-hover p-8 rounded-[32px] glass text-center border-t-2 border-purple-500">
+                    <div class="text-3xl font-black mb-2 stat-counter">50ms</div>
+                    <div class="text-sm font-bold uppercase text-slate-400">Real-Time Detection</div>
+                </div>
+                <div class="glass-hover p-8 rounded-[32px] glass text-center border-t-2 border-pink-500">
+                    <div class="text-3xl font-black mb-2 stat-counter">Multi</div>
+                    <div class="text-sm font-bold uppercase text-slate-400">Multi-Modal Analysis</div>
+                </div>
+                <div class="glass-hover p-8 rounded-[32px] glass text-center border-t-2 border-emerald-500">
+                    <div class="text-3xl font-black mb-2 stat-counter">AES</div>
+                    <div class="text-sm font-bold uppercase text-slate-400">Secure SaaS Platform</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FOOTER -->
+    <footer class="py-24 px-6 border-t border-white/5 bg-black/20 backdrop-blur-2xl relative overflow-hidden">
+        <!-- Background Glow -->
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]"></div>
+
+        <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-16 mb-20 relative z-10">
+            <!-- Brand & Mission -->
+            <div class="col-span-1 md:col-span-2 space-y-8">
+                <a href="{{ url_for('auth.home') }}" class="flex items-center gap-4 group logo-glow cursor-pointer">
+                    <div
+                        class="w-12 h-12 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 group-hover:rotate-12 transition-transform">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-3xl font-black tracking-tighter text-white">EmotionAI</span>
+                </a>
+                <p class="text-[var(--text-secondary)] text-sm leading-relaxed max-w-md font-medium">
+                    Powered by a hybrid, scalable AI infrastructure designed for real-time emotion detection.
+                    Integrating CNN vision, NLP pipelines, and distributed data streams for next-generation
+                    intelligence.
+                </p>
+                <div class="flex items-center gap-6">
+                    <a href="https://twitter.com/emotionai" target="_blank"
+                        class="text-[var(--text-secondary)] hover:text-blue-500 transition-all text-xl"><i
+                            class="fab fa-twitter"></i></a>
+                    <a href="https://linkedin.com/company/emotionai" target="_blank"
+                        class="text-[var(--text-secondary)] hover:text-purple-500 transition-all text-xl"><i
+                            class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/emotionai/project" target="_blank"
+                        class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all text-xl"><i
+                            class="fab fa-github"></i></a>
+                </div>
+            </div>
+
+            <!-- Engineering Resources -->
+            <div>
+                <h5
+                    class="font-black mb-8 text-[var(--text-primary)] uppercase tracking-[0.2em] text-[10px] flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Infrastructure Hub
+                </h5>
+                <ul class="space-y-4 text-sm font-bold text-[var(--text-secondary)]">
+                    <li><a href="{{ url_for('info.documentation') }}"
+                            class="hover:text-blue-400 transition-colors flex items-center gap-3">
+                            <i class="fas fa-book-open text-[10px]"></i> System Documentation</a></li>
+                    <li><a href="{{ url_for('info.api_reference') }}"
+                            class="hover:text-indigo-400 transition-colors flex items-center gap-3">
+                            <i class="fas fa-code text-[10px]"></i> Neural API</a></li>
+                    <li><a href="{{ url_for('info.community') }}"
+                            class="hover:text-emerald-400 transition-colors flex items-center gap-3">
+                            <i class="fas fa-users text-[10px]"></i> Dev Community</a></li>
+                    <li><a href="{{ url_for('info.ethics') }}"
+                            class="hover:text-amber-400 transition-colors flex items-center gap-3">
+                            <i class="fas fa-scale-balanced text-[10px]"></i> AI Ethics Charter</a></li>
+                </ul>
+            </div>
+
+            <!-- Infrastructure Core -->
+            <div>
+                <h5
+                    class="font-black mb-8 text-[var(--text-primary)] uppercase tracking-[0.2em] text-[10px] flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> System Access
+                </h5>
+                <ul class="space-y-4 text-sm font-bold text-[var(--text-secondary)]">
+                    <li><a href="{{ url_for('auth.login_page') }}"
+                            class="hover:text-rose-500 transition-colors flex items-center gap-3">
+                            <i class="fas fa-terminal text-[10px]"></i> Operator Node Login</a></li>
+                    <li><a href="{{ url_for('dashboard.dashboard_page') }}"
+                            class="hover:text-rose-400 transition-colors flex items-center gap-3">
+                            <i class="fas fa-gauge-high text-[10px]"></i> Live Dashboard</a></li>
+                    <li><a href="/admin" class="hover:text-rose-500 transition-colors flex items-center gap-3">
+                            <i class="fas fa-shield-halved text-[10px]"></i> Administrative Hub</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div
+            class="max-w-7xl mx-auto pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-bold text-slate-600 uppercase tracking-widest relative z-10">
+            <div class="flex items-center gap-2">
+                &copy; 2026 Emotion Intelligence Labs. Built with
+                <span
+                    class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 rounded-md border border-blue-500/20 text-blue-400">
+                    <i class="fas fa-brain text-[10px]"></i> Hybrid Neural Engines
+                </span> by
+                <span class="font-black text-slate-400">kaif</span>.
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{{ url_for('info.terms') }}"
+                    class="group relative flex flex-col items-center p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-rose-500/10 hover:border-rose-500/30 hover:shadow-[0_0_20px_rgba(244,63,94,0.1)] hover:scale-105 transition-all duration-500">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-2 group-hover:bg-rose-500/20 transition-all relative">
+                        <!-- Custom Neural Document Pictorial SVG -->
+                        <svg class="w-10 h-10 group-hover:rotate-6 group-hover:scale-110 transition-all"
+                            viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="roseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#f43f5e" />
+                                    <stop offset="100%" stop-color="#9d174d" />
+                                </linearGradient>
+                                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="3" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                            </defs>
+                            <path
+                                d="M20 15C20 12.2386 22.2386 10 25 10H60L80 30V85C80 87.7614 77.7614 90 75 90H25C22.2386 90 20 87.7614 20 85V15Z"
+                                fill="url(#roseGradient)" fill-opacity="0.15" stroke="url(#roseGradient)"
+                                stroke-width="2" />
+                            <path d="M35 35H65" stroke="url(#roseGradient)" stroke-width="3" stroke-linecap="round" />
+                            <path d="M35 50H65" stroke="url(#roseGradient)" stroke-width="3" stroke-linecap="round" />
+                            <path d="M35 65H55" stroke="url(#roseGradient)" stroke-width="3" stroke-linecap="round" />
+                            <path d="M60 10V30H80" stroke="url(#roseGradient)" stroke-width="2" />
+                            <circle cx="70" cy="50" r="8" fill="url(#roseGradient)" filter="url(#glow)" />
+                        </svg>
+                        <div
+                            class="absolute inset-0 bg-rose-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span
+                            class="text-[9px] font-black uppercase tracking-tighter text-slate-400 group-hover:text-white transition-colors">Terms
+                            of Core</span>
+                        <span class="text-[7px] font-bold uppercase tracking-widest text-rose-500/80">Legal Hub</span>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('info.privacy') }}"
+                    class="group relative flex flex-col items-center p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-sky-500/10 hover:border-sky-500/30 hover:shadow-[0_0_20px_rgba(14,165,233,0.1)] hover:scale-105 transition-all duration-500">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-sky-500/10 flex items-center justify-center mb-2 group-hover:bg-sky-500/20 transition-all relative">
+                        <!-- Custom Neural Privacy Shield Pictorial SVG -->
+                        <svg class="w-10 h-10 group-hover:-rotate-6 group-hover:scale-110 transition-all"
+                            viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#0ea5e9" />
+                                    <stop offset="100%" stop-color="#1d4ed8" />
+                                </linearGradient>
+                                <filter id="shieldGlow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="4" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                            </defs>
+                            <path d="M50 10C50 10 20 20 20 45C20 70 50 90 50 90C50 90 80 70 80 45C80 20 50 10 50 10Z"
+                                fill="url(#skyGradient)" fill-opacity="0.15" stroke="url(#skyGradient)"
+                                stroke-width="2" />
+                            <path d="M40 45L47 52L60 38" stroke="url(#skyGradient)" stroke-width="4"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="50" cy="50" r="30" stroke="url(#skyGradient)" stroke-width="1"
+                                stroke-dasharray="2 4" />
+                            <path d="M50 30V70M30 50H70" stroke="url(#skyGradient)" stroke-width="1"
+                                stroke-opacity="0.5" />
+                        </svg>
+                        <div
+                            class="absolute inset-0 bg-sky-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span
+                            class="text-[9px] font-black uppercase tracking-tighter text-slate-400 group-hover:text-white transition-colors">Neural
+                            Privacy</span>
+                        <span class="text-[7px] font-bold uppercase tracking-widest text-sky-500/80">Data Guard</span>
+                    </div>
+                </a>
+
+                <div class="h-10 w-px bg-white/5 mx-2"></div>
+                <div
+                    class="flex items-center gap-3 px-4 py-2 bg-emerald-500/5 border border-emerald-500/10 rounded-full text-emerald-500/60 shadow-[0_0_20px_rgba(16,185,129,0.05)] group cursor-default hover:bg-emerald-500/10 transition-all">
+                    <div class="relative flex items-center justify-center">
+                        <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></div>
+                        <div class="absolute inset-0 w-full h-full bg-emerald-400 rounded-full animate-ping opacity-20">
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[8px] font-black uppercase tracking-widest text-emerald-400">System
+                            Live</span>
+                        <span class="text-[6px] font-bold uppercase tracking-[0.2em] text-slate-500">v.2.9.1
+                            Operational</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    <script>
+        // Chart Config
+        const chartLayout = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            showlegend: false,
+            margin: { t: 0, b: 0, l: 0, r: 0 },
+            font: { family: 'Plus Jakarta Sans', color: '#64748b' }
+        };
+
+        // Donut
+        Plotly.newPlot('mini-donut', [{
+            values: [40, 30, 20, 10],
+            labels: ['Happy', 'Neutral', 'Sad', 'Angry'],
+            type: 'pie',
+            hole: 0.7,
+            marker: { colors: ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b'] },
+            hoverinfo: 'none'
+        }], chartLayout, { displayModeBar: false });
+
+        // Line
+        Plotly.newPlot('mini-line', [{
+            y: [0.1, 0.4, 0.3, 0.6, 0.9, 0.8, 1.0],
+            type: 'scatter',
+            mode: 'lines',
+            line: { color: '#3b82f6', width: 4, shape: 'spline' },
+            fill: 'tozeroy',
+            fillcolor: 'rgba(59, 130, 246, 0.1)'
+        }], chartLayout, { displayModeBar: false });
+
+        // Bar
+        Plotly.newPlot('mini-bar', [{
+            x: ['Text', 'Img', 'Live'],
+            y: [85, 92, 78],
+            type: 'bar',
+            marker: { color: ['#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4'], opacity: 0.6 }
+        }], chartLayout, { displayModeBar: false });
+
+        // Demo Simulation Logic
+        const emotions = ["Happy", "Surprise", "Focused", "Neutral", "Thoughtful"];
+        let eIdx = 0;
+        setInterval(() => {
+            const el = document.getElementById('demo-emotion');
+            const emo = emotions[eIdx % emotions.length];
+            el.innerText = `Analyzing: ${emo}`;
+
+            // Randomize bars
+            document.getElementById('demo-bar-1').style.width = `${Math.random() * 80 + 20}%`;
+            document.getElementById('demo-bar-2').style.width = `${Math.random() * 80 + 20}%`;
+            document.getElementById('demo-bar-3').style.width = `${Math.random() * 80 + 20}%`;
+
+            eIdx++;
+        }, 2000);
+    </script>
+</body>
+
+</html>

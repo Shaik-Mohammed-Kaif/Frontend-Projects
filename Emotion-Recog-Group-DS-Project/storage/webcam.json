@@ -1,0 +1,82 @@
+[
+    {
+        "user_id": 2,
+        "duration": 19.299903392791748,
+        "emotion": "neutral",
+        "age": "(25-32)",
+        "gender": "Male",
+        "timestamp": "2026-02-28T16:16:05.064229"
+    },
+    {
+        "user_id": 2,
+        "duration": 44.58249878883362,
+        "emotion": "Surprise",
+        "timestamp": "2026-02-28T23:15:11.596667"
+    },
+    {
+        "user_id": 2,
+        "duration": 48.11922645568848,
+        "emotion": "Neutral",
+        "timestamp": "2026-03-05T07:09:06.151345"
+    },
+    {
+        "user_id": 2,
+        "duration": 31.272687911987305,
+        "emotion": "Fear",
+        "timestamp": "2026-03-06T15:44:30.181658"
+    },
+    {
+        "user_id": 2,
+        "duration": 24.791052103042603,
+        "emotion": "Fear",
+        "timestamp": "2026-03-07T14:25:43.852710"
+    },
+    {
+        "user_id": 2,
+        "duration": 22.401214361190796,
+        "emotion": "Fear",
+        "timestamp": "2026-03-07T15:21:03.001476"
+    },
+    {
+        "user_id": 2,
+        "duration": 50.41400218009949,
+        "emotion": "Angry",
+        "timestamp": "2026-03-07T15:42:24.468319"
+    },
+    {
+        "user_id": 2,
+        "duration": 26.215248346328735,
+        "emotion": "Neutral",
+        "timestamp": "2026-03-07T15:56:35.577344"
+    },
+    {
+        "user_id": 2,
+        "duration": 24.053056955337524,
+        "emotion": "Neutral",
+        "timestamp": "2026-03-07T16:05:03.618639"
+    },
+    {
+        "user_id": 2,
+        "duration": 75.2782518863678,
+        "emotion": "Neutral",
+        "timestamp": "2026-03-07T16:07:29.875910"
+    },
+    {
+        "user_id": 2,
+        "duration": 16.421881198883057,
+        "emotion": "Neutral",
+        "timestamp": "2026-03-07T16:13:04.223135"
+    },
+    {
+        "user_id": 2,
+        "duration": 18.918418884277344,
+        "emotion": "Surprise",
+        "timestamp": "2026-03-14T12:20:49.524463"
+    },
+    {
+        "user_id": 2,
+        "duration": 23.409612894058228,
+        "emotion": "Neutral",
+        "timestamp": "2026-03-14T14:59:18.450091"
+    }
+]

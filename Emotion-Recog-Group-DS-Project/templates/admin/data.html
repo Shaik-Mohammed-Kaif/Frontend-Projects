@@ -1,0 +1,137 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Neural Data Repository{% endblock %}
+
+{% block admin_content %}
+<!-- 🛠️ GLOBAL DATA FILTERS (Power BI Style) -->
+<div class="admin-card mb-8">
+    <div class="flex flex-wrap gap-6 items-end">
+        <div class="flex-1 min-w-[200px]">
+            <label class="text-[9px] font-black uppercase tracking-widest opacity-60 mb-2 block">Search
+                Repository</label>
+            <input type="text" id="globalDataSearch" placeholder="Transaction ID, User, or Content..."
+                class="w-full bg-[var(--bg-main)] border border-[var(--border)] rounded-xl py-2 px-4 text-xs font-medium outline-none focus:border-indigo-500 transition-all">
+        </div>
+        <div class="w-48">
+            <label class="text-[9px] font-black uppercase tracking-widest opacity-60 mb-2 block">Module Origin</label>
+            <select id="moduleFilter"
+                class="w-full bg-[var(--bg-main)] border border-[var(--border)] rounded-xl py-2 px-4 text-xs font-black uppercase tracking-widest outline-none">
+                <option value="all">ALL SECTORS</option>
+                <option value="text">TEXT CORE</option>
+                <option value="image">VISUAL ASSETS</option>
+                <option value="webcam">SESSION STREAMS</option>
+                <option value="dataset">MASS INGESTION</option>
+            </select>
+        </div>
+        <div class="w-48">
+            <label class="text-[9px] font-black uppercase tracking-widest opacity-60 mb-2 block">Emotion Filter</label>
+            <select id="emotionFilter"
+                class="w-full bg-[var(--bg-main)] border border-[var(--border)] rounded-xl py-2 px-4 text-xs font-black uppercase tracking-widest outline-none">
+                <option value="all">ALL SENTIMENTS</option>
+                <option value="happy">HAPPY</option>
+                <option value="sad">SAD</option>
+                <option value="angry">ANGRY</option>
+                <option value="fear">FEAR</option>
+                <option value="neutral">NEUTRAL</option>
+            </select>
+        </div>
+        <button onclick="applyFilters()"
+            class="bg-indigo-500 text-white px-8 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-indigo-500/20">Sync
+            Filter</button>
+    </div>
+</div>
+
+<!-- 📂 DATA REPOSITORY TABLE -->
+<div class="admin-card p-0 overflow-hidden">
+    <div class="p-6 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-panel)]/30">
+        <h3 class="font-black text-xs uppercase tracking-[0.2em] text-indigo-500">Master Action Log & Evidence</h3>
+        <div class="flex gap-4">
+            <span class="text-[9px] font-black opacity-40 uppercase">Total Entries: <span
+                    id="totalDataCount">0</span></span>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--bg-main)]/30">
+                    <th class="p-6 text-[10px] font-black uppercase tracking-widest opacity-60">Timestamp</th>
+                    <th class="p-6 text-[10px] font-black uppercase tracking-widest opacity-60">Entity</th>
+                    <th class="p-6 text-[10px] font-black uppercase tracking-widest opacity-60">Module</th>
+                    <th class="p-6 text-[10px] font-black uppercase tracking-widest opacity-60">Sentiment</th>
+                    <th class="p-6 text-[10px] font-black uppercase tracking-widest opacity-60">Evidence</th>
+                    <th class="p-6 text-[10px] font-black uppercase tracking-widest opacity-60 text-right">Operations
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="masterDataTableBody">
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let rawData = { text: [], image: [], webcam: [], dataset: [] };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        async function fetchData() {
+            const resp = await fetch("/admin/api/data");
+            rawData = await resp.json();
+            renderTable();
+        }
+
+        function renderTable() {
+            const body = document.getElementById('masterDataTableBody');
+            const moduleFilter = document.getElementById('moduleFilter').value;
+            const emotionFilter = document.getElementById('emotionFilter').value;
+            const search = document.getElementById('globalDataSearch').value.toLowerCase();
+
+            let combined = [];
+            if (moduleFilter === 'all' || moduleFilter === 'text') {
+                rawData.text.forEach(r => combined.push({ ...r, type: 'TEXT', emotion: r.emotion, user: r.user_id, content: r.text }));
+            }
+            if (moduleFilter === 'all' || moduleFilter === 'image') {
+                rawData.image.forEach(r => combined.push({ ...r, type: 'IMAGE', emotion: r.emotion, user: r.user_id, content: r.image_path }));
+            }
+            if (moduleFilter === 'all' || moduleFilter === 'webcam') {
+                rawData.webcam.forEach(r => combined.push({ ...r, type: 'WEBCAM', emotion: r.dom_emotion, user: r.user_id, content: r.session_logs }));
+            }
+
+            // Filtering
+            let filtered = combined.filter(r => {
+                const matchesSearch = search === '' || (r.content && r.content.toString().toLowerCase().includes(search));
+                const matchesEmotion = emotionFilter === 'all' || (r.emotion && r.emotion.toLowerCase() === emotionFilter);
+                return matchesSearch && matchesEmotion;
+            });
+
+            filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            document.getElementById('totalDataCount').innerText = filtered.length;
+
+            body.innerHTML = filtered.map(r => `
+                <tr class="border-b border-[var(--border)] hover:bg-indigo-500/5 transition-all group">
+                    <td class="p-6 text-[11px] font-medium opacity-60">${r.timestamp}</td>
+                    <td class="p-6 text-[11px] font-black uppercase">Node #${r.user_id}</td>
+                    <td class="p-6">
+                        <span class="text-[9px] font-black px-3 py-1 rounded bg-indigo-500/10 text-indigo-500 uppercase tracking-widest">${r.type}</span>
+                    </td>
+                    <td class="p-6">
+                        <span class="text-[9px] font-black text-rose-500 uppercase tracking-widest">${r.emotion || 'NEUTRAL'}</span>
+                    </td>
+                    <td class="p-6">
+                        <div class="text-[10px] font-medium opacity-60 italic truncate max-w-[200px]">
+                            ${r.type === 'IMAGE' ? `<i class="fas fa-image mr-2"></i> ${r.image_path.split('/').pop()}` : r.content}
+                        </div>
+                    </td>
+                    <td class="p-6 text-right">
+                        <button class="text-[9px] font-black text-indigo-500 opacity-0 group-hover:opacity-100 transition-all mr-4 hover:underline">VIEW TRACE</button>
+                        <button class="text-[9px] font-black text-rose-500 opacity-0 group-hover:opacity-100 transition-all hover:underline">DELETE</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        window.applyFilters = renderTable;
+        fetchData();
+    });
+</script>
+{% endblock %}

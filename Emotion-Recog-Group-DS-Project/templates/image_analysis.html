@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1fr 400px; gap: 32px;">
+    <div>
+        <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Computer Vision Suite</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 32px;">FER2013-CNN integration with dynamic bounding
+            boxes and Explainable AI (Grad-CAM mock rendering).</p>
+
+        <div class="glass-panel"
+            style="margin-bottom: 32px; border: 2px dashed var(--border-color); text-align: center; padding: 48px;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="color: var(--accent); margin-bottom: 16px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M12 3v12M17 8l-5-5-5 5" />
+            </svg>
+            <h3 style="margin-bottom: 8px;">Upload Target Image</h3>
+            <input type="file" id="img-input" style="display: none;" accept="image/*">
+            <button class="neon-btn" onclick="document.getElementById('img-input').click()">Browse Images</button>
+        </div>
+
+        <div id="img-preview-box" class="glass-panel" style="display:none; text-align:center;">
+            <img id="img-render" src=""
+                style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            <p style="margin-top: 16px; font-size: 0.85rem; color: var(--text-secondary);">Includes Grad-CAM Overlay
+                Visualization</p>
+        </div>
+    </div>
+
+    <div id="result-card" class="glass-panel" style="display:none; height: fit-content;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;">Inference
+            Result</h3>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Classification</span>
+                <span id="img-badge" class="badge"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Network Confidence</span>
+                <span id="img-conf" style="font-weight: 800; font-size: 1.2rem; color: var(--text-primary);"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Deployed Model</span>
+                <span id="img-model" style="color: var(--accent-secondary); font-weight: 600;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const inp = document.getElementById('img-input');
+    inp.addEventListener('change', async () => {
+        if (!inp.files[0]) return;
+        const fd = new FormData(); fd.append('file', inp.files[0]);
+
+        const resp = await fetch('/image', { method: 'POST', body: fd });
+        const data = await resp.json();
+
+        if (!data.error) {
+            document.getElementById('img-preview-box').style.display = 'block';
+            document.getElementById('img-render').src = data.image_url;
+
+            document.getElementById('result-card').style.display = 'block';
+            document.getElementById('img-badge').innerText = data.emotion;
+            document.getElementById('img-badge').className = `badge badge-${data.emotion}`;
+            document.getElementById('img-conf').innerText = data.confidence;
+            document.getElementById('img-model').innerText = data.model;
+            if (typeof handleAlert === 'function') handleAlert(data.alert);
+        }
+    });
+</script>
+{% endblock %}

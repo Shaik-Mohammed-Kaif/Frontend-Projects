@@ -1,0 +1,155 @@
+[
+    {
+        "user_id": 2,
+        "text": "hey help me",
+        "emotion": "Happy",
+        "confidence": 38.49,
+        "model": "SVM",
+        "probabilities": {
+            "Angry": 0.059271549782488955,
+            "Disgust": 0.005864357330273407,
+            "Fear": 0.1855149346115918,
+            "Happy": 0.38486990633266094,
+            "Neutral": 0.16252969918950078,
+            "Sad": 0.19811404732009696,
+            "Surprise": 0.0038355054333871798
+        },
+        "timestamp": "2026-03-05T15:05:28.924960"
+    },
+    {
+        "user_id": 2,
+        "text": "hey help me am danger mode",
+        "emotion": "Neutral",
+        "confidence": 30.58,
+        "model": "SVM",
+        "probabilities": {
+            "Angry": 0.0550453244132779,
+            "Disgust": 0.10957493919222702,
+            "Fear": 0.21868587275256993,
+            "Happy": 0.23283950830582423,
+            "Neutral": 0.30576112064215416,
+            "Sad": 0.031129856271572564,
+            "Surprise": 0.04696337842237416
+        },
+        "timestamp": "2026-03-05T15:05:49.195926"
+    },
+    {
+        "user_id": 2,
+        "text": "I am heartbroken and lonely,Sad",
+        "emotion": "Sad",
+        "confidence": 98.91,
+        "model": "Transformer",
+        "probabilities": {
+            "Angry": 0.0007307759951800108,
+            "Disgust": 0.0011272961273789406,
+            "Fear": 0.0008556381217204034,
+            "Happy": 0.0009644987876527011,
+            "Neutral": 0.004185783676803112,
+            "Sad": 0.9890950322151184,
+            "Surprise": 0.0030409637838602066
+        },
+        "timestamp": "2026-03-05T15:35:36.251819"
+    },
+    {
+        "user_id": 2,
+        "text": "Hey Am Happy today gone to other country for tourism base",
+        "emotion": "Happy",
+        "confidence": 86.5,
+        "model": "Transformer",
+        "probabilities": {
+            "Angry": 0.0018745483830571175,
+            "Disgust": 0.000495629443321377,
+            "Fear": 0.0005509483744390309,
+            "Happy": 0.8650302290916443,
+            "Neutral": 0.016021663323044777,
+            "Sad": 0.015364328399300575,
+            "Surprise": 0.10066258162260056
+        },
+        "timestamp": "2026-03-09T14:22:18.521885"
+    },
+    {
+        "user_id": 2,
+        "text": "Hey What's Up Guys.",
+        "emotion": "Surprise",
+        "confidence": 40.67,
+        "model": "Transformer",
+        "probabilities": {
+            "Angry": 0.040585219860076904,
+            "Disgust": 0.015080726705491543,
+            "Fear": 0.00658923014998436,
+            "Happy": 0.23968346416950226,
+            "Neutral": 0.2525309920310974,
+            "Sad": 0.03881394490599632,
+            "Surprise": 0.4067164361476898
+        },
+        "timestamp": "2026-03-09T15:49:35.666765"
+    },
+    {
+        "user_id": 2,
+        "text": "am so happy todays am gone to India.",
+        "emotion": "Happy",
+        "confidence": 88.35,
+        "model": "Transformer",
+        "probabilities": {
+            "Angry": 0.0016604356933385134,
+            "Disgust": 0.0004938162746839225,
+            "Fear": 0.0007017631432972848,
+            "Happy": 0.8835016489028931,
+            "Neutral": 0.005351177882403135,
+            "Sad": 0.04890533536672592,
+            "Surprise": 0.059385836124420166
+        },
+        "timestamp": "2026-03-13T16:05:48.573014"
+    },
+    {
+        "user_id": 2,
+        "text": "hello bhai how are you.",
+        "emotion": "Surprise",
+        "confidence": 47.85,
+        "model": "Transformer",
+        "probabilities": {
+            "Angry": 0.008215660229325294,
+            "Disgust": 0.003093140199780464,
+            "Fear": 0.004823456518352032,
+            "Happy": 0.015968307852745056,
+            "Neutral": 0.46631646156311035,
+            "Sad": 0.0231312308460474,
+            "Surprise": 0.4784517288208008
+        },
+        "timestamp": "2026-03-14T14:51:16.683876"
+    },
+    {
+        "user_id": 2,
+        "text": "hello bhai how are you.",
+        "emotion": "Surprise",
+        "confidence": 47.85,
+        "model": "Transformer",
+        "probabilities": {
+            "Angry": 0.008215660229325294,
+            "Disgust": 0.003093140199780464,
+            "Fear": 0.004823456518352032,
+            "Happy": 0.015968307852745056,
+            "Neutral": 0.46631646156311035,
+            "Sad": 0.0231312308460474,
+            "Surprise": 0.4784517288208008
+        },
+        "timestamp": "2026-03-14T14:58:40.626216"
+    },
+    {
+        "user_id": 2,
+        "text": "hello today am gone to japan full enjoy ful movement.",
+        "emotion": "Happy",
+        "confidence": 84.84,
+        "model": "Transformer",
+        "probabilities": {
+            "Angry": 0.002212644089013338,
+            "Disgust": 0.0009234970202669501,
+            "Fear": 0.000678866112139076,
+            "Happy": 0.8483983278274536,
+            "Neutral": 0.08834298700094223,
+            "Sad": 0.019165843725204468,
+            "Surprise": 0.040277764201164246
+        },
+        "timestamp": "2026-03-17T17:46:17.274678"
+    }
+]

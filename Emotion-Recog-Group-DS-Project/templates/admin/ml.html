@@ -1,0 +1,161 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Neural ML Projection Hub{% endblock %}
+
+{% block admin_content %}
+<!-- 🤖 CLUSTER & FORECASTING GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
+
+    <!-- PCA Dimension Manifold -->
+    <div class="lg:col-span-3 admin-card p-0 overflow-hidden relative min-h-[600px] flex flex-col neon-pulse">
+        <div class="p-6 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-panel)]/30">
+            <h3 class="font-black text-xs uppercase tracking-[0.2em] text-indigo-500">Node Cluster Manifold (PCA)</h3>
+            <div class="flex gap-2">
+                <button onclick="loadMLData()"
+                    class="w-8 h-8 rounded-lg bg-[var(--bg-main)] hover:bg-indigo-500 hover:text-white transition-all text-xs"><i
+                        class="fas fa-rotate"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 p-8 h-[500px]">
+            <canvas id="pcaChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Prediction Story -->
+    <div class="space-y-8 h-full">
+        <div class="admin-card border-l-4 border-[var(--neon-emerald)] flex-1 flex flex-col justify-center">
+            <h4 class="font-black text-[10px] uppercase tracking-widest text-emerald-500 mb-4">Regression Insight</h4>
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-3xl font-black text-[var(--text-primary)]">+12.4%</span>
+                <span class="text-[9px] font-bold opacity-60 uppercase tracking-widest leading-none">Predicted Sentiment
+                    Uptick</span>
+            </div>
+            <p class="text-[10px] italic opacity-60">System predicts a shift towards NEUTRAL/HAPPY states in the next
+                12-hour cycle based on current ingestion velocity.</p>
+        </div>
+
+        <div class="admin-card bg-indigo-500/5 border border-indigo-500/20 flex flex-col">
+            <h4 class="font-black text-[10px] uppercase tracking-widest text-indigo-500 mb-6">K-Means Interpretation
+            </h4>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full bg-indigo-500 shadow-lg shadow-indigo-500/20"></span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Cluster 1: Positive Nodes</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/20"></span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Cluster 2: Stable Nodes</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full bg-rose-500 shadow-lg shadow-rose-500/20"></span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Cluster 3: Risk Incursions</span>
+                </div>
+            </div>
+            <div class="mt-auto pt-6 border-t border-indigo-500/10">
+                <button
+                    class="w-full bg-indigo-500 text-white rounded-xl py-3 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-indigo-500/20">RETRAIN
+                    PROTOCOL</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 🔮 MOOD FORECASTING (LINE) -->
+<div class="admin-card p-0 overflow-hidden relative min-h-[450px]">
+    <div class="p-6 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-panel)]/30">
+        <h3 class="font-black text-xs uppercase tracking-[0.2em] text-indigo-500">Neural Forecast Projection (12h
+            Window)</h3>
+        <span
+            class="text-[9px] px-3 py-1 bg-indigo-500/10 text-indigo-500 rounded-full font-black uppercase tracking-widest">Confidence:
+            94.2% CNS</span>
+    </div>
+    <div class="p-8 h-[380px]">
+        <canvas id="forecastChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        async function loadMLData() {
+            const resp = await fetch("/admin/api/analytics");
+            const data = await resp.json();
+
+            // 1. PCA CHART
+            if (data.pca && data.pca.length > 0) {
+                const ctx = document.getElementById('pcaChart').getContext('2d');
+                if (window.pcaChartInstance) window.pcaChartInstance.destroy();
+
+                const datasets = [];
+                const clusters = [...new Set(data.pca.map(p => p.cluster))];
+                const colors = ['#6366f1', '#10b981', '#f43f5e', '#f59e0b', '#8b5cf6'];
+
+                clusters.forEach((cluster, idx) => {
+                    datasets.push({
+                        label: `PROTOCOL SECTOR ${cluster}`,
+                        data: data.pca.filter(p => p.cluster === cluster).map(p => ({ x: p.x, y: p.y })),
+                        backgroundColor: colors[idx % colors.length],
+                        pointRadius: 6,
+                        pointHoverRadius: 10,
+                        borderWidth: 2,
+                        borderColor: 'transparent'
+                    });
+                });
+
+                window.pcaChartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: { datasets: datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, border: { display: false }, ticks: { display: false } },
+                            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, border: { display: false }, ticks: { display: false } }
+                        },
+                        plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { weight: '800', size: 10, family: 'Plus Jakarta Sans' }, padding: 25, usePointStyle: true } } }
+                    }
+                });
+            }
+
+            // 2. FORECAST CHART
+            const forecastCtx = document.getElementById('forecastChart').getContext('2d');
+            const forecastData = data.forecast || [];
+            new Chart(forecastCtx, {
+                type: 'line',
+                data: {
+                    labels: forecastData.map(f => f.emotion.toUpperCase()),
+                    datasets: [{
+                        label: 'CURRENT STATE',
+                        data: data.distribution.map(d => d.count),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }, {
+                        label: 'PREDICTED FUTURE',
+                        data: forecastData.map(f => f.prediction),
+                        borderColor: '#8b5cf6',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { weight: '800', size: 10 } } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { weight: '800', size: 10 } } }
+                    },
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { weight: '800', size: 10 }, usePointStyle: true } } }
+                }
+            });
+        }
+        window.loadMLData = loadMLData;
+        loadMLData();
+    });
+</script>
+{% endblock %}

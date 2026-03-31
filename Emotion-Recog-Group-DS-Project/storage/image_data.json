@@ -1,0 +1,391 @@
+[
+    {
+        "user_id": 2,
+        "source": "Upload",
+        "emotion": "Neutral",
+        "confidence": 15.18,
+        "probabilities": {
+            "Angry": 0.14655987918376923,
+            "Disgust": 0.14136366546154022,
+            "Fear": 0.13970880210399628,
+            "Happy": 0.14086447656154633,
+            "Neutral": 0.1517510861158371,
+            "Sad": 0.13904781639575958,
+            "Surprise": 0.14070436358451843
+        },
+        "timestamp": "2026-02-28T23:22:31.994216"
+    },
+    {
+        "user_id": 2,
+        "source": "Upload",
+        "emotion": "Neutral",
+        "confidence": 16.89,
+        "probabilities": {
+            "Angry": 0.13617396354675293,
+            "Disgust": 0.1560421884059906,
+            "Fear": 0.12888018786907196,
+            "Happy": 0.15342073142528534,
+            "Neutral": 0.16893595457077026,
+            "Sad": 0.1369762122631073,
+            "Surprise": 0.11957082897424698
+        },
+        "timestamp": "2026-03-05T07:09:19.083013"
+    },
+    {
+        "user_id": 2,
+        "source": "Upload",
+        "image_path": "storage/images/img_2_1772709362488.jpg",
+        "emotion": "Angry",
+        "confidence": 16.71,
+        "probabilities": {
+            "Angry": 0.16709783673286438,
+            "Disgust": 0.14716525375843048,
+            "Fear": 0.1317446380853653,
+            "Happy": 0.13442054390907288,
+            "Neutral": 0.140857994556427,
+            "Sad": 0.13521571457386017,
+            "Surprise": 0.14349812269210815
+        },
+        "timestamp": "2026-03-05T16:46:02.508595"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1772791710984.jpg",
+        "emotion": "Fear",
+        "confidence": 16.0,
+        "probabilities": {
+            "Angry": 0.14975015819072723,
+            "Disgust": 0.14279432594776154,
+            "Fear": 0.15995784103870392,
+            "Happy": 0.14687004685401917,
+            "Neutral": 0.12862266600131989,
+            "Sad": 0.12820062041282654,
+            "Surprise": 0.14380429685115814
+        },
+        "timestamp": "2026-03-06T15:38:30.997668"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773398200952.jpg",
+        "emotion": "Surprise",
+        "confidence": 17.29,
+        "probabilities": {
+            "Angry": 0.14782419800758362,
+            "Disgust": 0.10828138142824173,
+            "Fear": 0.12864628434181213,
+            "Happy": 0.1574171483516693,
+            "Sad": 0.13268516957759857,
+            "Surprise": 0.17288756370544434,
+            "Neutral": 0.1522582769393921
+        },
+        "timestamp": "2026-03-13T16:06:40.955382"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773400336657.jpg",
+        "emotion": "Neutral",
+        "confidence": 16.17,
+        "probabilities": {
+            "Angry": 0.13075728714466095,
+            "Disgust": 0.1481311321258545,
+            "Fear": 0.13214896619319916,
+            "Happy": 0.13780663907527924,
+            "Sad": 0.1409691721200943,
+            "Surprise": 0.14849647879600525,
+            "Neutral": 0.1616903841495514
+        },
+        "timestamp": "2026-03-13T16:42:16.658355"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773400450423.jpg",
+        "emotion": "Neutral",
+        "confidence": 16.17,
+        "probabilities": {
+            "Angry": 0.13075728714466095,
+            "Disgust": 0.1481311321258545,
+            "Fear": 0.13214896619319916,
+            "Happy": 0.13780663907527924,
+            "Sad": 0.1409691721200943,
+            "Surprise": 0.14849647879600525,
+            "Neutral": 0.1616903841495514
+        },
+        "timestamp": "2026-03-13T16:44:10.424380"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773470747632.jpg",
+        "emotion": "Sad",
+        "confidence": 15.1,
+        "probabilities": {
+            "Angry": 0.14024998247623444,
+            "Disgust": 0.14804044365882874,
+            "Fear": 0.1409807950258255,
+            "Happy": 0.1451433151960373,
+            "Sad": 0.15102256834506989,
+            "Surprise": 0.1400526911020279,
+            "Neutral": 0.13451027870178223
+        },
+        "timestamp": "2026-03-14T12:15:47.634791"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773473221919.jpg",
+        "emotion": "Neutral",
+        "confidence": 15.39,
+        "probabilities": {
+            "Angry": 0.13809607923030853,
+            "Disgust": 0.13408172130584717,
+            "Fear": 0.14120270311832428,
+            "Happy": 0.14296770095825195,
+            "Sad": 0.15002469718456268,
+            "Surprise": 0.13974878191947937,
+            "Neutral": 0.1538783609867096
+        },
+        "timestamp": "2026-03-14T12:57:01.920445"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773476441091.jpg",
+        "emotion": "Neutral",
+        "confidence": 15.23,
+        "probabilities": {
+            "Angry": 0.13751846551895142,
+            "Disgust": 0.1367313265800476,
+            "Fear": 0.1403394192457199,
+            "Happy": 0.14250236749649048,
+            "Sad": 0.1502142697572708,
+            "Surprise": 0.14043159782886505,
+            "Neutral": 0.1522625982761383
+        },
+        "timestamp": "2026-03-14T13:50:41.092848"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773490301560.jpg",
+        "emotion": "Sad",
+        "confidence": 14.88,
+        "probabilities": {
+            "Angry": 0.14484472572803497,
+            "Disgust": 0.14665962755680084,
+            "Fear": 0.13943874835968018,
+            "Happy": 0.1439805030822754,
+            "Sad": 0.1488456279039383,
+            "Surprise": 0.13966412842273712,
+            "Neutral": 0.13656660914421082
+        },
+        "timestamp": "2026-03-14T17:41:41.562234"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773656648682.jpg",
+        "emotion": "Neutral",
+        "confidence": 15.26,
+        "probabilities": {
+            "Angry": 0.14055564999580383,
+            "Disgust": 0.13771837949752808,
+            "Fear": 0.15067121386528015,
+            "Happy": 0.14056134223937988,
+            "Sad": 0.13945572078227997,
+            "Surprise": 0.13845211267471313,
+            "Neutral": 0.15258553624153137
+        },
+        "timestamp": "2026-03-16T15:54:08.685268"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773656674339.jpg",
+        "emotion": "Neutral",
+        "confidence": 15.26,
+        "probabilities": {
+            "Angry": 0.14055564999580383,
+            "Disgust": 0.13771837949752808,
+            "Fear": 0.15067121386528015,
+            "Happy": 0.14056134223937988,
+            "Sad": 0.13945572078227997,
+            "Surprise": 0.13845211267471313,
+            "Neutral": 0.15258553624153137
+        },
+        "timestamp": "2026-03-16T15:54:34.340760"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773746666814.jpg",
+        "emotion": "Neutral",
+        "confidence": 14.87,
+        "probabilities": {
+            "Angry": 0.138060063123703,
+            "Disgust": 0.14751288294792175,
+            "Fear": 0.14666502177715302,
+            "Happy": 0.14578402042388916,
+            "Sad": 0.1345265656709671,
+            "Surprise": 0.13876919448375702,
+            "Neutral": 0.14868231117725372
+        },
+        "timestamp": "2026-03-17T16:54:26.817453"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773747325420.jpg",
+        "emotion": "Neutral",
+        "confidence": 16.02,
+        "probabilities": {
+            "Angry": 0.13757877051830292,
+            "Disgust": 0.1492864489555359,
+            "Fear": 0.13675710558891296,
+            "Happy": 0.12925998866558075,
+            "Sad": 0.13852252066135406,
+            "Surprise": 0.14836475253105164,
+            "Neutral": 0.16023041307926178
+        },
+        "timestamp": "2026-03-17T17:05:25.420957"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773749932807.jpg",
+        "emotion": "Neutral",
+        "confidence": 15.5,
+        "probabilities": {
+            "Angry": 0.13821475207805634,
+            "Disgust": 0.14614810049533844,
+            "Fear": 0.13645623624324799,
+            "Happy": 0.1331770122051239,
+            "Sad": 0.13848868012428284,
+            "Surprise": 0.15255147218704224,
+            "Neutral": 0.15496371686458588
+        },
+        "timestamp": "2026-03-17T17:48:52.807927"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773764516263.jpg",
+        "emotion": "Happy",
+        "confidence": 15.31,
+        "probabilities": {
+            "Angry": 0.14433668553829193,
+            "Disgust": 0.14478488266468048,
+            "Fear": 0.14355294406414032,
+            "Happy": 0.15314458310604095,
+            "Sad": 0.14040237665176392,
+            "Surprise": 0.1374281495809555,
+            "Neutral": 0.1363503485918045
+        },
+        "timestamp": "2026-03-17T21:51:56.265683"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773765116340.jpg",
+        "emotion": "Happy",
+        "confidence": 15.38,
+        "probabilities": {
+            "Angry": 0.14444592595100403,
+            "Disgust": 0.14510232210159302,
+            "Fear": 0.1400468498468399,
+            "Happy": 0.15380112826824188,
+            "Sad": 0.1394147127866745,
+            "Surprise": 0.14064301550388336,
+            "Neutral": 0.1365460306406021
+        },
+        "timestamp": "2026-03-17T22:01:56.342112"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773765133040.jpg",
+        "emotion": "Happy",
+        "confidence": 15.31,
+        "probabilities": {
+            "Angry": 0.14433668553829193,
+            "Disgust": 0.14478488266468048,
+            "Fear": 0.14355294406414032,
+            "Happy": 0.15314458310604095,
+            "Sad": 0.14040237665176392,
+            "Surprise": 0.1374281495809555,
+            "Neutral": 0.1363503485918045
+        },
+        "timestamp": "2026-03-17T22:02:13.042929"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773765816363.jpg",
+        "emotion": "Neutral",
+        "confidence": 15.02,
+        "probabilities": {
+            "Angry": 0.1369025558233261,
+            "Disgust": 0.13679349422454834,
+            "Fear": 0.14320562779903412,
+            "Happy": 0.147327721118927,
+            "Sad": 0.148414745926857,
+            "Surprise": 0.13713903725147247,
+            "Neutral": 0.15021677315235138
+        },
+        "timestamp": "2026-03-17T22:13:36.365334"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773767695565.jpg",
+        "emotion": "Disgust",
+        "confidence": 15.61,
+        "probabilities": {
+            "Angry": 0.15267537534236908,
+            "Disgust": 0.15613821148872375,
+            "Fear": 0.14953230321407318,
+            "Happy": 0.1297478824853897,
+            "Sad": 0.14474278688430786,
+            "Surprise": 0.13599327206611633,
+            "Neutral": 0.1311701089143753
+        },
+        "timestamp": "2026-03-17T22:44:55.565955"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773767725859.jpg",
+        "emotion": "Disgust",
+        "confidence": 15.67,
+        "probabilities": {
+            "Angry": 0.1545674204826355,
+            "Disgust": 0.15670055150985718,
+            "Fear": 0.14803624153137207,
+            "Happy": 0.12834835052490234,
+            "Sad": 0.14555074274539948,
+            "Surprise": 0.13693663477897644,
+            "Neutral": 0.12986008822917938
+        },
+        "timestamp": "2026-03-17T22:45:25.860439"
+    },
+    {
+        "user_id": 2,
+        "image_source": "Upload",
+        "image_path": "storage/images/img_2_1773767739360.jpg",
+        "emotion": "Disgust",
+        "confidence": 15.78,
+        "probabilities": {
+            "Angry": 0.15165975689888,
+            "Disgust": 0.1577562689781189,
+            "Fear": 0.1431165486574173,
+            "Happy": 0.1277959942817688,
+            "Sad": 0.14886590838432312,
+            "Surprise": 0.13708925247192383,
+            "Neutral": 0.13371625542640686
+        },
+        "timestamp": "2026-03-17T22:45:39.366227"
+    }
+]

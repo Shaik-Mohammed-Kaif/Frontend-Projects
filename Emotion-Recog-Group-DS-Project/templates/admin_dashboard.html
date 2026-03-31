@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-panel" style="margin-bottom: 32px; padding: 32px; border-left: 4px solid var(--emo-anger);">
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: #f87171;">System Architecture Hub</h1>
+    <p style="color: var(--text-secondary); margin-top: 8px;">Privileged Admin Access. Monitor user behavior, model
+        accuracy, and security alerts.</p>
+</div>
+
+<div class="dashboard-metrics">
+    <div class="glass-panel metric-card">
+        <h3>Total Assays</h3>
+        <div class="val">{{ total }}</div>
+        <div class="badge badge-neutral" style="margin-top: 12px; display: inline-block;">All Users</div>
+    </div>
+    <div class="glass-panel metric-card">
+        <h3>Registered Users</h3>
+        <div class="val">{{ users_cnt }}</div>
+        <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">Enterprise Directory</div>
+    </div>
+    <div class="glass-panel metric-card">
+        <h3>System Bias Index</h3>
+        <div class="val" style="color: var(--emo-joy);">0.042</div>
+        <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">Variance Entropy</div>
+    </div>
+</div>
+
+<div class="glass-panel">
+    <h3 style="color: var(--text-secondary); margin-bottom: 16px;">Security & Bias Alerts</h3>
+    {% if alerts %}
+    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary);">
+                <th style="padding: 12px 0;">Severity</th>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in alerts %}
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 12px 0;">
+                    <span class="badge"
+                        style="background: rgba(239, 68, 68, 0.1); color: var(--emo-anger); border: 1px solid var(--emo-anger);">{{
+                        a.severity }}</span>
+                </td>
+                <td style="font-weight: 600; color: var(--text-primary);">{{ a.type }}</td>
+                <td style="color: var(--text-secondary);">{{ a.message }}</td>
+                <td style="color: var(--text-secondary); font-size: 0.85rem;">{{ a.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center; color: var(--text-secondary); margin: 32px 0;">No system alerts generated.</p>
+    {% endif %}
+</div>
+{% endblock %}

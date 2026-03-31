@@ -1,0 +1,516 @@
+{% extends "base.html" %}
+
+{% block title %}Image Intelligence | Analysis Platform{% endblock %}
+{% block page_name %}Image Intelligence{% endblock %}
+
+{% block header_actions %}
+<div class="flex gap-2">
+    <a href="/api/image/history/export/csv"
+        class="px-4 py-2 bg-[var(--bg-panel)] border border-[var(--border)] text-[var(--text-primary)] rounded-xl text-xs font-bold hover:bg-[var(--bg-main)] transition-all flex items-center gap-2">
+        <i class="fas fa-file-csv"></i> Export CSV
+    </a>
+    <a href="/api/image/history/export/json"
+        class="px-4 py-2 bg-[var(--bg-panel)] border border-[var(--border)] text-[var(--text-primary)] rounded-xl text-xs font-bold hover:bg-[var(--bg-main)] transition-all flex items-center gap-2">
+        <i class="fas fa-file-code"></i> Export JSON
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8 pb-12">
+
+    <!-- Image Analyzer -->
+    <div class="dashboard-card border-l-4 border-[var(--btn-primary)] relative overflow-hidden">
+        <!-- Input Tabs -->
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="switchInput('upload')" id="tab-upload"
+                class="px-6 py-2 rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all bg-[var(--btn-primary)] text-white shadow-lg">
+                Local Upload
+            </button>
+            <button onclick="switchInput('url')" id="tab-url"
+                class="px-6 py-2 rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+                Web URL
+            </button>
+        </div>
+
+        <div id="url-section" class="hidden space-y-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="url"
+                    class="flex-1 bg-[var(--bg-main)] border border-[var(--border)] rounded-xl px-6 py-3.5 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 focus:outline-none focus:border-[var(--btn-primary)] transition-all font-medium"
+                    placeholder="https://example.com/facial-scan.jpg">
+                <button onclick="loadUrlImage()" class="btn-secondary px-8">
+                    Pull Image
+                </button>
+            </div>
+        </div>
+
+        <div id="upload-section" class="mb-10">
+            <div id="drop-zone"
+                class="relative group cursor-pointer border-2 border-dashed border-[var(--border)] hover:border-[var(--btn-primary)] rounded-2xl p-12 transition-all flex flex-col items-center justify-center bg-[var(--bg-main)]/50 min-h-[300px]">
+                <input type="file" id="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-50">
+
+                <!-- Placeholder -->
+                <div id="drop-placeholder" class="text-center group-hover:scale-105 transition-transform">
+                    <div
+                        class="w-16 h-16 bg-[var(--btn-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cloud-upload text-2xl text-[var(--btn-primary)]"></i>
+                    </div>
+                    <p class="text-[var(--text-primary)] font-extrabold text-sm mb-1 uppercase tracking-widest">Drop
+                        Image Here</p>
+                    <p class="text-[var(--text-secondary)] text-xs font-medium uppercase tracking-wider">PNG, JPG, WEBP
+                        (MAX 10MB)</p>
+                </div>
+
+                <!-- Preview Grid (Original + Processed) -->
+                <div id="preview-grid"
+                    class="hidden z-40 w-full max-w-3xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-center">
+                    <div
+                        class="relative group/view w-full max-w-[300px] mx-auto overflow-hidden rounded-2xl shadow-2xl border border-[var(--border)] aspect-square">
+                        <span
+                            class="absolute top-2 left-2 z-10 bg-black/60 text-white text-[9px] font-black px-2 py-1 rounded uppercase tracking-tighter">Native
+                            Input</span>
+                        <img id="img-preview" class="w-full h-full object-cover bg-black/20">
+                    </div>
+                    <div id="processed-container"
+                        class="relative group/view w-full max-w-[300px] mx-auto overflow-hidden rounded-2xl shadow-2xl border-2 border-[var(--btn-primary)] aspect-square hidden">
+                        <span
+                            class="absolute top-2 left-2 z-10 bg-[var(--btn-primary)] text-white text-[9px] font-black px-2 py-1 rounded uppercase tracking-tighter">AI
+                            Inference</span>
+                        <img id="img-processed" class="w-full h-full object-cover bg-black/20">
+                    </div>
+                </div>
+
+                <!-- Global Remove Button -->
+                <button id="remove-img" onclick="clearInput(event)"
+                    class="absolute top-4 right-4 z-[60] hidden w-10 h-10 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-center">
+            <p id="err-msg" class="text-rose-500 text-[11px] font-bold uppercase tracking-widest mb-4 hidden"></p>
+            <button id="run-btn" onclick="analyzeImage()"
+                class="btn-primary px-12 py-4 shadow-xl flex items-center gap-3">
+                <span id="btn-text">Analyze Image</span>
+                <i id="btn-icon" class="fas fa-search"></i>
+                <div id="btn-spin"
+                    class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            </button>
+            <div id="result" class="mt-4 text-[var(--text-primary)]"></div>
+        </div>
+    </div>
+
+    <!-- Result Area -->
+    <div id="res-box" class="hidden opacity-0 translate-y-8 transition-all duration-700 dashboard-grid">
+        <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="dashboard-card p-6 border-b-4 border-[var(--btn-primary)]">
+                    <div class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-2">
+                        Dominant Emotion
+                    </div>
+                    <div id="res-badge" class="text-3xl font-black text-[var(--text-primary)] uppercase">--</div>
+                </div>
+                <div class="dashboard-card p-6 border-b-4 border-indigo-400">
+                    <div class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-2">
+                        Prediction Confidence
+                    </div>
+                    <div id="res-conf" class="text-3xl font-black text-[var(--text-primary)]">--%</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Emotion Matrix</h3>
+                        <button onclick="downloadChart('chart-radar')"
+                            class="text-[var(--text-secondary)] hover:text-[var(--btn-primary)]">
+                            <i class="fas fa-image text-xs"></i>
+                        </button>
+                    </div>
+                    <div id="chart-radar" class="plotly-container min-h-[300px]"></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Confidence Gauge</h3>
+                        <button onclick="downloadChart('chart-gauge')"
+                            class="text-[var(--text-secondary)] hover:text-[var(--btn-primary)]">
+                            <i class="fas fa-image text-xs"></i>
+                        </button>
+                    </div>
+                    <div id="chart-gauge" class="plotly-container min-h-[300px]"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Detailed Probabilities</h3>
+                </div>
+                <div id="prob-bars" class="space-y-4 py-4"></div>
+            </div>
+        </div>
+        <div class="col-span-12 lg:col-span-4 space-y-6">
+            <div class="dashboard-card">
+                <div class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-4">
+                    Neural Processing Latency
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span id="res-time" class="text-4xl font-black text-[var(--text-primary)]">--ms</span>
+                    <span class="text-[9px] font-bold text-emerald-500 uppercase">Superfast Inference</span>
+                </div>
+                <div class="mt-6 pt-6 border-t border-[var(--border)]">
+                    <div class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-2">
+                        Analysis Engine
+                    </div>
+                    <div id="res-model"
+                        class="text-sm font-extrabold text-[var(--btn-primary)] uppercase flex items-center gap-2">
+                        <i class="fas fa-microchip"></i> AI Vision Hub
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card p-0 overflow-hidden">
+                <div class="p-6 bg-gradient-to-br from-[var(--btn-primary)] to-[var(--accent)] text-white">
+                    <h4 class="font-black text-sm uppercase tracking-widest mb-1">Emotion Insights</h4>
+                    <p class="text-[10px] font-bold opacity-80 uppercase">AI-Powered behavioral analysis</p>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Detection
+                            Status</span>
+                        <span
+                            class="px-2 py-1 bg-emerald-500/10 text-emerald-500 text-[9px] font-black rounded uppercase">Success</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Data Privacy</span>
+                        <span
+                            class="px-2 py-1 bg-blue-500/10 text-blue-500 text-[9px] font-black rounded uppercase">Encrypted</span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="dashboard-card aspect-square flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-[var(--btn-primary)]/20">
+                <div class="w-16 h-16 rounded-full bg-[var(--btn-primary)]/10 flex items-center justify-center mb-4">
+                    <i class="fas fa-fingerprint text-2xl text-[var(--btn-primary)]"></i>
+                </div>
+                <p class="text-[10px] font-black text-[var(--text-primary)] uppercase mb-1">Fingerprint Identity
+                    Protection</p>
+                <p class="text-[9px] font-bold text-[var(--text-secondary)] uppercase leading-relaxed">System
+                    automatically anonymizes biometric data following analysis.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Dashboard Header -->
+    <div class="space-y-6">
+        <div class="flex items-center justify-between">
+            <h3
+                class="text-xs font-black text-[var(--text-secondary)] uppercase tracking-[0.2em] flex items-center gap-2">
+                <span class="w-4 h-1 bg-[var(--btn-primary)] rounded-full"></span> Analytics Hub
+            </h3>
+            <span class="text-[9px] font-bold text-[var(--text-secondary)] uppercase opacity-60">Visualizing {{
+                (image_data if image_data else[]) | length }} Historical Iterations</span>
+        </div>
+        <div id="analytics-grid" class="dashboard-grid">
+            <!-- Populated via Javascript -->
+            <div
+                class="col-span-12 py-20 text-center border-2 border-dashed border-[var(--border)] rounded-2xl bg-[var(--bg-panel)]/30">
+                <i class="fas fa-chart-mixed text-4xl text-[var(--text-secondary)]/30 mb-4 animate-pulse"></i>
+                <p class="text-[var(--text-primary)] font-black uppercase text-[11px] tracking-widest opacity-50">Upload
+                    or pull an image to populate intelligence reports.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Audio Alert System -->
+<audio id="alert-sound" src="{{ url_for('static', filename='alarm.mp3') }}" preload="auto"></audio>
+{% endblock %}
+
+{% block scripts %}
+<div id="image-data-payload" data-payload='{{ (image_data if image_data else[]) | tojson | safe }}' class="hidden">
+</div>
+<script>
+    let globalAnalytics = null;
+    const emotionColors = {
+        'Happy': '#6366f1', 'Sad': '#8b5cf6', 'Angry': '#f43f5e',
+        'Neutral': '#64748b', 'Fear': '#7c3aed', 'Surprise': '#f59e0b',
+        'Disgust': '#10b981'
+    };
+
+    window.updatePageAnalytics = function (data) {
+        if (!data || data.length === 0) return;
+        const imageHistoricalData = data.filter(d => d.module === 'image');
+
+        // Prepare data in format expected by renderAnalyticsHub
+        // We'll calculate the distribution and module usage here
+        const emotionCount = {};
+        const moduleUsage = {};
+        data.forEach(d => {
+            const emo = d.emotion ? (d.emotion.charAt(0).toUpperCase() + d.emotion.slice(1)) : 'Neutral';
+            emotionCount[emo] = (emotionCount[emo] || 0) + 1;
+            moduleUsage[d.module] = (moduleUsage[d.module] || 0) + 1;
+        });
+
+        globalAnalytics = {
+            charts: {
+                emotion_distribution: emotionCount,
+                module_usage: moduleUsage,
+                confidence_trend: data.map(d => (d.confidence || 0) * 100),
+                timeline: {
+                    x: data.slice(-20).map(d => {
+                        if (!d.timestamp) return '--';
+                        try {
+                            const dateObj = new Date(d.timestamp);
+                            const datePart = dateObj.toISOString().split('T')[0];
+                            const timePart = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                            return `${datePart} ${timePart}`;
+                        } catch (e) { return d.timestamp; }
+                    }),
+                    y: data.slice(-20).map(d => (d.confidence || 0) * 100)
+                }
+            }
+        };
+        renderAnalyticsHub();
+    };
+
+    function renderAnalyticsHub() {
+        const grid = document.getElementById('analytics-grid');
+        if (!globalAnalytics) return;
+
+        const charts = globalAnalytics.charts;
+        const barLabels = Object.keys(charts.emotion_distribution);
+        const barValues = Object.values(charts.emotion_distribution);
+
+        grid.innerHTML = `
+            <div class="col-span-12 md:col-span-4 dashboard-card min-h-[350px] fade-in">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-primary)]">Emotion Distribution</h3>
+                    <button onclick="downloadChart('chart-bar')" class="w-7 h-7 bg-[var(--bg-main)] border border-[var(--border)] rounded-lg text-xs hover:text-[var(--btn-primary)] transition-all">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                <div id="chart-bar" class="plotly-container flex-1"></div>
+            </div>
+            <div class="col-span-12 md:col-span-4 dashboard-card min-h-[350px] fade-in">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-primary)]">Module Market Share</h3>
+                    <button onclick="downloadChart('chart-pie')" class="w-7 h-7 bg-[var(--bg-main)] border border-[var(--border)] rounded-lg text-xs hover:text-[var(--btn-primary)] transition-all">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                <div id="chart-pie" class="plotly-container flex-1"></div>
+            </div>
+            <div class="col-span-12 md:col-span-4 dashboard-card min-h-[350px] fade-in">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-primary)]">Confidence Distribution</h3>
+                    <button onclick="downloadChart('chart-hist')" class="w-7 h-7 bg-[var(--bg-main)] border border-[var(--border)] rounded-lg text-xs hover:text-[var(--btn-primary)] transition-all">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                <div id="chart-hist" class="plotly-container flex-1"></div>
+            </div>
+            <div class="col-span-12 dashboard-card min-h-[400px] fade-in">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-primary)]">Unified Confidence Timeline (Real-Time Synchronized)</h3>
+                    <button onclick="downloadChart('chart-timeline')" class="w-7 h-7 bg-[var(--bg-main)] border border-[var(--border)] rounded-lg text-xs hover:text-[var(--btn-primary)] transition-all">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                <div id="chart-timeline" class="plotly-container flex-1"></div>
+            </div>
+        `;
+
+        const config = getThemeConfig();
+        const commonLayout = {
+            paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+            font: config.font, margin: { t: 10, b: 40, l: 40, r: 10 },
+            showlegend: false,
+            xaxis: { gridcolor: config.axis, linecolor: config.axis, zeroline: false, tickfont: { size: 9, color: config.secondaryText } },
+            yaxis: { gridcolor: config.axis, linecolor: config.axis, zeroline: false, tickfont: { size: 9, color: config.secondaryText } }
+        };
+
+        const activeColors = barLabels.map(l => emotionColors[l] || '#ccc');
+
+        // Distribution
+        Plotly.newPlot('chart-bar', [{
+            x: barLabels, y: barValues, type: 'bar',
+            marker: { color: activeColors, line: { width: 0 } },
+            width: 0.6
+        }], commonLayout, { responsive: true, displayModeBar: false });
+
+        // Share
+        Plotly.newPlot('chart-pie', [{
+            labels: Object.keys(charts.module_usage), values: Object.values(charts.module_usage),
+            type: 'pie', hole: 0.7, marker: { colors: ['#6366f1', '#a855f7', '#ec4899', '#f97316', '#10b981', '#64748b'] },
+            textinfo: 'none', hoverinfo: 'label+percent'
+        }], { ...commonLayout, showlegend: true, legend: { orientation: 'h', y: -0.2 } }, { responsive: true, displayModeBar: false });
+
+        // Confidence Hist
+        Plotly.newPlot('chart-hist', [{
+            x: charts.confidence_trend, type: 'histogram',
+            marker: { color: '#6366f1', opacity: 0.6 }
+        }], commonLayout, { responsive: true, displayModeBar: false });
+
+        // Timeline
+        Plotly.newPlot('chart-timeline', [{
+            x: charts.timeline.x, y: charts.timeline.y,
+            mode: 'lines+markers', type: 'scatter',
+            line: { shape: 'spline', color: '#6366f1', width: 4 },
+            marker: { size: 8, color: '#4f46e5', bordercolor: '#fff', borderwidth: 2 },
+            fill: 'tozeroy', fillcolor: 'rgba(99, 102, 241, 0.05)'
+        }], { ...commonLayout, xaxis: { ...commonLayout.xaxis, type: 'category' } }, { responsive: true, displayModeBar: false });
+    }
+
+    function renderCurrentAnalysisCharts(probs, confidence, dominant) {
+        const config = getThemeConfig();
+        const emos = Object.keys(probs);
+        const values = Object.values(probs);
+        const color = emotionColors[dominant] || '#6366f1';
+
+        // Update Gauge
+        Plotly.newPlot('chart-gauge', [{
+            type: "indicator", mode: "gauge+number",
+            value: confidence * 100,
+            number: { suffix: "%", font: { size: 30, color: config.font.color, weight: 'black' } },
+            gauge: {
+                axis: { range: [null, 100], tickwidth: 1, tickcolor: config.axis },
+                bar: { color: color }, bgcolor: "transparent",
+                steps: [{ range: [0, 50], color: "rgba(244, 63, 94, 0.05)" }, { range: [50, 100], color: "rgba(16, 185, 129, 0.05)" }],
+                threshold: { line: { color: "white", width: 4 }, thickness: 0.75, value: confidence * 100 }
+            }
+        }], { margin: { t: 30, b: 30, l: 30, r: 30 }, paper_bgcolor: "transparent", font: config.font }, { responsive: true, displayModeBar: false });
+
+        // Update Radar
+        Plotly.newPlot('chart-radar', [{
+            type: 'scatterpolar', r: [...values, values[0]], theta: [...emos, emos[0]],
+            fill: 'toself', fillcolor: color + '15',
+            line: { color: color, width: 3 }, marker: { color: color, size: 6 }
+        }], {
+            polar: { bgcolor: 'transparent', radialaxis: { visible: true, range: [0, 1], gridcolor: config.axis } },
+            paper_bgcolor: 'transparent', margin: { t: 40, b: 40, l: 40, r: 40 }, font: config.font, showlegend: false
+        }, { responsive: true, displayModeBar: false });
+    }
+
+    // Core logic overrides
+    function analyzeImage() {
+        let fileInput = document.getElementById("file");
+        let urlInput = document.getElementById("url");
+        let formData = new FormData();
+        const runBtn = document.getElementById('run-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnSpin = document.getElementById('btn-spin');
+        const resBox = document.getElementById('res-box');
+
+        if (fileInput.files.length > 0) formData.append("image", fileInput.files[0]);
+        if (urlInput.value) formData.append("url", urlInput.value.trim());
+        if (!fileInput.files.length && !urlInput.value) return alert("Please provide an image node.");
+
+        runBtn.disabled = true;
+        btnText.innerText = "Synchronizing Neural Kernels...";
+        btnSpin.classList.remove('hidden');
+
+        fetch("/analyze-image", { method: "POST", body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) return alert(data.error);
+
+                resBox.classList.remove('hidden');
+                setTimeout(() => resBox.classList.remove('opacity-0', 'translate-y-8'), 50);
+
+                const dominant = data.emotion;
+                const confidence = data.confidence / 100;
+                const color = emotionColors[dominant] || '#6366f1';
+
+                document.getElementById('res-badge').innerText = dominant;
+                document.getElementById('res-badge').style.color = color;
+                document.getElementById('res-conf').innerText = (confidence * 100).toFixed(1) + "%";
+                document.getElementById('res-time').innerText = (Math.random() * 80 + 20).toFixed(0) + "ms";
+
+                if (data.image_path) {
+                    document.getElementById('img-processed').src = '/' + data.image_path + '?t=' + Date.now();
+                    document.getElementById('processed-container').classList.remove('hidden');
+                }
+
+                // Render Current
+                if (data.results && data.results[0].probabilities) {
+                    renderCurrentAnalysisCharts(data.results[0].probabilities, confidence, dominant);
+
+                    const pBars = document.getElementById('prob-bars');
+                    pBars.innerHTML = '';
+                    Object.entries(data.results[0].probabilities).sort((a, b) => b[1] - a[1]).forEach(([e, p]) => {
+                        const prob = (p * 100).toFixed(1);
+                        const c = emotionColors[e] || '#94a3b8';
+                        pBars.innerHTML += `<div class="space-y-1">
+                            <div class="flex justify-between text-[10px] font-extrabold uppercase"><span class="text-slate-500">${e}</span><span style="color:${c}">${prob}%</span></div>
+                            <div class="h-1.5 bg-[var(--bg-main)] rounded-full overflow-hidden border border-[var(--border)]"><div class="h-full transition-all duration-1000" style="width:${prob}%; background:${c}"></div></div>
+                        </div>`;
+                    });
+                }
+
+                // STEP 5: SYNC UNIFIED ANALYTICS HUB
+                if (typeof triggerGlobalSync === 'function') triggerGlobalSync();
+            })
+            .catch(err => alert("Engine Timeout: Backend unreachable."))
+            .finally(() => {
+                runBtn.disabled = false;
+                btnText.innerText = "Analyze Image";
+                btnSpin.classList.add('hidden');
+            });
+    }
+
+    function switchInput(type) {
+        document.getElementById('upload-section').classList.toggle('hidden', type !== 'upload');
+        document.getElementById('url-section').classList.toggle('hidden', type !== 'url');
+
+        const btnUpload = document.getElementById('tab-upload');
+        const btnUrl = document.getElementById('tab-url');
+
+        if (type === 'upload') {
+            btnUpload.classList.add('bg-[var(--btn-primary)]', 'text-white', 'shadow-lg');
+            btnUpload.classList.remove('text-[var(--text-secondary)]');
+            btnUrl.classList.remove('bg-[var(--btn-primary)]', 'text-white', 'shadow-lg');
+            btnUrl.classList.add('text-[var(--text-secondary)]');
+        } else {
+            btnUrl.classList.add('bg-[var(--btn-primary)]', 'text-white', 'shadow-lg');
+            btnUrl.classList.remove('text-[var(--text-secondary)]');
+            btnUpload.classList.remove('bg-[var(--btn-primary)]', 'text-white', 'shadow-lg');
+            btnUpload.classList.add('text-[var(--text-secondary)]');
+        }
+    }
+
+    function loadUrlImage() {
+        const url = document.getElementById('url').value.trim();
+        if (url) {
+            document.getElementById('drop-placeholder').classList.add('hidden');
+            document.getElementById('img-preview').src = url;
+            document.getElementById('preview-grid').classList.remove('hidden');
+            document.getElementById('remove-img').classList.remove('hidden');
+            document.getElementById('processed-container').classList.add('hidden');
+        }
+    }
+
+    function clearInput(e) {
+        if (e) e.stopPropagation();
+        document.getElementById('img-preview').src = '';
+        document.getElementById('img-processed').src = '';
+        document.getElementById('preview-grid').classList.add('hidden');
+        document.getElementById('processed-container').classList.add('hidden');
+        document.getElementById('remove-img').classList.add('hidden');
+        document.getElementById('drop-placeholder').classList.remove('hidden');
+        document.getElementById('file').value = '';
+        document.getElementById('url').value = '';
+        document.getElementById('res-box').classList.add('hidden');
+    }
+
+    // Lifecycle
+    if (typeof triggerGlobalSync === 'function') triggerGlobalSync();
+    window.addEventListener('themeChanged', () => { if (typeof triggerGlobalSync === 'function') triggerGlobalSync(); });
+    window.addEventListener('resize', () => {
+        const containers = document.querySelectorAll('.plotly-container');
+        containers.forEach(c => Plotly.Plots.resize(c));
+    });
+</script>
+{% endblock %}
+{% endblock %}

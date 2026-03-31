@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}API Reference | EmotionAI Platform{% endblock %}
+
+{% block content %}
+<style>
+    .api-glow {
+        animation: soft-pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes soft-pulse {
+
+        0%,
+        100% {
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.2));
+            opacity: 0.9;
+        }
+
+        50% {
+            filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.4));
+            opacity: 1;
+        }
+    }
+
+    .code-box {
+        background: #0f172a;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .syntax-purple {
+        color: #c084fc;
+    }
+
+    .syntax-blue {
+        color: #60a5fa;
+    }
+
+    .syntax-string {
+        color: #facc15;
+    }
+</style>
+
+<div class="max-w-7xl mx-auto py-16 px-6 pb-32">
+    <!-- API HERO -->
+    <div class="grid lg:grid-cols-2 gap-16 items-center mb-24">
+        <div class="text-left space-y-8">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
+                <span class="w-1.5 h-1.5 bg-purple-500 rounded-full animate-ping"></span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-purple-500">Developer API v1.0</span>
+            </div>
+            <h1
+                class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-[var(--text-primary)]">
+                Neural API <br><span class="text-purple-500">Reference</span></h1>
+            <p class="text-lg text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                Empower your applications with our robust, developer-first neural endpoints. Harness multi-modal emotion
+                intelligence through simple RESTful gateways designed for extreme performance.
+            </p>
+        </div>
+        <div class="relative group">
+            <div
+                class="absolute -inset-4 bg-purple-500/10 rounded-[3rem] blur-3xl opacity-50 group-hover:opacity-100 transition-all">
+            </div>
+            <img src="/assets/public_api_hero_1774892573871.png"
+                class="relative w-full h-auto rounded-[2.5rem] shadow-2xl border border-white/5 api-glow filter saturate-125 hover:scale-[1.02] transition-transform duration-700"
+                alt="API Interface Visual">
+        </div>
+    </div>
+
+    <!-- ENDPOINTS -->
+    <div class="space-y-12">
+        <div
+            class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] border-l-4 border-l-purple-500 group">
+            <div class="flex flex-col lg:flex-row justify-between gap-10">
+                <div class="lg:w-1/2 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="px-4 py-1 bg-purple-500/10 text-purple-500 text-xs font-black rounded-lg border border-purple-500/20">POST</span>
+                        <h3 class="text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">
+                            /analyze-image</h3>
+                    </div>
+                    <p class="text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                        Ingests local files or remote URLs for high-precision facial micro-expression mapping. Returns a
+                        multi-dimensional probability vector across 7 core emotions.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <div class="p-5 bg-[var(--bg-soft)] rounded-3xl border border-[var(--border)]">
+                            <span
+                                class="text-[10px] font-black uppercase text-[var(--text-secondary)] opacity-60">Authorization</span>
+                            <p class="text-sm font-black text-purple-500 mt-1">API Key Header</p>
+                        </div>
+                        <div class="p-5 bg-[var(--bg-soft)] rounded-3xl border border-[var(--border)]">
+                            <span
+                                class="text-[10px] font-black uppercase text-[var(--text-secondary)] opacity-60">Response</span>
+                            <p class="text-sm font-black text-blue-500 mt-1">Application/JSON</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2">
+                    <div class="code-box p-8 shadow-2xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Request
+                                Payload</span>
+                            <div class="flex gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/30"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/30"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/30"></span>
+                            </div>
+                        </div>
+                        <pre class="font-mono text-xs leading-relaxed"><code class="text-slate-300">{
+  <span class="syntax-purple">"image_source"</span>: <span class="syntax-string">"https://server.com/img.jpg"</span>,
+  <span class="syntax-purple">"config"</span>: {
+    <span class="syntax-blue">"zoom"</span>: <span class="syntax-string">"face-center"</span>,
+    <span class="syntax-blue">"grayscale"</span>: <span class="syntax-string">true</span>
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] border-l-4 border-l-blue-500 group">
+            <div class="flex flex-col lg:flex-row justify-between gap-10">
+                <div class="lg:w-1/2 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="px-4 py-1 bg-blue-500/10 text-blue-500 text-xs font-black rounded-lg border border-blue-500/20">POST</span>
+                        <h3 class="text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">
+                            /analyze-text</h3>
+                    </div>
+                    <p class="text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                        NLP transformer pipeline for sentiment extraction, sarcasm detection, and emotional tone
+                        weighting in raw text strings or documents.
+                    </p>
+                </div>
+                <div class="lg:w-1/2">
+                    <div class="code-box p-8 shadow-2xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Response
+                                Stream</span>
+                            <div class="flex gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/30"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/30"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/30"></span>
+                            </div>
+                        </div>
+                        <pre class="font-mono text-xs leading-relaxed"><code class="text-slate-300">{
+  <span class="syntax-blue">"sentiment"</span>: <span class="syntax-string">"POSITIVE"</span>,
+  <span class="syntax-blue">"confidence"</span>: <span class="syntax-purple">0.9842</span>,
+  <span class="syntax-blue">"emotions"</span>: [<span class="syntax-string">"Joy"</span>, <span class="syntax-string">"Surprise"</span>]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RETURN ACTION -->
+    <div class="mt-24 text-center">
+        <a href="{{ url_for('auth.home') }}"
+            class="inline-flex items-center gap-3 px-10 py-4 bg-[var(--bg-panel)] border border-[var(--border)] rounded-2xl text-[11px] font-black uppercase text-[var(--text-primary)] hover:border-purple-500/50 hover:scale-105 transition-all shadow-xl">
+            <i class="fas fa-home text-purple-500"></i> Return to Infrastructure Home Hub
+        </a>
+    </div>
+</div>
+{% endblock %}

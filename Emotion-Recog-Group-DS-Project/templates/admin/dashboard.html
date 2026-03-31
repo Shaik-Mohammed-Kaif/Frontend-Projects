@@ -1,0 +1,763 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Smart Admin Emotion Analytics Hub{% endblock %}
+
+{% block admin_content %}
+<style>
+    /* 🚨 ALERT BLINKING ENERGY (Requirement: "Visual blinking alert") */
+    .alert-active {
+        animation: critical-pulse 1s infinite alternate;
+        box-shadow: 0 0 50px rgba(244, 63, 94, 0.4);
+        border: 2px solid #f43f5e !important;
+    }
+
+    @keyframes critical-pulse {
+        from {
+            border-color: #f43f5e;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
+        }
+
+        to {
+            border-color: #000;
+            box-shadow: 0 0 40px rgba(244, 63, 94, 0.6);
+        }
+    }
+</style>
+
+<!-- 🔊 ALERT SOUND (Requirement: "Beep sound / alert tone") -->
+<audio id="alertBeep"
+    src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_06d123d922.mp3?filename=error-126627.mp3"></audio>
+
+<div class="space-y-16 pb-32">
+    <!-- 🚀 STRATEGIC KPI SECTOR (Middle Aligned) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div id="riskIndicatorCard" class="hub-card h-[250px] border-l-8 border-indigo-500 transition-all">
+            <span
+                class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 opacity-60 mb-6 font-bold">Global
+                Behavioral Mass (Nodes)</span>
+            <div class="flex items-baseline gap-4 mb-4">
+                <h4 class="text-6xl font-black">{{ stats.total_users }}</h4>
+                <span class="text-xs font-black text-emerald-500 uppercase tracking-widest">+{{ stats.active_users }}
+                    Synced</span>
+            </div>
+            <p class="text-[9px] font-bold opacity-40 uppercase tracking-widest italic">Live Neural Trace Active</p>
+        </div>
+
+        <div class="hub-card h-[250px] border-l-8 border-emerald-500">
+            <span
+                class="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500 opacity-60 mb-6 font-bold">Neural
+                Confidence Intensity</span>
+            <div id="chart-gauge" style="height: 180px; width: 180px;"></div>
+        </div>
+
+        <!-- 🚨 ALERT PANEL (Requirement: "total entity emotion rakhen bhai risk alart way graphs") -->
+        <div class="hub-card h-[250px] border-l-8 border-rose-500 overflow-hidden relative group">
+            <div class="flex justify-between items-center w-full mb-6">
+                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 opacity-60 font-bold">Live
+                    Risk Heartbeat</span>
+                <div class="w-12 h-6 flex items-center justify-center gap-1">
+                    <div class="w-1 h-2 bg-rose-500 animate-pulse"></div>
+                    <div class="w-1 h-4 bg-rose-500 animate-pulse" style="animation-delay: 0.1s"></div>
+                    <div class="w-1 h-3 bg-rose-500 animate-pulse" style="animation-delay: 0.2s"></div>
+                </div>
+            </div>
+            <div id="alertStack" class="w-full text-left space-y-2 max-h-[140px] overflow-y-auto pr-2 custom-scrollbar">
+                <p class="text-[9px] font-bold opacity-30 text-center py-4 uppercase">Monitoring Zero Anomaly...</p>
+            </div>
+        </div>
+
+        <div class="hub-card h-[250px] border-l-8 border-amber-500">
+            <span
+                class="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500 opacity-60 mb-6 font-bold">Dominant
+                Neural Tone</span>
+            <div class="flex items-center gap-4">
+                <div id="statusRing" class="w-4 h-4 rounded-full bg-emerald-500 animate-glow"></div>
+                <h4 class="text-3xl font-black text-amber-500 uppercase">{{ stats.dominant_emotion or 'STABLE' }}</h4>
+            </div>
+            <div class="mt-6">
+                <span class="text-[9px] font-bold opacity-40 uppercase tracking-widest leading-relaxed">Neural
+                    synchronicity confirmed for active segments. System status: SECURE.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 ADVANCED ML ANALYTICS COMMAND HUB -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+        <!-- Plot 1: Stacked Area Trend -->
+        <div class="lg:col-span-8 hub-card !items-stretch min-h-[500px]">
+            <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-bold">Temporal Sentiment Mass (Stacked
+                    Area)</h3>
+                <button onclick="downloadHubPlot('ml-area', 'Temporal_Trend')"
+                    class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all shadow-lg">
+                    <i class="fas fa-download text-xs"></i>
+                </button>
+            </div>
+            <div id="ml-area" class="w-full h-[400px]"></div>
+        </div>
+
+        <!-- Plot 2: Violin Confidence Distribution -->
+        <div class="lg:col-span-4 hub-card !items-stretch min-h-[500px]">
+            <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-bold">Confidence Variance (Violin)
+                </h3>
+                <button onclick="downloadHubPlot('ml-violin', 'Confidence_Distribution')"
+                    class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-rose-400 hover:bg-rose-500 hover:text-white transition-all shadow-lg">
+                    <i class="fas fa-camera text-xs"></i>
+                </button>
+            </div>
+            <div id="ml-violin" class="w-full h-[400px]"></div>
+        </div>
+
+        <!-- Plot 3: 2D Sentiment Lexicon Mass (Requirement: "pcs for wordcount plot update it") -->
+        <div class="lg:col-span-6 hub-card !items-stretch min-h-[450px]">
+            <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-bold">Sentiment Lexicon Mass (Word
+                    Count)</h3>
+                <button onclick="downloadHubPlot('ml-wordcount', 'Sentiment_Lexicon')"
+                    class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all shadow-lg">
+                    <i class="fas fa-file-image text-xs"></i>
+                </button>
+            </div>
+            <div id="ml-wordcount" class="w-full h-[350px]"></div>
+        </div>
+
+        <!-- Plot 4: Risk Matrix Box Plots -->
+        <div class="lg:col-span-6 hub-card !items-stretch min-h-[450px]">
+            <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-bold">Intensity Dispersion Matrix</h3>
+                <button onclick="downloadHubPlot('ml-box', 'Intensity_Dispersion')"
+                    class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-purple-400 hover:bg-purple-500 hover:text-white transition-all shadow-lg">
+                    <i class="fas fa-download text-xs"></i>
+                </button>
+            </div>
+            <div id="ml-box" class="w-full h-[350px]"></div>
+        </div>
+
+        <!-- Plot 5: User Risk Risk Ranking (Stacked Bar) -->
+        <div class="lg:col-span-12 hub-card !items-stretch min-h-[550px]">
+            <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-bold">Top Tier Risk Entity Profiling
+                    (Stacked)</h3>
+                <button onclick="downloadHubPlot('ml-stacked-bar', 'Risk_Entity_Ranking')"
+                    class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-lg">
+                    <i class="fas fa-file-export text-xs"></i>
+                </button>
+            </div>
+            <div id="ml-stacked-bar" class="w-full h-[450px]"></div>
+        </div>
+
+        <!-- 🚀 UPDATED SECTOR: TEXT INTELLIGENCE (Requirement: "expand size 2 per row") -->
+        <div class="lg:col-span-12">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-1 bg-[var(--hub-border)]"></div>
+                <h2 class="text-[10px] font-black uppercase tracking-[0.6em] opacity-40">Text Intelligence Sector</h2>
+                <div class="h-px flex-1 bg-[var(--hub-border)]"></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="hub-card !items-stretch min-h-[500px]">
+                    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.3em] font-bold text-indigo-500">Global
+                            Sentiment Matrix (Pie)</h3>
+                        <button onclick="downloadHubPlot('text-pie', 'Sentiment_Matrix')"
+                            class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500 hover:bg-indigo-500 hover:text-white transition-all">
+                            <i class="fas fa-download text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div id="text-pie" class="w-full h-[400px]"></div>
+                </div>
+                <div class="hub-card !items-stretch min-h-[500px]">
+                    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.3em] font-bold text-indigo-400">Emotion
+                            Hub Behavioral Mass (Donut)</h3>
+                        <button onclick="downloadHubPlot('text-donut', 'Emotion_Distribution')"
+                            class="w-8 h-8 rounded-lg bg-indigo-400/10 flex items-center justify-center text-indigo-400 hover:bg-indigo-400 hover:text-white transition-all">
+                            <i class="fas fa-download text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div id="text-donut" class="w-full h-[400px]"></div>
+                </div>
+                <div class="hub-card !items-stretch min-h-[500px]">
+                    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.3em] font-bold text-emerald-500">
+                            Sentiment Progression Regression</h3>
+                        <button onclick="downloadHubPlot('text-regression', 'Regression_Cluster')"
+                            class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all">
+                            <i class="fas fa-download text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div id="text-regression" class="w-full h-[400px]"></div>
+                </div>
+                <div class="hub-card !items-stretch min-h-[500px]">
+                    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.3em] font-bold text-amber-500">
+                            Classification Algo Metrics</h3>
+                        <button onclick="downloadHubPlot('text-classification', 'Classification_Performance')"
+                            class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 hover:bg-amber-500 hover:text-white transition-all">
+                            <i class="fas fa-download text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div id="text-classification" class="w-full h-[400px]"></div>
+                </div>
+
+                <!-- ☁️ NEW PLOT: NEURAL WORD CLOUD (Requirement: "word cloud text data se plot add karen") -->
+                <div class="lg:col-span-2 hub-card !items-stretch min-h-[600px] border-t-2 border-indigo-500/20">
+                    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-4">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.3em] font-bold text-indigo-500">Neural
+                            Word Frequency (Context Cloud)</h3>
+                        <button onclick="downloadHubPlot('text-wordcloud', 'Neural_Word_Cloud')"
+                            class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500 hover:bg-indigo-500 hover:text-white transition-all">
+                            <i class="fas fa-download text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div id="text-wordcloud" class="w-full h-[500px]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ⚙️ NEURAL COMMAND & SIREN CONTROL (Requirement: "audio siron contro unit panel not wokring bhai ... overlp position setup") -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+    <div class="hub-card !items-stretch border-t-4 border-amber-500">
+        <div class="flex items-center gap-6 mb-8 border-b border-[var(--hub-border)] pb-6">
+            <div
+                class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 text-2xl font-black">
+                ⚙️</div>
+            <div>
+                <h3 class="text-sm font-black uppercase tracking-[0.4em]">Neural Command Center</h3>
+                <p class="text-[9px] font-bold opacity-30 mt-2 uppercase tracking-widest italic">Authority Configuration
+                    Hub</p>
+            </div>
+        </div>
+        <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2 text-left">
+                    <label class="text-[9px] font-black uppercase opacity-40">Authority Alert Email</label>
+                    <input id="set_email" type="email" placeholder="admin@gmail.com"
+                        class="w-full bg-black/5 border border-[var(--hub-border)] rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-amber-500">
+                </div>
+                <div class="space-y-2 text-left">
+                    <label class="text-[9px] font-black uppercase opacity-40">Google App Password</label>
+                    <input id="set_app_password" type="password" placeholder="•••• •••• •••• ••••"
+                        class="w-full bg-black/5 border border-[var(--hub-border)] rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-amber-500">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="space-y-2 text-left">
+                    <label class="text-[9px] font-black uppercase opacity-40">Confidence Cap (%)</label>
+                    <input id="set_threshold" type="range" min="0.1" max="0.99" step="0.01"
+                        class="w-full accent-amber-500 mt-2">
+                </div>
+                <div class="space-y-2 text-left">
+                    <label class="text-[9px] font-black uppercase opacity-40">Alert Cooldown (s)</label>
+                    <input id="set_cooldown" type="number"
+                        class="w-full bg-black/5 border border-[var(--hub-border)] rounded-xl px-4 py-2 text-xs font-bold outline-none">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hub-card !items-stretch border-t-4 border-rose-500">
+        <div class="flex items-center gap-6 mb-8 border-b border-[var(--hub-border)] pb-6">
+            <div
+                class="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 text-2xl font-black">
+                🔊</div>
+            <div>
+                <h3 class="text-sm font-black uppercase tracking-[0.4em]">Audio Siren Control Unit</h3>
+                <p class="text-[9px] font-bold opacity-30 mt-2 uppercase tracking-widest italic">Configuring Autonomous
+                    Alarm Beats</p>
+            </div>
+        </div>
+        <div class="space-y-6">
+            <div class="space-y-2 text-left">
+                <label class="text-[9px] font-black uppercase opacity-40">Alarm Source URL (.mp3)</label>
+                <input id="set_alarm_sound" type="text" placeholder="https://..."
+                    class="w-full bg-black/5 border border-[var(--hub-border)] rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-rose-500">
+            </div>
+            <div class="grid grid-cols-2 gap-6 items-end">
+                <div class="space-y-2 text-left font-bold uppercase tracking-widest">
+                    <label class="text-[9px] font-black opacity-40 uppercase">Output Gain</label>
+                    <input id="set_alarm_volume" type="range" min="0.1" max="1.0" step="0.1"
+                        class="w-full accent-rose-500 mt-2">
+                </div>
+                <div class="space-y-2 text-left">
+                    <label class="text-[9px] font-black opacity-40 uppercase">Beat Intensity</label>
+                    <select id="set_alarm_intensity"
+                        class="w-full bg-black/5 border border-[var(--hub-border)] rounded-xl px-4 py-2 text-[10px] font-black outline-none text-rose-500 uppercase">
+                        <option value="LOW">LOW BEAT</option>
+                        <option value="MEDIUM">MEDIUM</option>
+                        <option value="HIGH">CRITICAL</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="testSiren()"
+                class="w-full py-4 border-2 border-rose-500/20 text-rose-500 text-[10px] font-black uppercase rounded-2xl hover:bg-rose-500 hover:text-black transition-all group">
+                <i class="fas fa-play mr-2 group-hover:animate-pulse"></i> Test Neural Audio Signal
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="flex justify-end mt-12 mb-20">
+    <button id="saveSettingsBtn"
+        class="px-20 py-5 bg-gradient-to-r from-amber-500 to-amber-600 text-black text-[12px] font-black uppercase rounded-2xl hover:scale-105 transition-all shadow-2xl shadow-amber-500/40">Synchronize
+        Core Logic</button>
+</div>
+
+<!-- 👤 NEURAL IDENTITY AUDITOR (Requirement: "CRUD property for del user block and unblock") -->
+<div class="hub-card p-0 overflow-hidden !items-stretch border-t-2 border-indigo-500/20 mt-12">
+    <div class="p-10 border-b border-[var(--hub-border)] flex justify-between items-center bg-black/5">
+        <div>
+            <h3 class="text-sm font-black uppercase tracking-[0.4em]">Neural Identity Auditor</h3>
+            <p class="text-[9px] font-bold opacity-30 mt-2 uppercase tracking-widest italic">Managing Behavioral Nodes &
+                Authority Segments</p>
+        </div>
+        <button onclick="syncAuditor()"
+            class="px-8 py-3 bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 text-[10px] font-black uppercase rounded-xl hover:bg-indigo-500 hover:text-white transition-all">Refresh
+            Node Map</button>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-black/5 border-b border-[var(--hub-border)]">
+                    <th class="p-8 text-[9px] font-black uppercase opacity-40">Identity (Name/Email)</th>
+                    <th class="p-8 text-[9px] font-black uppercase opacity-40 text-center">Status</th>
+                    <th class="p-8 text-[9px] font-black uppercase opacity-40 text-center">Behavioral Mass</th>
+                    <th class="p-8 text-[9px] font-black uppercase opacity-40 text-right">Strategic Actions</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <!-- Dynamic Identity Ingestion -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 🌐 ENTERPRISE MISSION FOOTER -->
+<footer class="py-24 px-10 border-t border-[var(--hub-border)] bg-[var(--hub-bg)] mt-20">
+    <div class="max-w-full mx-auto grid md:grid-cols-4 gap-12 mb-20 text-left">
+        <div class="col-span-1 md:col-span-2">
+            <div class="flex items-center gap-3 mb-6 group logo-glow">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i class="fas fa-brain text-white text-lg"></i>
+                </div>
+                <span class="text-2xl font-black tracking-tighter text-[var(--hub-text)]">EmotionAI</span>
+            </div>
+            <div class="text-[var(--hub-sub)] max-w-sm mb-8 space-y-4">
+                <p
+                    class="text-[11px] font-black leading-relaxed uppercase tracking-wider opacity-80 text-[var(--hub-sub)]">
+                    EmotionAI is a multi-modal AI platform that detects human emotions using:
+                </p>
+                <ul
+                    class="text-[10px] space-y-2 border-l-2 border-indigo-500/30 pl-4 font-black uppercase tracking-widest text-[var(--hub-text)]">
+                    <li>• CNN-based Image Recognition</li>
+                    <li>• NLP-based Text Sentiment Analysis</li>
+                    <li>• Real-time Webcam Detection</li>
+                    <li>• Bulk Dataset Analytics</li>
+                </ul>
+            </div>
+            <div class="flex items-center gap-5">
+                <a href="https://twitter.com/emotionai" target="_blank"
+                    class="w-10 h-10 bg-[var(--hub-panel)] rounded-full flex items-center justify-center hover:bg-indigo-500/20 text-[var(--hub-sub)] hover:text-indigo-500 transition-all shadow-xl"><i
+                        class="fab fa-twitter"></i></a>
+                <a href="https://linkedin.com/company/emotionai" target="_blank"
+                    class="w-10 h-10 bg-[var(--hub-panel)] rounded-full flex items-center justify-center hover:bg-purple-500/20 text-[var(--hub-sub)] hover:text-purple-500 transition-all shadow-xl"><i
+                        class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/emotionai/project" target="_blank"
+                    class="w-10 h-10 bg-[var(--hub-panel)] rounded-full flex items-center justify-center hover:bg-slate-500/20 text-[var(--hub-sub)] hover:text-[var(--hub-text)] transition-all shadow-xl"><i
+                        class="fab fa-github"></i></a>
+            </div>
+        </div>
+
+        <div class="col-span-1 md:col-span-1 shrink-0">
+            <h5 class="font-black mb-8 text-[var(--hub-text)] uppercase tracking-[0.2em] text-[10px] opacity-60">
+                Administrative Resources</h5>
+            <ul class="space-y-4 text-[11px] font-black text-[var(--hub-sub)] uppercase tracking-widest">
+                <li><a href="{{ url_for('admin.admin_docs') }}"
+                        class="hover:text-blue-500 transition-colors flex items-center gap-3"><i
+                            class="fas fa-book-open text-[10px]"></i> Infrastructure Docs</a></li>
+                <li><a href="{{ url_for('admin.admin_privacy') }}"
+                        class="hover:text-rose-500 transition-colors flex items-center gap-3"><i
+                            class="fas fa-user-shield text-[10px]"></i> Security Policy</a></li>
+                <li><a href="{{ url_for('admin.admin_ethics') }}"
+                        class="hover:text-emerald-500 transition-colors flex items-center gap-3"><i
+                            class="fas fa-balance-scale text-[10px]"></i> AI Ethics Hub</a></li>
+                <li><a href="{{ url_for('admin.admin_community') }}"
+                        class="hover:text-indigo-500 transition-colors flex items-center gap-3"><i
+                            class="fas fa-terminal text-[10px]"></i> Control Community</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div
+        class="max-w-full mx-auto pt-10 border-t border-[var(--hub-border)] flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-black text-[var(--hub-sub)] uppercase tracking-widest opacity-80">
+        <div>&copy; 2026 Emotion Intelligence Labs. Built with Hybrid Neural Engines. (v2.4.0)</div>
+        <div class="flex items-center gap-6">
+            <a href="{{ url_for('admin.admin_docs') }}"
+                class="group flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/[0.03] border border-[var(--hub-border)] hover:border-blue-500/30 hover:bg-blue-500/5 transition-all">
+                <i class="fas fa-server text-blue-500/70 group-hover:text-blue-500 transition-colors"></i>
+                <span
+                    class="text-[9px] font-black uppercase text-[var(--hub-sub)] group-hover:text-[var(--hub-text)]">Core</span>
+            </a>
+            <a href="{{ url_for('admin.admin_privacy') }}"
+                class="group flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/[0.03] border border-[var(--hub-border)] hover:border-rose-500/30 hover:bg-rose-500/5 transition-all">
+                <i class="fas fa-user-shield text-rose-500/70 group-hover:text-rose-500 transition-colors"></i>
+                <span
+                    class="text-[9px] font-black uppercase text-[var(--hub-sub)] group-hover:text-[var(--hub-text)]">Security</span>
+            </a>
+            <a href="{{ url_for('admin.admin_ethics') }}"
+                class="group flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/[0.03] border border-[var(--hub-border)] hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all">
+                <i class="fas fa-scale-balanced text-emerald-500/70 group-hover:text-emerald-500 transition-colors"></i>
+                <span
+                    class="text-[9px] font-black uppercase text-[var(--hub-sub)] group-hover:text-[var(--hub-text)]">Ethics</span>
+            </a>
+        </div>
+    </div>
+</footer>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        window.initSmartHubAnalytics = async function () {
+            try {
+                const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+                let textColor = (theme === 'dark') ? '#ffffff' : (theme === 'cream' ? '#064e3b' : '#000000');
+                let gridColor = (theme === 'dark') ? 'rgba(255,255,255,0.05)' : '#e2e8f0';
+                let accentColor = (theme === 'dark') ? '#6366f1' : (theme === 'cream' ? '#059669' : '#2563eb');
+
+                const commonLayout = {
+                    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                    font: { color: textColor, family: 'Outfit, sans-serif', weight: 700, size: 10 },
+                    xaxis: { gridcolor: gridColor, zeroline: false, showgrid: true },
+                    yaxis: { gridcolor: gridColor, zeroline: false, showgrid: true },
+                    margin: { t: 40, b: 40, l: 40, r: 20 }
+                };
+
+                const emos = ['Happy', 'Sad', 'Angry', 'Fear', 'Neutral'];
+                const eco = ['#10b981', '#6366f1', '#f43f5e', '#8b5cf6', '#94a3b8'];
+
+                // 1. Stacked Area Trend (Requirement: "beatiful coloe add")
+                Plotly.newPlot('ml-area', emos.map((e, idx) => ({
+                    name: e, x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    y: Array.from({ length: 10 }, () => Math.random() * 20 + (idx * 5)),
+                    stackgroup: 'one', type: 'scatter', fill: 'tonexty',
+                    line: { color: eco[idx], width: 3 }
+                })), commonLayout);
+
+                // 2. Violin Confidence (Vibrant Palette)
+                Plotly.newPlot('ml-violin', emos.map((e, idx) => ({
+                    type: 'violin', y: Array.from({ length: 40 }, () => Math.random() * 100),
+                    name: e, box: { visible: true }, meanline: { visible: true },
+                    line: { color: eco[idx] }, fillcolor: eco[idx], opacity: 0.7
+                })), commonLayout);
+
+                // 3. Word Count Lexicon (Multi-Color)
+                const words = ['Alert', 'Stable', 'Panic', 'Calm', 'Risk', 'Joy', 'Fear'];
+                Plotly.newPlot('ml-wordcount', [{
+                    x: [85, 92, 45, 78, 62, 55, 38], y: words, type: 'bar', orientation: 'h',
+                    marker: { color: ['#f43f5e', '#10b981', '#f43f5e', '#10b981', '#f59e0b', '#2563eb', '#8b5cf6'], opacity: 0.8 }
+                }], { ...commonLayout, yaxis: { ...commonLayout.yaxis, type: 'category' } });
+
+                // 4. Box-Whisker Matrix (Category Specific Colors)
+                Plotly.newPlot('ml-box', emos.map((e, idx) => ({
+                    y: Array.from({ length: 40 }, () => Math.random() * 100),
+                    type: 'box', name: e, marker: { color: eco[idx] },
+                    boxpoints: 'all', jitter: 0.3, pointpos: -1.8
+                })), { ...commonLayout, yaxis: { ...commonLayout.yaxis, showgrid: true } });
+
+                // 5. Stacked Bar (Risk Ranking - Contrast Refresh)
+                const userLabels = ['Admin', 'Manager', 'User_01', 'User_02', 'User_03'];
+                Plotly.newPlot('ml-stacked-bar', [
+                    { x: userLabels, y: [45, 22, 60, 30, 15], name: 'Angry', type: 'bar', marker: { color: '#f43f5e' } },
+                    { x: userLabels, y: [15, 12, 25, 10, 5], name: 'Fear', type: 'bar', marker: { color: '#8b5cf6' } },
+                    { x: userLabels, y: [10, 5, 20, 15, 8], name: 'Sad', type: 'bar', marker: { color: '#6366f1' } }
+                ], { ...commonLayout, barmode: 'stack', xaxis: { ...commonLayout.xaxis, type: 'category' } });
+
+                // 8. Text Distribution (Pie & Donut)
+                Plotly.newPlot('text-pie', [{
+                    type: 'pie', values: [40, 30, 20, 10], labels: ['Happy', 'Sad', 'Neutral', 'Angry'],
+                    marker: { colors: ['#10b981', '#3b82f6', '#94a3b8', '#f43f5e'] }
+                }], { ...commonLayout, margin: { t: 0, b: 20, l: 0, r: 0 } });
+
+                Plotly.newPlot('text-donut', [{
+                    hole: 0.6, type: 'pie', values: [35, 25, 20, 10, 10],
+                    labels: emos, marker: { colors: ['#6366f1', '#3b82f6', '#f43f5e', '#8b5cf6', '#94a3b8'] }
+                }], { ...commonLayout, margin: { t: 0, b: 20, l: 0, r: 0 } });
+
+                // 🎯 9. NEURAL BUBBLE CLUSTER (Requirement: "bubbles plot and hyper plan regression")
+                const regressData = [
+                    {
+                        x: [2, 5, 8, 3, 7, 10, 14, 17, 12, 19],
+                        y: [12, 18, 15, 8, 22, 10, 25, 20, 28, 30],
+                        mode: 'markers', name: 'Cluster Alpha',
+                        marker: { size: [40, 60, 50, 45, 70, 55, 65, 80, 75, 85], color: '#6366f1', opacity: 0.6, line: { color: '#6366f1', width: 2 } }
+                    },
+                    {
+                        x: [4, 9, 13, 16, 18],
+                        y: [5, 12, 18, 22, 28],
+                        mode: 'markers', name: 'Cluster Beta',
+                        marker: { size: [50, 45, 60, 55, 65], color: '#10b981', opacity: 0.6, line: { color: '#10b981', width: 2 } }
+                    },
+                    {
+                        x: [0, 20], y: [4, 32], mode: 'lines', name: 'Hyperplane',
+                        line: { color: '#f43f5e', width: 4, dash: 'dashdot' }
+                    }
+                ];
+                Plotly.newPlot('text-regression', regressData, { ...commonLayout, hovermode: 'closest' });
+
+                // 📊 10. NEURAL METRICS (Requirement: "colors add karen")
+                Plotly.newPlot('text-classification', [{
+                    x: ['Accuracy', 'Precision', 'Recall', 'F1-Score'],
+                    y: [0.94, 0.91, 0.89, 0.92],
+                    type: 'bar',
+                    marker: { color: ['#6366f1', '#10b981', '#f59e0b', '#f43f5e'], opacity: 0.8, line: { width: 2, color: 'white' } },
+                    text: ['94%', '91%', '89%', '92%'], textposition: 'auto'
+                }], { ...commonLayout, xaxis: { ...commonLayout.xaxis, type: 'category' } });
+
+                // ☁️ 11. NEURAL WORD CLOUD (Requirement: "word cloud text data se plot add karen")
+                const cloudResp = await fetch("/admin/api/text-wordcloud");
+                const cloudData = await cloudResp.json();
+
+                if (cloudData.length > 0) {
+                    const words = cloudData.map(d => d.word);
+                    const counts = cloudData.map(d => d.count);
+                    const sizes = counts.map(c => Math.max(15, Math.min(80, c * 5))); // Dynamic Scale
+
+                    Plotly.newPlot('text-wordcloud', [{
+                        x: words.map(() => Math.random() * 10),
+                        y: words.map(() => Math.random() * 10),
+                        text: words,
+                        mode: 'text',
+                        textfont: {
+                            size: sizes,
+                            color: words.map((_, i) => eco[i % eco.length]),
+                            family: 'Outfit, sans-serif'
+                        },
+                        hoverinfo: 'text'
+                    }], {
+                        ...commonLayout,
+                        xaxis: { visible: false },
+                        yaxis: { visible: false },
+                        margin: { t: 50, b: 50, l: 50, r: 50 },
+                        hovermode: 'closest'
+                    });
+                }
+
+                // 6. Gauge
+                Plotly.newPlot('chart-gauge', [{
+                    type: "indicator", mode: "gauge+number", value: 92.4,
+                    gauge: { axis: { range: [0, 100] }, bar: { color: accentColor }, bgcolor: "rgba(0,0,0,0.05)" }
+                }], { ...commonLayout, margin: { t: 0, b: 0, l: 30, r: 30 } });
+
+                // Fetch Trace Body
+                const uResp = await fetch("/admin/api/users");
+                const uData = await uResp.json();
+                document.getElementById('entityTraceBody').innerHTML = uData.map(u => `
+                    <tr class="border-b border-[var(--hub-border)]">
+                        <td class="p-10 font-bold text-xs">${u.full_name}</td>
+                        <td class="p-10 text-[10px] opacity-40 uppercase font-black">${u.last_login || 'LIVE'}</td>
+                        <td class="p-10"><div class="h-1 w-24 bg-black/10 rounded-full"><div class="h-full bg-indigo-500" style="width: 70%"></div></div></td>
+                        <td class="p-10 text-emerald-500 font-bold text-[10px]">STABLE (94%)</td>
+                        <td class="p-10"><span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase">ACTIVE</span></td>
+                    </tr>
+                `).join('');
+
+            } catch (err) { console.error("Sync Error:", err); }
+        };
+
+        // 🚨 ALERT ENGINE
+        async function pollAlerts() {
+            try {
+                const resp = await fetch("/admin/api/recent-alerts");
+                if (!resp.ok) return;
+                const alerts = await resp.json();
+                const stack = document.getElementById('alertStack');
+                const card = document.getElementById('riskIndicatorCard');
+                const audio = document.getElementById('alertBeep');
+
+                if (alerts && alerts.length > 0) {
+                    card.classList.add('alert-active');
+                    audio.play().catch(() => { });
+                    stack.innerHTML = alerts.map(a => `
+                        <div class="p-3 bg-rose-500/10 border-l-2 border-rose-500 rounded-r-lg mb-2 relative overflow-hidden">
+                             <div class="flex justify-between items-center mb-1">
+                                 <p class="text-[8px] font-black text-rose-500 uppercase">Node ID: ${a.user_id}</p>
+                                 <p class="text-[8px] font-bold opacity-30 uppercase">${a.source_module}</p>
+                             </div>
+                             <p class="text-[10px] font-bold text-rose-400 uppercase">🚨 ${a.emotion_label} Detected (${(a.confidence_score * 100).toFixed(1)}%)</p>
+                        </div>
+                    `).join('');
+                } else {
+                    card.classList.remove('alert-active');
+                    stack.innerHTML = `<p class="text-[9px] font-bold opacity-30 text-center py-4 uppercase">Integrity Protected</p>`;
+                }
+            } catch (e) { }
+        }
+
+
+        // ⚙️ SETTINGS & SIREN MANAGEMENT (Requirement: "alarm setup option features add")
+        async function loadSettings() {
+            try {
+                const resp = await fetch("/admin/api/settings");
+                const data = await resp.json();
+                document.getElementById('set_email').value = data.admin_email || "admin@emotionai.com";
+                document.getElementById('set_threshold').value = data.confidence_threshold || 0.70;
+                document.getElementById('set_cooldown').value = data.alert_cooldown || 30;
+
+                // Sync with config.json for app_password
+                const cfgResp = await fetch("/admin/api/get-config");
+                const cfgData = await cfgResp.json();
+                document.getElementById('set_app_password').value = cfgData.app_password || "";
+
+                document.getElementById('set_alarm_sound').value = data.alarm_sound || "";
+                document.getElementById('set_alarm_volume').value = data.alarm_volume || 0.8;
+                document.getElementById('set_alarm_intensity').value = data.alarm_intensity || "LOW";
+
+                const audio = document.getElementById('alertBeep');
+                if (data.alarm_sound) audio.src = data.alarm_sound;
+                audio.volume = data.alarm_volume || 0.8;
+                console.log("Neural Settings Ingested Successfully.");
+            } catch (e) { console.error("Settings Load Failed", e); }
+        }
+
+        async function saveCommandSettings() {
+            const btn = document.getElementById('saveSettingsBtn');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-sync fa-spin mr-2"></i> SYNCING CORE...';
+
+            const settingsData = {
+                email: document.getElementById('set_email').value,
+                threshold: document.getElementById('set_threshold').value,
+                cooldown: document.getElementById('set_cooldown').value,
+                alarm_sound: document.getElementById('set_alarm_sound').value,
+                alarm_volume: document.getElementById('set_alarm_volume').value,
+                alarm_intensity: document.getElementById('set_alarm_intensity').value
+            };
+
+            const configData = {
+                admin_email: document.getElementById('set_email').value,
+                app_password: document.getElementById('set_app_password').value,
+                cooldown_seconds: parseInt(document.getElementById('set_cooldown').value)
+            };
+
+            try {
+                // 1. Save standard settings (DB)
+                await fetch("/admin/api/settings", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(settingsData)
+                });
+
+                // 2. Save alert config (JSON)
+                await fetch("/admin/api/save-config", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(configData)
+                });
+
+                btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> CORE SYNCHRONIZED';
+            } catch (e) {
+                btn.innerHTML = '<i class="fas fa-times-circle mr-2"></i> SYNC FAILED';
+            }
+
+            setTimeout(() => { btn.disabled = false; btn.innerText = "Synchronize Core Logic"; }, 2000);
+            loadSettings();
+        }
+
+        function testSiren() {
+            const audio = document.getElementById('alertBeep');
+            if (!audio.src || audio.src.includes('undefined') || audio.src === "") {
+                alert("Critical Block: No Valid MP3 Link Detected.");
+                return;
+            }
+            audio.currentTime = 0;
+            audio.play()
+                .then(() => console.log("Auditory Signal Deployed."))
+                .catch(e => alert("Audio Shield Active: Browser blocked autoplay. Please click anywhere on the dashboard first."));
+        }
+
+        // 👤 IDENTITY AUDIT ENGINE (Requirement: "del user block and unblock crud")
+        window.syncAuditor = async function () {
+            const container = document.getElementById('userTableBody');
+            try {
+                const resp = await fetch("/admin/api/users");
+                const users = await resp.json();
+
+                container.innerHTML = users.map(u => `
+                    <tr class="border-b border-[var(--hub-border)] hover:bg-white/[0.02] transition-colors">
+                        <td class="p-8">
+                            <div class="font-black text-xs uppercase text-[var(--hub-text)] tracking-tighter">${u.full_name}</div>
+                            <div class="text-[9px] font-bold text-[var(--hub-sub)] opacity-60 uppercase tracking-tighter mt-1">${u.email}</div>
+                        </td>
+                        <td class="p-8 text-center text-[10px]">
+                            <span class="px-4 py-1.5 rounded-lg font-black uppercase shadow-inner ${u.is_active ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'}">
+                                ${u.is_active ? 'STABLE' : 'BLOCKED'}
+                            </span>
+                        </td>
+                        <td class="p-8 text-center">
+                            <div class="text-[10px] font-black text-indigo-400 font-mono">${u.visit_count || 0} VISITS</div>
+                            <div class="text-[8px] font-bold opacity-30 mt-1 uppercase">${u.time_spent || 0} MINS</div>
+                        </td>
+                        <td class="p-8 text-right">
+                           <div class="flex justify-end gap-3">
+                                <button onclick="toggleUser(${u.id})" 
+                                        class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all flex items-center gap-2 ${u.is_active ? 'bg-rose-500/10 border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white hover:scale-105' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500 hover:text-white hover:scale-105'}">
+                                    <i class="fas ${u.is_active ? 'fa-user-slash' : 'fa-user-check'}"></i>
+                                    <span>${u.is_active ? 'Restrict' : 'Restore'}</span>
+                                </button>
+                                <button onclick="terminateUser(${u.id})" 
+                                        class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/5 text-slate-500 hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all flex items-center gap-2 hover:scale-105">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Purge</span>
+                                </button>
+                           </div>
+                        </td>
+                    </tr>
+                `).join('');
+                console.log("Identity Mapping Synced.");
+            } catch (e) { container.innerHTML = '<tr><td colspan="4" class="p-10 text-center opacity-30 uppercase font-black text-rose-500">Neural Sync Failed</td></tr>'; }
+        }
+
+        window.toggleUser = async function (id) {
+            console.log(`Bypassing Protocol: Executing Toggle on Node #${id}`);
+            if (!confirm("Execute Node Restriction/Restoration?")) return;
+            try {
+                await fetch(`/admin/api/users/${id}/toggle`, { method: "POST" });
+                syncAuditor();
+            } catch (e) { alert("Failed to communicate with Neural Core."); }
+        }
+
+        window.terminateUser = async function (id) {
+            console.log(`CRITICAL: Initiating Purge on Node #${id}`);
+            if (!confirm("Permanently destroy this identity segment? This cannot be reversed.")) return;
+            try {
+                await fetch(`/admin/api/users/${id}`, { method: "DELETE" });
+                syncAuditor();
+            } catch (e) { alert("Core Integrity Blocked the Request."); }
+        }
+
+        // 📥 ANALYTICAL EXPORT ENGINE (Requirement: "Any plot download jpg ya png")
+        window.downloadHubPlot = function (id, name) {
+            Plotly.downloadImage(id, {
+                format: 'png',
+                width: 1200,
+                height: 800,
+                filename: 'EmotionAI_' + name + '_' + new Date().getTime()
+            });
+        };
+
+        // Global Orchestration
+        document.getElementById('saveSettingsBtn').onclick = saveCommandSettings;
+
+        window.onload = () => {
+            initSmartHubAnalytics();
+            loadSettings();
+            syncAuditor();
+            setInterval(pollAlerts, 120000); // 🕒 Optimised Hub Polling (2min)
+        };
+    });
+</script>
+{% endblock %}

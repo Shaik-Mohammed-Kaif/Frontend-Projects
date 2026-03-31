@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.0/dist/vanilla-tilt.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Clean flat UI with no animated orbs -->
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+</div>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 3rem; color: var(--primary);">
+            <div
+                style="width: 40px; height: 40px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;">
+                <i class="fas fa-brain"></i>
+            </div>
+            <span style="font-weight: 800; font-size: 1.3rem; color: var(--text-primary);">EmotionAI</span>
+        </div>
+        <nav>
+            <a href="{{ url_for('dashboard.dashboard_page') }}" class="sidebar-link"><i class="fas fa-grid-2"></i>
+                Dashboard</a>
+            <a href="{{ url_for('text_routes.text_page') }}" class="sidebar-link active"><i class="fas fa-heading"></i>
+                Text Analysis</a>
+            <a href="{{ url_for('image_bp.image_page') }}" class="sidebar-link"><i class="fas fa-image"></i> Image
+                Analysis</a>
+            <a href="#" class="sidebar-link"><i class="fas fa-microphone"></i> Audio Analysis</a>
+            <a href="#" class="sidebar-link"><i class="fas fa-video"></i> Video Analysis</a>
+            <a href="{{ url_for('additional_features.webcam_page') }}" class="sidebar-link"><i
+                    class="fas fa-camera"></i> Webcam</a>
+            <a href="{{ url_for('additional_features.dataset_page') }}" class="sidebar-link"><i
+                    class="fas fa-folder-open"></i> Bulk
+                Dataset Lab</a>
+            <a href="#" class="sidebar-link"><i class="fas fa-history"></i> History</a>
+        </nav>
+
+        <div style="margin-top: 2rem; padding: 0 0.5rem;">
+            <p
+                style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 10px; font-weight: 600;">
+                Appearance</p>
+            <div style="display: flex; gap: 8px;">
+                <button onclick="setTheme('dark')"
+                    style="flex:1; padding: 8px; border-radius: 6px; background: var(--bg-navy); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer;"
+                    title="Dark"><i class="fas fa-moon"></i></button>
+                <button onclick="setTheme('light')"
+                    style="flex:1; padding: 8px; border-radius: 6px; background: var(--bg-navy); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer;"
+                    title="Light"><i class="fas fa-sun"></i></button>
+                <button onclick="setTheme('cream')"
+                    style="flex:1; padding: 8px; border-radius: 6px; background: var(--bg-navy); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer;"
+                    title="Cream"><i class="fas fa-coffee"></i></button>
+                <button onclick="setTheme('system')"
+                    style="flex:1; padding: 8px; border-radius: 6px; background: var(--bg-navy); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer;"
+                    title="System"><i class="fas fa-desktop"></i></button>
+            </div>
+        </div>
+
+        <div style="margin-top: auto;">
+            <div
+                style="padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1rem;">
+                <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">Node Operator</div>
+                <div
+                    style="font-size: 0.8rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {{ user['email'] }}</div>
+            </div>
+            <a href="{{ url_for('auth.logout') }}" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper fade-in">
+            <header style="margin-bottom: 2rem;">
+                <h1 style="font-size: 2.2rem; letter-spacing: -1px; color: var(--primary);">Text Emotion Analysis</h1>
+                <p style="color: var(--text-secondary); font-size: 1rem; margin-top: 5px;">Detect subtle emotional cues
+                    and sentiment in written text.</p>
+            </header>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <!-- Input Panel -->
+                <div class="glass-card tilt-card" data-tilt>
+                    <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--text-primary);">Input Text</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Enter text or
+                        paste content below</p>
+                    <form id="cinematic-text-form" style="position: relative;">
+                        <div class="input-group" style="position: relative; margin-top: 1rem;">
+                            <textarea name="text" id="text-input" class="form-control animated-textarea" rows="12"
+                                placeholder="Enter your text to analyze emotion..."
+                                style="resize: none; font-size: 1rem; line-height: 1.6; background: rgba(0,0,0,0.1); border: 2px solid var(--border); transition: all 0.3s ease;"
+                                oninput="updateCounter(this)"></textarea>
+                            <label class="floating-label">Text to analyze</label>
+                            <div
+                                style="position: absolute; bottom: 15px; right: 15px; color: var(--text-secondary); font-size: 0.8rem; pointer-events: none; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 20px; backdrop-filter: blur(5px);">
+                                <i class="fas fa-keyboard" style="margin-right: 5px;"></i><span id="char-count">0</span>
+                                chars
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="submit" class="btn btn-primary ripple glow-hover"
+                                style="margin-top: 1.5rem; padding: 0.8rem 1.5rem; position: relative; overflow: hidden; box-shadow: var(--neon-teal);">
+                                <i class="fas fa-paper-plane" style="margin-right: 8px;"></i> Analyze Emotion
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Result Panel -->
+                <div class="glass-card tilt-card" data-tilt
+                    style="border-style: dashed; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-width: 2px;">
+                    <div id="initial-state">
+                        <div
+                            style="width: 60px; height: 60px; background: var(--bg-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                            <i class="fas fa-file-alt" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
+                        </div>
+                        <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Ready to Analyze</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; max-width: 300px; margin: 0 auto;">
+                            Enter text on the left to see a detailed emotional breakdown here.</p>
+                    </div>
+
+                    <div id="neural-output" style="display: none; width: 100%;">
+                        <h3 style="color: var(--text-secondary); text-transform: uppercase; font-size: 0.8rem;">Decoded
+                            Emotion</h3>
+                        <h2 id="neural-emotion"
+                            style="font-size: 3rem; text-transform: capitalize; color: var(--primary); margin: 10px 0;">
+                            ...</h2>
+
+                        <div style="margin-top: 2rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem;">
+                                <span>Confidence Score</span>
+                                <span id="neural-conf-text">0%</span>
+                            </div>
+                            <div
+                                style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                                <div id="neural-conf-bar"
+                                    style="height: 100%; width: 0%; background: var(--primary-bg); transition: 1s ease;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="distribution-panel" style="margin-top: 2rem; text-align: left; display: none;">
+                            <h4 style="color: var(--text-secondary); margin-bottom: 15px; font-size: 0.9rem;">
+                                Probability Distribution</h4>
+                            <div id="dist-bars" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                        </div>
+
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 2rem;">
+                            <div style="text-align: left;">
+                                <span
+                                    style="display: block; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Processing
+                                    Time <i class="fas fa-bolt" style="color: var(--primary);"></i></span>
+                                <span id="proc-time"
+                                    style="font-size: 1.1rem; color: var(--text-primary); font-family: 'JetBrains Mono';">0.00s</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span
+                                    style="display: block; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Threshold
+                                    Status</span>
+                                <span id="conf-threshold"
+                                    style="font-size: 1.1rem; color: #10b981; font-family: 'JetBrains Mono';">
+                                    <i class="fas fa-shield-check"></i> High
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 1.5rem;">
+                            <a href="{{ url_for('dashboard.dashboard_page') }}" class="btn btn-outline ripple"
+                                style="width: 100%; border-color: rgba(255,255,255,0.1); padding: 0.6rem;">
+                                <i class="fas fa-chart-line" style="margin-right: 8px;"></i> View Dashboard Analytics
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    function updateCounter(textarea) {
+        document.getElementById('char-count').innerText = textarea.value.length;
+    }
+
+    document.getElementById('cinematic-text-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const btn = e.target.querySelector('button');
+        const output = document.getElementById('neural-output');
+        const distPanel = document.getElementById('distribution-panel');
+        const distBars = document.getElementById('dist-bars');
+
+        btn.disabled = true;
+        btn.innerHTML = 'Analyzing... <i class="fas fa-spinner fa-spin" style="margin-left:10px;"></i>';
+
+        // Reset
+        document.getElementById('neural-conf-bar').style.width = '0%';
+        distPanel.style.display = 'none';
+        distBars.innerHTML = '';
+
+        try {
+            const res = await fetch('/analyze-text', { method: 'POST', body: fd });
+            const data = await res.json();
+
+            if (data.status === 'success') {
+                document.getElementById('initial-state').style.display = 'none';
+                output.style.display = 'block';
+                document.getElementById('neural-emotion').innerText = data.emotion;
+                const confPercent = Math.round(data.confidence_raw * 100);
+                document.getElementById('neural-conf-text').innerText = confPercent + '%';
+
+                // Industry metrics
+                document.getElementById('proc-time').innerText = data.processing_time || "0.45s";
+                const thresholdElem = document.getElementById('conf-threshold');
+                if (data.confidence_raw > 0.8) {
+                    thresholdElem.innerHTML = '<i class="fas fa-shield-check" style="margin-right: 5px;"></i> High Security';
+                    thresholdElem.style.color = '#10b981'; // green
+                } else if (data.confidence_raw > 0.5) {
+                    thresholdElem.innerHTML = '<i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i> Medium';
+                    thresholdElem.style.color = '#f59e0b'; // yellow
+                } else {
+                    thresholdElem.innerHTML = '<i class="fas fa-times-circle" style="margin-right: 5px;"></i> Low Confidence';
+                    thresholdElem.style.color = '#ef4444'; // red
+                }
+
+                setTimeout(() => {
+                    document.getElementById('neural-conf-bar').style.width = confPercent + '%';
+                }, 100);
+
+                // Render Distribution
+                if (data.distribution) {
+                    distPanel.style.display = 'block';
+                    for (const [emo, score] of Object.entries(data.distribution)) {
+                        const w = Math.round(score * 100);
+                        distBars.innerHTML += `
+                            <div style="display: flex; align-items: center; font-size: 0.8rem;">
+                                <span style="width: 80px; text-transform: capitalize;">${emo}</span>
+                                <div style="flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; margin: 0 10px;">
+                                    <div style="width: ${w}%; height: 100%; background: var(--secondary); border-radius: 3px;"></div>
+                                </div>
+                                <span style="width: 40px; text-align: right;">${w}%</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px;"></i> Analyze Emotion';
+        }
+    };
+
+    // Ripple effect
+    document.querySelectorAll('.ripple').forEach(button => {
+        button.addEventListener('click', function (e) {
+            const x = e.clientX - e.target.getBoundingClientRect().left;
+            const y = e.clientY - e.target.getBoundingClientRect().top;
+            const ripples = document.createElement('span');
+            ripples.style.left = x + 'px';
+            ripples.style.top = y + 'px';
+            this.appendChild(ripples);
+            setTimeout(() => { ripples.remove() }, 1000);
+        });
+    });
+</script>
+
+<style>
+    .floating-label {
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        background: var(--bg-dark);
+        padding: 0 8px;
+        color: var(--primary);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        pointer-events: none;
+        transition: 0.3s ease;
+        border-radius: 4px;
+    }
+
+    .animated-textarea:focus {
+        box-shadow: 0 0 20px rgba(45, 212, 191, 0.4), inset 0 0 10px rgba(45, 212, 191, 0.2) !important;
+        border-color: var(--primary) !important;
+        outline: none;
+    }
+
+    .glow-hover:hover {
+        box-shadow: 0 0 30px rgba(45, 212, 191, 0.8) !important;
+        transform: translateY(-2px);
+    }
+
+    .ripple span {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.5);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        border-radius: 50%;
+        animation: rippleEffect 1s linear infinite;
+        width: 100px;
+        height: 100px;
+    }
+
+    @keyframes rippleEffect {
+        0% {
+            width: 0;
+            height: 0;
+            opacity: 0.5;
+        }
+
+        100% {
+            width: 400px;
+            height: 400px;
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1fr 400px; gap: 32px;">
+    <div>
+        <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Audio Intelligence Module</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 32px;">Real-time audio processing relying on Librosa MFCC
+            feature extraction and Convolutional analysis.</p>
+
+        <div class="glass-panel"
+            style="margin-bottom: 32px; border: 2px dashed var(--border-color); text-align: center; padding: 48px;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="color: var(--accent); margin-bottom: 16px;">
+                <path d="M12 1v22M17 5v14M7 5v14M22 10v4M2 10v4" />
+            </svg>
+            <h3 style="margin-bottom: 8px;">Upload .WAV or .MP3</h3>
+            <input type="file" id="aud-input" style="display: none;" accept="audio/*">
+            <button class="neon-btn" onclick="document.getElementById('aud-input').click()">Browse Audio Files</button>
+        </div>
+
+        <div id="audio-preview-box" class="glass-panel" style="display:none; text-align:center;">
+            <audio id="audio-player" controls style="width: 100%; margin-bottom: 16px; border-radius: 8px;"></audio>
+            <div
+                style="height: 120px; width: 100%; background: linear-gradient(90deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1)); border-radius: 8px; border: 1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">Simulated Librosa Spectrogram Active</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-card" class="glass-panel" style="display:none; height: fit-content;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px;">Sonic
+            Inference</h3>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Acoustic Detection</span>
+                <span id="aud-badge" class="badge"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Model Confidence</span>
+                <span id="aud-conf" style="font-weight: 800; font-size: 1.2rem; color: var(--text-primary);"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Processing Core</span>
+                <span id="aud-model" style="color: var(--accent-secondary); font-weight: 600;"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">MFCC Extraction Latency</span>
+                <span id="aud-latency" style="font-weight: 600;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const inp = document.getElementById('aud-input');
+    inp.addEventListener('change', async () => {
+        if (!inp.files[0]) return;
+
+        const fd = new FormData(); fd.append('file', inp.files[0]);
+        const resp = await fetch('/audio', { method: 'POST', body: fd });
+        const data = await resp.json();
+
+        if (!data.error) {
+            document.getElementById('audio-preview-box').style.display = 'block';
+            document.getElementById('audio-player').src = URL.createObjectURL(inp.files[0]);
+
+            document.getElementById('result-card').style.display = 'block';
+            document.getElementById('aud-badge').innerText = data.emotion;
+            document.getElementById('aud-badge').className = `badge badge-${data.emotion}`;
+            document.getElementById('aud-conf').innerText = data.confidence;
+            document.getElementById('aud-model').innerText = data.model;
+            document.getElementById('aud-latency').innerText = data.time;
+            if (typeof handleAlert === 'function') handleAlert(data.alert);
+        }
+    });
+</script>
+{% endblock %}

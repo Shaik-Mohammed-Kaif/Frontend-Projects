@@ -1,0 +1,149 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Neural Security Protocols (Policy){% endblock %}
+
+{% block admin_content %}
+<style>
+    .shield-pulse {
+        animation: shield-glow 5s ease-in-out infinite;
+    }
+
+    @keyframes shield-glow {
+
+        0%,
+        100% {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+    }
+
+    .grid-bg {
+        background-image: radial-gradient(rgba(244, 63, 94, 0.1) 1px, transparent 1px);
+        background-size: 30px 30px;
+    }
+</style>
+
+<div class="max-w-6xl mx-auto space-y-12 pb-32">
+    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-8">
+        <div class="hub-card !p-0 !bg-transparent !border-0 text-left">
+            <h2 class="text-3xl font-black uppercase tracking-tighter mb-2 text-[var(--hub-text)]">Security Policy</h2>
+            <p class="text-[10px] text-[var(--hub-sub)] font-bold uppercase tracking-widest leading-relaxed opacity-80">
+                Admin Resource: Cybersecurity & Behavioral Data Privacy</p>
+        </div>
+        <a href="{{ url_for('admin.dashboard') }}"
+            class="px-10 py-4 bg-[var(--hub-card)] border border-[var(--hub-border)] rounded-2xl text-[11px] font-black uppercase text-[var(--hub-text)] hover:scale-105 hover:border-rose-500/50 transition-all shadow-2xl flex items-center gap-3">
+            <i class="fas fa-th-large text-rose-500"></i> Return to Command Dashboard
+        </a>
+    </div>
+
+    <!-- 🛡️ SECURITY VISUAL CORE -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-5">
+            <div
+                class="relative group p-4 bg-rose-500/5 rounded-[3rem] border border-rose-500/10 shadow-[0_0_50px_rgba(244,63,94,0.05)]">
+                <img src="/admin/internal/visuals/cybersecurity_policy_visual_1774882492681.png"
+                    class="w-full h-auto rounded-[2.5rem] shield-pulse filter contrast-110 saturate-125 shadow-2xl"
+                    alt="Cybersecurity Visualization">
+                <div
+                    class="absolute inset-0 rounded-[2.5rem] bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-8">
+                    <div class="mt-auto">
+                        <span
+                            class="px-4 py-1.5 bg-rose-600 text-[9px] font-black uppercase rounded-lg tracking-widest text-white shadow-xl">Encryption
+                            Layer Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-8">
+            <div class="hub-card !items-start text-left border-l-4 border-rose-500 bg-[var(--hub-card)] grid-bg">
+                <h3 class="text-2xl font-black uppercase tracking-widest mb-6 text-[var(--hub-text)]">🔒 Encryption &
+                    Privacy</h3>
+                <p
+                    class="text-[13px] text-[var(--hub-sub)] font-black leading-relaxed uppercase tracking-wider text-justify opacity-90">
+                    EmotionAI uses <span class="text-rose-500 font-black">advanced encryption protocols</span> to ensure
+                    user data remains private and secure from ingestion to archival.
+                    All data (text, image, webcam) is handled with <span class="text-rose-500 font-black">strict privacy
+                        standards</span>, ensuring transparency and trust within the monitored grid.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div
+                    class="p-6 bg-[var(--hub-card)] rounded-3xl border border-[var(--hub-border)] hover:border-rose-500/30 transition-all shadow-sm">
+                    <i class="fas fa-lock text-rose-500 mb-4 text-xl"></i>
+                    <h5 class="text-[11px] font-black uppercase mb-3 text-rose-600">Data Archival Security</h5>
+                    <p class="text-[10px] text-[var(--hub-sub)] font-black leading-relaxed uppercase opacity-70">Secure
+                        encryption of all stored behavioral logs and neural diagnostics datasets.</p>
+                </div>
+                <div
+                    class="p-6 bg-[var(--hub-card)] rounded-3xl border border-[var(--hub-border)] hover:border-emerald-500/30 transition-all shadow-sm">
+                    <i class="fas fa-network-wired text-emerald-500 mb-4 text-xl"></i>
+                    <h5 class="text-[11px] font-black uppercase mb-3 text-emerald-600">Protected Transmission</h5>
+                    <p class="text-[10px] text-[var(--hub-sub)] font-black leading-relaxed uppercase opacity-70">Neural
+                        transmission channels protected against unauthorized third-party infiltration.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔑 KEY SECURITY PILLARS -->
+    <div class="mt-16 bg-[var(--hub-card)] border border-[var(--hub-border)] rounded-[4rem] p-12 shadow-xl">
+        <h4
+            class="text-[11px] font-black uppercase tracking-[0.5em] mb-12 text-[var(--hub-text)] opacity-60 text-center">
+            Neural Governance Pillars</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+            <div class="space-y-4">
+                <div
+                    class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h5 class="text-[11px] font-black uppercase tracking-widest text-rose-600">Data Privacy</h5>
+                <p class="text-[10px] text-[var(--hub-sub)] font-black uppercase leading-loose opacity-70">Local
+                    Processing. Zero-Persistence Privacy.</p>
+            </div>
+            <div class="space-y-4">
+                <div
+                    class="w-12 h-12 rounded-full bg-sky-500/10 text-sky-500 flex items-center justify-center mx-auto mb-4 border border-sky-500/20">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <h5 class="text-[11px] font-black uppercase tracking-widest text-sky-600">Authenticity</h5>
+                <p class="text-[10px] text-[var(--hub-sub)] font-black uppercase leading-loose opacity-70">Secure Model
+                    Deployment. Integrity Checks.</p>
+            </div>
+            <div class="space-y-4">
+                <div
+                    class="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h5 class="text-[11px] font-black uppercase tracking-widest text-emerald-600">Ethical AI</h5>
+                <p class="text-[10px] text-[var(--hub-sub)] font-black uppercase leading-loose opacity-70">Algorithmic
+                    Bias Shield. Fairness Audits.</p>
+            </div>
+            <div class="space-y-4">
+                <div
+                    class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-4 border border-amber-500/20">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h5 class="text-[11px] font-black uppercase tracking-widest text-amber-600">E2EE Logs</h5>
+                <p class="text-[10px] text-[var(--hub-sub)] font-black uppercase leading-loose opacity-70">Encrypted
+                    Analytics. Secured Data Flow.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📜 DETAILED COMPLIANCE -->
+    <div
+        class="p-10 bg-rose-500/5 rounded-[3rem] border border-rose-500/10 text-[12px] font-black leading-relaxed uppercase tracking-wider text-[var(--hub-sub)] text-justify opacity-80 mt-12">
+        EmotionAI prioritizes user trust by maintaining a transparent and secure AI ecosystem.
+        The system follows best practices aligned with international data privacy standards and ethical AI guidelines,
+        ensuring that our multi-modal emotion recognition system operates with the highest security integrity.
+    </div>
+</div>
+{% endblock %}

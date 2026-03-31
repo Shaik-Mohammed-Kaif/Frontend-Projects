@@ -1,0 +1,58 @@
+[
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "2.006s",
+        "timestamp": "2026-03-06T15:59:38.589181"
+    },
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "2.474s",
+        "timestamp": "2026-03-09T15:51:51.464414"
+    },
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "7.449s",
+        "timestamp": "2026-03-13T15:58:19.190034"
+    },
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "4.520s",
+        "timestamp": "2026-03-13T16:27:18.887338"
+    },
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "2.059s",
+        "timestamp": "2026-03-13T16:35:39.068983"
+    },
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "7.805s",
+        "timestamp": "2026-03-16T14:08:12.095210"
+    },
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "6.307s",
+        "timestamp": "2026-03-16T16:03:25.897355"
+    },
+    {
+        "user_id": 2,
+        "dataset_name": "test_emotion_dataset.csv",
+        "rows_processed": 50,
+        "processing_time": "12.649s",
+        "timestamp": "2026-03-17T21:52:44.108786"
+    }
+]

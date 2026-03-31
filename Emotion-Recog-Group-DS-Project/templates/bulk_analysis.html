@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1200px; padding: 16px; margin: 0 auto;">
+    <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Macro Dataset Data Science Evaluator</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 32px;">Automated multi-metric analytics processing and
+        visualization for large scale uploads.</p>
+
+    <div class="glass-panel"
+        style="margin-bottom: 32px; border: 2px dashed var(--border-color); text-align: center; padding: 48px; border-radius: 16px;">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="color: var(--accent); margin-bottom: 16px;">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+        </svg>
+        <h3 style="margin-bottom: 8px;">Mount Dataset Container</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px;">Automatically detects mapped
+            ground-truth structures for advanced Precision/Recall & Confusion metrics rendering.</p>
+        <input type="file" id="bulk-input" style="display: none;" accept=".csv,.json,.txt,.xlsx">
+        <button class="neon-btn primary" onclick="document.getElementById('bulk-input').click()">Upload Structured
+            Data</button>
+    </div>
+
+    <div id="bulk-loading" style="display:none; text-align:center; padding: 32px;">
+        <div class="loader" style="width: 48px; border-width: 6px; margin: 0 auto 16px;"></div>
+        <p style="color: var(--accent);">Processing Nodes via Data Science Pipelines (Transformer/SVM)...</p>
+    </div>
+
+    <div id="bulk-results" style="display:none;">
+        <div class="dashboard-metrics">
+            <div class="glass-panel metric-card">
+                <h3>Global Accuracy</h3>
+                <div id="metric-acc" class="val" style="color: var(--emo-joy);">--%</div>
+                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">True Positives</div>
+            </div>
+            <div class="glass-panel metric-card">
+                <h3>Precision F1-Score</h3>
+                <div id="metric-f1" class="val" style="color: var(--accent);">--</div>
+                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">Harmonic Mean</div>
+            </div>
+            <div class="glass-panel metric-card">
+                <h3>Variance Bias</h3>
+                <div id="metric-var" class="val" style="color: var(--emo-fear);">--</div>
+                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">Distribution Entropy:
+                    <span id="metric-ent">--</span></div>
+            </div>
+            <div class="glass-panel metric-card">
+                <h3>Active Predictor</h3>
+                <div id="bulk-model" class="val" style="font-size: 1.2rem; color: var(--text-primary);">--</div>
+                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary);">Processed: <span
+                        id="bulk-count">--</span></div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;">
+            <div class="glass-panel" style="min-height: 400px;">
+                <h3 style="color: var(--text-secondary); margin-bottom: 16px;">Prediction Clustering Density (Pie)</h3>
+                <div id="chart-pie" style="height: 350px;"></div>
+            </div>
+            <div class="glass-panel" style="min-height: 400px;">
+                <h3 style="color: var(--text-secondary); margin-bottom: 16px;">Confusion Matrix Mapping</h3>
+                <div id="chart-heatmap" style="height: 350px;"></div>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <h3 style="color: var(--text-secondary); margin-bottom: 16px;">Deep Inference Log Target <span
+                    style="font-size:0.8rem; color:var(--text-secondary); font-weight:400;">(First 50 Rows)</span></h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                <thead>
+                    <tr
+                        style="border-bottom: 1px solid var(--border-color); text-align: left; color: var(--text-secondary);">
+                        <th style="padding: 12px 0;">Context String</th>
+                        <th>Synthetic Prediction</th>
+                        <th>Abs. Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="bulk-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('bulk-input');
+    input.addEventListener('change', async () => {
+        if (!input.files[0]) return;
+        const fd = new FormData(); fd.append('file', input.files[0]);
+
+        document.getElementById('bulk-loading').style.display = 'block';
+        document.getElementById('bulk-results').style.display = 'none';
+
+        const resp = await fetch('/bulk', { method: 'POST', body: fd });
+        const data = await resp.json();
+
+        document.getElementById('bulk-loading').style.display = 'none';
+        if (!data.error) {
+            document.getElementById('bulk-results').style.display = 'block';
+
+            document.getElementById('bulk-model').innerText = data.model_used;
+            document.getElementById('bulk-count').innerText = data.total_processed;
+
+            document.getElementById('metric-var').innerText = data.ds.variance.toFixed(4);
+            document.getElementById('metric-ent').innerText = data.ds.entropy.toFixed(3);
+
+            if (data.metrics && data.metrics.accuracy !== undefined) {
+                document.getElementById('metric-acc').innerText = (data.metrics.accuracy * 100).toFixed(1) + '%';
+                document.getElementById('metric-f1').innerText = data.metrics.f1.toFixed(3);
+
+                // Plotly Heatmap
+                if (data.metrics.cm) {
+                    Plotly.newPlot('chart-heatmap', [{
+                        z: data.metrics.cm, x: data.metrics.labels, y: data.metrics.labels,
+                        type: 'heatmap', colorscale: 'Blues'
+                    }], {
+                        paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                        font: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') },
+                        margin: { t: 10, b: 40, l: 40, r: 10 }
+                    }, { responsive: true });
+                }
+            } else {
+                document.getElementById('metric-acc').innerText = "N/A (No Ground Truth)";
+                document.getElementById('metric-f1').innerText = "--";
+                document.getElementById('chart-heatmap').innerHTML = '<p style="color:#6b7280; text-align:center; padding-top:100px;">Requires label column for Heatmap Structure</p>';
+            }
+
+            Plotly.newPlot('chart-pie', [{
+                values: Object.values(data.y_pred), labels: Object.keys(data.y_pred),
+                type: 'pie', hole: .4, title: 'Network Density'
+            }], {
+                paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                font: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') },
+                margin: { t: 0, b: 0, l: 0, r: 0 }
+            }, { responsive: true });
+
+            const tbody = document.getElementById('bulk-tbody');
+            tbody.innerHTML = '';
+            data.results.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+                tr.innerHTML = `
+                    <td style="padding: 12px 0; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.text}</td>
+                    <td><span class="badge badge-${r.emotion}">${r.emotion}</span></td>
+                    <td style="font-weight: 700; color: var(--accent);">${(r.confidence * 100).toFixed(1)}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    });
+</script>
+{% endblock %}

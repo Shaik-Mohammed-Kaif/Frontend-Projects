@@ -1,0 +1,152 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Administrative Community Hub{% endblock %}
+
+{% block admin_content %}
+<style>
+    .node-pulse {
+        animation: node-glow 5s ease-in-out infinite;
+    }
+
+    @keyframes node-glow {
+
+        0%,
+        100% {
+            filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.3));
+            transform: scale(1);
+        }
+
+        50% {
+            filter: drop-shadow(0 0 35px rgba(99, 102, 241, 0.6));
+            transform: scale(1.03);
+        }
+    }
+
+    .line-flow {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .line-flow::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #6366f1, transparent);
+        animation: flow 3s linear infinite;
+    }
+
+    @keyframes flow {
+        0% {
+            left: -100%;
+        }
+
+        100% {
+            left: 100%;
+        }
+    }
+</style>
+
+<div class="max-w-6xl mx-auto space-y-12 pb-32">
+    <div class="flex justify-between items-center mb-10 border-b border-[var(--hub-border)] pb-8">
+        <div class="hub-card !p-0 !bg-transparent !border-0 text-left">
+            <h2 class="text-3xl font-black uppercase tracking-tighter mb-2 text-[var(--hub-text)]">Control Community
+            </h2>
+            <p class="text-[10px] text-[var(--hub-sub)] font-bold uppercase tracking-widest leading-relaxed opacity-80">
+                Admin Resource: Monitored Emotional Ecosystem</p>
+        </div>
+        <a href="{{ url_for('admin.dashboard') }}"
+            class="px-10 py-4 bg-[var(--hub-card)] border border-[var(--hub-border)] rounded-2xl text-[11px] font-black uppercase text-[var(--hub-text)] hover:scale-105 hover:border-indigo-500/50 transition-all shadow-2xl flex items-center gap-3">
+            <i class="fas fa-th-large text-indigo-500"></i> Return to Command Dashboard
+        </a>
+    </div>
+
+    <!-- 🌐 COMMUNITY VISUAL HUB -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-12 xl:col-span-5">
+            <div
+                class="relative group p-4 bg-indigo-500/5 rounded-[4rem] border border-indigo-500/10 node-pulse shadow-[0_0_100px_rgba(99,102,241,0.05)]">
+                <img src="/admin/internal/visuals/community_monitoring_visual_1774882696626.png"
+                    class="w-full h-auto rounded-[3.5rem] filter contrast-125 saturate-150 shadow-2xl"
+                    alt="Community Monitoring Visualization">
+                <div
+                    class="absolute inset-0 rounded-[3.5rem] bg-gradient-to-b from-transparent via-transparent to-black/60 flex items-end p-12">
+                    <div class="mt-auto">
+                        <span
+                            class="px-6 py-2 bg-indigo-600 text-[10px] font-black uppercase rounded-xl tracking-[0.2em] text-white shadow-xl">Ecosystem
+                            Monitored</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-12 xl:col-span-7 space-y-10">
+            <div class="hub-card !items-start text-left border-l-4 border-indigo-500 bg-[var(--hub-card)] line-flow">
+                <h3 class="text-2xl font-black uppercase tracking-widest mb-6 text-[var(--hub-text)]">Monitored
+                    Behavioral Ecosystem</h3>
+                <p
+                    class="text-[14px] text-[var(--hub-sub)] font-black leading-relaxed uppercase tracking-wider text-justify opacity-90">
+                    EmotionAI provides a <span class="text-indigo-500 font-black">controlled community
+                        environment</span> for selective monitoring,
+                    proactive collaboration, and iterative system feedback.
+                    Users are part of a <span class="text-indigo-500 font-black">monitored ecosystem</span> where unsafe
+                    patterns
+                    dynamically trigger administrative alerts for immediate intervention.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div
+                    class="p-8 bg-[var(--hub-card)] rounded-4xl border border-[var(--hub-border)] hover:border-indigo-500/30 transition-all group shadow-sm">
+                    <i
+                        class="fas fa-satellite-dish text-indigo-500 mb-6 text-2xl group-hover:scale-110 transition-transform"></i>
+                    <h5 class="text-[11px] font-black uppercase mb-4 text-indigo-600 tracking-widest">Real-time
+                        Monitoring</h5>
+                    <p class="text-[10px] text-[var(--hub-sub)] font-black leading-loose uppercase opacity-70">
+                        Aggregating emotion-based alert tracking across all nodes to detect abnormal behavior spikes.
+                    </p>
+                </div>
+                <div
+                    class="p-8 bg-[var(--hub-card)] rounded-4xl border border-[var(--hub-border)] hover:border-amber-500/30 transition-all group shadow-sm">
+                    <i
+                        class="fas fa-shield-virus text-amber-500 mb-6 text-2xl group-hover:scale-110 transition-transform"></i>
+                    <h5 class="text-[11px] font-black uppercase mb-4 text-amber-600 tracking-widest">Community Safety
+                    </h5>
+                    <p class="text-[10px] text-[var(--hub-sub)] font-black leading-loose uppercase opacity-70">Proactive
+                        hazard detection preventing the misuse of emotional intelligence within shared environments.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎯 SYSTEM OBJECTIVES -->
+    <div class="p-12 mt-20 bg-[var(--hub-card)] border border-[var(--hub-border)] rounded-[5rem] text-center shadow-xl">
+        <h4 class="text-[11px] font-black uppercase tracking-[0.5em] mb-16 text-[var(--hub-text)] opacity-60">
+            Operational Strategic Goals</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="p-8 rounded-4xl bg-[var(--bg-panel)] border border-[var(--hub-border)]">
+                <p class="text-5xl text-indigo-600 font-black mb-4">A1</p>
+                <p class="text-[10px] font-black uppercase text-[var(--hub-sub)] tracking-widest opacity-80">Anomaly
+                    Capture</p>
+            </div>
+            <div class="p-8 rounded-4xl bg-[var(--bg-panel)] border border-[var(--hub-border)]">
+                <p class="text-5xl text-emerald-600 font-black mb-4">M0</p>
+                <p class="text-[10px] font-black uppercase text-[var(--hub-sub)] tracking-widest opacity-80">Master
+                    Oversight</p>
+            </div>
+            <div class="p-8 rounded-4xl bg-[var(--bg-panel)] border border-[var(--hub-border)]">
+                <p class="text-5xl text-rose-600 font-black mb-4">T9</p>
+                <p class="text-[10px] font-black uppercase text-[var(--hub-sub)] tracking-widest opacity-80">Threat
+                    Intercept</p>
+            </div>
+        </div>
+        <div
+            class="mt-20 p-12 bg-indigo-500/5 rounded-4xl border border-indigo-500/10 text-[12px] font-black leading-relaxed uppercase tracking-wider text-[var(--hub-sub)] text-center opacity-80">
+            The ultimate objective is to maintain a safe, intelligent, and responsive emotional ecosystem powered by AI,
+            where data insights proactively improve system accuracy and community safety protocols.
+        </div>
+    </div>
+</div>
+{% endblock %}

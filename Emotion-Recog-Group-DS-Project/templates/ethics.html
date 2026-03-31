@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}AI Ethics Framework | EmotionAI Platform{% endblock %}
+
+{% block content %}
+<style>
+    .ethics-glow {
+        animation: soft-pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes soft-pulse {
+
+        0%,
+        100% {
+            filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.2));
+            opacity: 0.9;
+        }
+
+        50% {
+            filter: drop-shadow(0 0 30px rgba(16, 185, 129, 0.4));
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="max-w-7xl mx-auto py-16 px-6 pb-32">
+    <!-- ETHICS HERO -->
+    <div class="grid lg:grid-cols-2 gap-16 items-center mb-24">
+        <div class="text-left space-y-8">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500">Trusted AI
+                    Charter</span>
+            </div>
+            <h1
+                class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-[var(--text-primary)]">
+                Neural Ethics <br><span class="text-emerald-500">Framework</span></h1>
+            <p class="text-lg text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                Our commitment to humanity starts with ethical intelligence. We ensure that every neural inference is
+                grounded in fairness, transparency, and the absolute protection of human dignity.
+            </p>
+        </div>
+        <div class="relative group">
+            <div
+                class="absolute -inset-4 bg-emerald-500/10 rounded-[3rem] blur-3xl opacity-50 group-hover:opacity-100 transition-all">
+            </div>
+            <img src="/assets/public_ethics_hero_1774892640388.png"
+                class="relative w-full h-auto rounded-[2.5rem] shadow-2xl border border-white/5 ethics-glow filter saturate-125 hover:scale-[1.02] transition-transform duration-700"
+                alt="Ethics Framework Visual">
+        </div>
+    </div>
+
+    <!-- ETHICAL PILLARS -->
+    <div class="grid md:grid-cols-2 gap-12">
+        <div
+            class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] border-l-4 border-l-emerald-500 group">
+            <h3
+                class="text-2xl font-black mb-4 group-hover:text-emerald-500 transition-colors uppercase tracking-tight text-[var(--text-primary)]">
+                01. Algorithmic Fairness</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                We utilize diverse and balanced datasets to mitigate socio-demographic bias in emotion detection,
+                ensuring equitable results across all human spectrums.
+            </p>
+        </div>
+
+        <div
+            class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] border-l-4 border-l-amber-500 group">
+            <h3
+                class="text-2xl font-black mb-4 group-hover:text-amber-500 transition-colors uppercase tracking-tight text-[var(--text-primary)]">
+                02. Human Oversight</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                AI is an assistant, not a controller. We maintain human-in-the-loop protocols for all critical security
+                interventions and behavioral auditing sequences.
+            </p>
+        </div>
+
+        <div
+            class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] border-l-4 border-l-sky-500 group">
+            <h3
+                class="text-2xl font-black mb-4 group-hover:text-sky-500 transition-colors uppercase tracking-tight text-[var(--text-primary)]">
+                03. Radical Transparency</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                Clear visibility into how neural decisions are made. We do not operate inside "black boxes"—our
+                inference pathways are documented and auditable.
+            </p>
+        </div>
+
+        <div
+            class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] border-l-4 border-l-rose-500 group">
+            <h3
+                class="text-2xl font-black mb-4 group-hover:text-rose-500 transition-colors uppercase tracking-tight text-[var(--text-primary)]">
+                04. Anti-Surveillance</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                EmotionAI strictly prohibits the integration of our models into passive, unconsented surveillance
+                systems. We stand for privacy-first intelligence.
+            </p>
+        </div>
+    </div>
+
+    <!-- RETURN ACTION -->
+    <div class="mt-24 text-center">
+        <a href="{{ url_for('auth.home') }}"
+            class="inline-flex items-center gap-3 px-10 py-4 bg-[var(--bg-panel)] border border-[var(--border)] rounded-2xl text-[11px] font-black uppercase text-[var(--text-primary)] hover:border-emerald-500/50 hover:scale-105 transition-all shadow-xl">
+            <i class="fas fa-home text-emerald-500"></i> Return to Infrastructure Home Hub
+        </a>
+    </div>
+</div>
+{% endblock %}

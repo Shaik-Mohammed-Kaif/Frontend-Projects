@@ -1,0 +1,51 @@
+id,text,label,Predicted_Emotion,Confidence
+1,I am feeling very happy today,Happy,Happy,99.22
+2,This is the best day of my life,Happy,Happy,98.05
+3,I love spending time with my friends,Happy,Happy,99.1
+4,Everything is going perfectly today,Happy,Neutral,70.95
+5,I just got great news from work,Happy,Happy,86.16
+6,I feel proud of my achievements,Happy,Happy,98.42
+7,I am enjoying this beautiful weather,Happy,Happy,99.33
+8,My family makes me very happy,Happy,Happy,98.15
+9,I feel joyful and excited today,Happy,Happy,99.46
+10,I finally achieved my goal,Happy,Happy,94.49
+11,I feel very sad about what happened,Sad,Sad,98.54
+12,I miss my old friends so much,Sad,Sad,98.78
+13,Today feels very depressing,Sad,Sad,98.52
+14,I am heartbroken and lonely,Sad,Sad,98.86
+15,Nothing seems to make me happy anymore,Sad,Happy,83.24
+16,I lost something important today,Sad,Sad,94.01
+17,I feel emotional and down today,Sad,Sad,98.54
+18,I feel very disappointed,Sad,Sad,98.6
+19,Life feels difficult right now,Sad,Sad,87.14
+20,I feel empty inside,Sad,Sad,98.28
+21,I am very angry about this situation,Angry,Angry,98.81
+22,This makes me furious,Angry,Angry,98.57
+23,I cannot tolerate this nonsense,Angry,Angry,91.39
+24,I am extremely irritated today,Angry,Angry,95.72
+25,This problem is making me angry,Angry,Angry,98.28
+26,I feel rage building inside me,Angry,Angry,99.48
+27,I am frustrated with everything,Angry,Angry,96.73
+28,This is completely unacceptable,Angry,Disgust,56.25
+29,I hate when this happens,Angry,Angry,60.19
+30,I am losing my patience,Angry,Sad,51.53
+31,I feel scared about the future,Fear,Fear,99.53
+32,This situation makes me nervous,Fear,Fear,98.43
+33,I feel anxious and worried,Fear,Fear,99.35
+34,I am afraid something bad will happen,Fear,Fear,99.15
+35,I feel uneasy and frightened,Fear,Fear,99.46
+36,This place feels very creepy,Fear,Fear,70.14
+37,I am terrified of what might happen,Fear,Fear,99.43
+38,I feel panic in this moment,Fear,Fear,99.42
+39,I am worried about tomorrow,Fear,Fear,98.21
+40,I feel extremely nervous,Fear,Fear,99.45
+41,I am just working on my tasks today,Neutral,Neutral,90.13
+42,Today is a normal day,Neutral,Neutral,81.32
+43,I completed my routine work,Neutral,Happy,80.41
+44,I am sitting in the office,Neutral,Surprise,64.24
+45,I am reading a book right now,Neutral,Happy,79.43
+46,I did not expect this surprise,Surprise,Surprise,96.34
+47,Wow this is unbelievable,Surprise,Surprise,97.66
+48,That was completely unexpected,Surprise,Surprise,96.69
+49,This situation is disgusting,Disgust,Disgust,98.67
+50,That smell is horrible and disgusting,Disgust,Disgust,97.89

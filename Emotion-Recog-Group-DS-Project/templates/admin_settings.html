@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}System Settings | Admin Panel{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+    <div class="dashboard-card border-l-4 border-[var(--accent)]">
+        <div class="card-header">
+            <h3 class="card-title">🚨 Alert System Configuration</h3>
+        </div>
+
+        <form method="POST" class="p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Admin Email -->
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Notification
+                        Recipient</label>
+                    <input type="email" name="admin_email" value="{{ settings.admin_email }}"
+                        class="w-full bg-[var(--bg-main)] border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--text-primary)] focus:border-[var(--btn-primary)] outline-none"
+                        required placeholder="admin@example.com">
+                </div>
+
+                <!-- Alert Toggle -->
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Surveillance
+                        Alert Status</label>
+                    <div class="flex items-center gap-3 py-3">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="alert_enabled" class="sr-only peer" {% if
+                                settings.alert_enabled %}checked{% endif %}>
+                            <div
+                                class="w-11 h-6 bg-[var(--border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--btn-primary)]">
+                            </div>
+                        </label>
+                        <span class="text-sm font-bold text-[var(--text-primary)]">Enable Automatic Notifications</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-[var(--border)]">
+                <button type="submit" class="btn-primary px-8">Update Security Protocol</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Alert Condition Info -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="dashboard-card p-6 bg-rose-500/5 border border-rose-500/20">
+            <i class="fas fa-angry text-rose-500 mb-3 text-xl"></i>
+            <h4 class="text-sm font-bold text-rose-500 uppercase tracking-widest mb-1">Critical: Angry</h4>
+            <p class="text-xs text-[var(--text-secondary)]">Triggers immediate SMTP alert and visual strobe.</p>
+        </div>
+        <div class="dashboard-card p-6 bg-amber-500/5 border border-amber-500/20">
+            <i class="fas fa-ghost text-amber-500 mb-3 text-xl"></i>
+            <h4 class="text-sm font-bold text-amber-500 uppercase tracking-widest mb-1">Critical: Fear</h4>
+            <p class="text-xs text-[var(--text-secondary)]">Triggers biometric security alert logic.</p>
+        </div>
+        <div class="dashboard-card p-6 bg-blue-500/5 border border-blue-500/20">
+            <i class="fas fa-sad-tear text-blue-500 mb-3 text-xl"></i>
+            <h4 class="text-sm font-bold text-blue-500 uppercase tracking-widest mb-1">Critical: Sad</h4>
+            <p class="text-xs text-[var(--text-secondary)]">Triggers psychological assistance flag.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

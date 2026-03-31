@@ -1,0 +1,137 @@
+/* 
+  🚀 SIMPLE EMOTION AI DASHBOARD - CLEAN UI/UX 
+  Style: Minimalist Enterprise SaaS
+*/
+
+:root {
+    --dash-card-bg: var(--bg-panel);
+    --dash-border: var(--border);
+    --dash-text: var(--text-primary);
+    --dash-text-sec: var(--text-secondary);
+    --dash-blue: #2563eb;
+    --dash-gray: #64748b;
+}
+
+.dashboard-simple {
+    color: var(--dash-text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Minimalist Cards */
+.clean-card {
+    background: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.clean-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--dash-text-sec);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--dash-text);
+    line-height: 1.2;
+}
+
+/* Simple Table */
+.simple-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.simple-table th {
+    text-align: left;
+    padding: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--dash-text-sec);
+    border-bottom: 2px solid var(--dash-border);
+    text-transform: uppercase;
+}
+
+.simple-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--dash-border);
+    font-size: 0.875rem;
+}
+
+.simple-table tr:hover td {
+    background: var(--bg-soft);
+}
+
+/* Module Grid */
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.module-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--dash-text);
+    border-radius: 12px;
+    border: 1px solid var(--dash-border);
+    background: var(--dash-card-bg);
+    transition: all 0.2s ease;
+}
+
+.module-card:hover {
+    border-color: var(--dash-blue);
+    background: var(--bg-soft);
+    transform: translateY(-2px);
+}
+
+.module-card i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--dash-blue);
+}
+
+.module-card span {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Chart Container */
+.chart-box {
+    padding: 1rem;
+    background: var(--dash-card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--dash-border);
+}
+
+/* Webcam Placeholder (Neutral) */
+.webcam-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #1e293b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+}
+
+.webcam-placeholder i {
+    font-size: 4rem;
+}

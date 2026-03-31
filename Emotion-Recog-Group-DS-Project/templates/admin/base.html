@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block page_name %}Smart Admin Emotion Analytics Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        /* 🌑 MASTER DARK (DEFAULT) */
+        --hub-bg: #030712;
+        --hub-card: #111827;
+        --hub-panel: #0f172a;
+        --hub-text: #ffffff;
+        --hub-sub: #9ca3af;
+        --hub-border: rgba(255, 255, 255, 0.05);
+        --hub-accent: #6366f1;
+        --hub-nav: rgba(3, 7, 18, 0.9);
+        --bg-panel: var(--hub-panel);
+    }
+
+    /* ⚪ PURE WHITE (ULTRA CONTRAST) */
+    [data-theme='light'] {
+        --hub-bg: #ffffff;
+        --hub-card: #f8fafc;
+        --hub-panel: #fcfcfc;
+        --hub-text: #000000;
+        --hub-sub: #475569;
+        --hub-border: #e2e8f0;
+        --hub-accent: #2563eb;
+        --hub-nav: #ffffff;
+        --bg-panel: var(--hub-panel);
+    }
+
+    /* 🍦 CREAM PISTA (ULTRA CONTRAST) */
+    [data-theme='cream'] {
+        --hub-bg: #fdfaf0;
+        --hub-card: #f5f5e6;
+        --hub-panel: #fcfcf5;
+        --hub-text: #064e3b;
+        --hub-sub: #44403c;
+        --hub-border: #dcd5c0;
+        --hub-accent: #059669;
+        --hub-nav: #fdfdf5;
+        --bg-panel: var(--hub-panel);
+    }
+
+    body {
+        background: var(--hub-bg) !important;
+        color: var(--hub-text) !important;
+        font-family: 'Outfit', sans-serif;
+        transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    /* 🌓 MASTER THEME ELEMENT OVERRIDES */
+    [data-theme='dark'] h1,
+    [data-theme='dark'] h2,
+    [data-theme='dark'] h3,
+    [data-theme='dark'] h4,
+    [data-theme='dark'] h5,
+    [data-theme='dark'] h6,
+    [data-theme='dark'] p,
+    [data-theme='dark'] b,
+    [data-theme='dark'] th,
+    [data-theme='dark'] td,
+    [data-theme='dark'] span,
+    [data-theme='dark'] a {
+        color: #ffffff !important;
+    }
+
+    [data-theme='light'] h1,
+    [data-theme='light'] h2,
+    [data-theme='light'] h3,
+    [data-theme='light'] h4,
+    [data-theme='light'] h5,
+    [data-theme='light'] h6,
+    [data-theme='light'] p,
+    [data-theme='light'] b,
+    [data-theme='light'] th,
+    [data-theme='light'] td,
+    [data-theme='light'] span,
+    [data-theme='light'] a,
+    [data-theme='light'] label {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+
+    [data-theme='cream'] h1,
+    [data-theme='cream'] h2,
+    [data-theme='cream'] h3,
+    [data-theme='cream'] h4,
+    [data-theme='cream'] h5,
+    [data-theme='cream'] h6,
+    [data-theme='cream'] p,
+    [data-theme='cream'] b,
+    [data-theme='cream'] th,
+    [data-theme='cream'] td,
+    [data-theme='cream'] span,
+    [data-theme='cream'] a,
+    [data-theme='cream'] label {
+        color: #064e3b !important;
+        font-weight: 700 !important;
+    }
+
+    /* 🛡️ STRUCTURE & LAYOUT */
+    .sidebar {
+        display: none !important;
+    }
+
+    main.content>header {
+        display: none !important;
+    }
+
+    .content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .hub-card {
+        background: var(--hub-card);
+        border: 1px solid var(--hub-border);
+        border-radius: 28px;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transition: all 0.4s ease;
+    }
+
+    .hub-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--hub-accent);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-header {
+        background: var(--hub-nav);
+        backdrop-filter: blur(15px);
+        border-bottom: 2px solid var(--hub-border);
+        padding: 1.25rem 5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .theme-cyclic-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: var(--hub-card);
+        border: 2px solid var(--hub-border);
+        color: var(--hub-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .theme-cyclic-btn:hover {
+        transform: scale(1.1) rotate(15deg);
+        background: var(--hub-accent);
+        color: white;
+    }
+
+    .hub-logo {
+        font-weight: 900;
+        font-size: 1.5rem;
+        letter-spacing: -0.05em;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logo-point {
+        width: 12px;
+        height: 12px;
+        border-radius: 4px;
+        background: var(--hub-accent);
+        animation: pulse-ring 2s infinite;
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            transform: scale(0.8);
+            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+        }
+
+        70% {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+        }
+
+        100% {
+            transform: scale(0.8);
+        }
+    }
+</style>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<header class="admin-header">
+    <div class="hub-logo">
+        <div class="logo-point"></div>
+        <span class="font-black text-[var(--hub-text)]">SMART <span class="opacity-60">ADMIN</span></span>
+    </div>
+
+    <div class="flex items-center gap-8">
+        <div id="riskAlarm"
+            class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500">
+            <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+            <span class="text-[9px] font-black uppercase tracking-widest">CRITICAL ANOMALY</span>
+        </div>
+
+        <button onclick="cycleTheme()" class="theme-cyclic-btn" id="themeCyclicBtn" title="Cycle Intelligence Theme">
+            <i class="fas fa-palette"></i>
+        </button>
+
+        <div class="h-8 w-px bg-slate-300"></div>
+
+        <div
+            class="flex items-center gap-4 bg-[var(--bg-panel)] hover:bg-black/5 transition-all px-4 py-2 rounded-2xl border border-[var(--hub-border)] cursor-pointer group">
+            <div
+                class="w-9 h-9 rounded-xl bg-indigo-500 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+                {{ session.get('user_name')[0]|upper if session.get('user_name') else 'A' }}
+            </div>
+            <div class="hidden md:block">
+                <p class="text-[11px] font-black text-[var(--hub-text)] leading-tight">{{ session.get('user_name') }}
+                </p>
+                <p class="text-[9px] font-black opacity-60 text-[var(--hub-text)] uppercase tracking-widest">Master
+                    Admin</p>
+            </div>
+        </div>
+
+        <a href="{{ url_for('auth.logout') }}"
+            class="w-10 h-10 rounded-xl bg-rose-500/5 text-rose-400 border border-rose-500/10 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all">
+            <i class="fas fa-power-off"></i>
+        </a>
+    </div>
+</header>
+
+<div class="p-16 max-w-[1600px] mx-auto animate-fade-in" id="hubMainContainer">
+    {% block admin_content %}{% endblock %}
+</div>
+
+<script>
+    const themes = ['dark', 'light', 'cream'];
+
+    function cycleTheme() {
+        const body = document.documentElement;
+        let current = body.getAttribute('data-theme') || 'dark';
+        let nextIndex = (themes.indexOf(current) + 1) % themes.length;
+        let next = themes[nextIndex];
+
+        body.setAttribute('data-theme', next);
+        localStorage.setItem('hub-theme', next);
+
+        if (typeof initSmartHubAnalytics === 'function') initSmartHubAnalytics();
+    }
+
+    const saved = localStorage.getItem('hub-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+</script>
+{% endblock %}

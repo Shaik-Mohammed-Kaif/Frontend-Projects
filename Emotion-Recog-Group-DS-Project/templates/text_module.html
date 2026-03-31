@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+
+{% block title %}Text Intelligence{% endblock %}
+{% block extra_css %}
+<style>
+    .sentiment-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-top: 15px;
+    }
+
+    .chart-box {
+        width: 100%;
+        height: 380px;
+        /* Outer Box height */
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .full-width {
+        grid-column: span 2;
+        height: 480px;
+        /* Larger height for Line chart */
+    }
+
+    .chart-header-mini {
+        font-size: 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        letter-spacing: 0.1em;
+        margin-bottom: 15px;
+    }
+
+    .plotly-container {
+        flex: 1;
+        min-height: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .sentiment-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .full-width {
+            grid-column: span 1;
+        }
+    }
+</style>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+{% block page_name %}Text Intelligence{% endblock %}
+
+{% block header_actions %}
+<div class="flex gap-3">
+    <a href="/api/text/history/export/csv"
+        class="px-5 py-2.5 bg-[var(--bg-panel)] border border-[var(--border)] text-[var(--text-primary)] rounded-xl text-[11px] font-bold hover:bg-[var(--bg-main)] transition-all flex items-center gap-2.5 shadow-sm group">
+        <i class="fas fa-file-csv text-[var(--btn-primary)] transition-transform group-hover:scale-110"></i>
+        <span class="tracking-tight">Export CSV</span>
+    </a>
+    <a href="/api/text/history/export/json"
+        class="px-5 py-2.5 bg-[var(--bg-panel)] border border-[var(--border)] text-[var(--text-primary)] rounded-xl text-[11px] font-bold hover:bg-[var(--bg-main)] transition-all flex items-center gap-2.5 shadow-sm group">
+        <i class="fas fa-file-code text-indigo-400 transition-transform group-hover:scale-110"></i>
+        <span class="tracking-tight">Export JSON</span>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8 pb-12">
+
+    <!-- Processing Panel -->
+    <div class="dashboard-card border-l-4 border-[var(--btn-primary)]">
+        <div class="flex justify-between items-center mb-4">
+            <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Input Text
+                Buffer</span>
+            <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest"><span id="char-c"
+                    class="text-[var(--btn-primary)]">0</span> / 1000</span>
+        </div>
+        <textarea id="txt-input" rows="5"
+            class="w-full bg-[var(--bg-main)] border border-[var(--border)] rounded-xl p-6 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 focus:outline-none focus:border-[var(--btn-primary)] transition-all font-medium text-lg resize-none"
+            placeholder="Enter text for emotional decoding..."></textarea>
+
+        <!-- 🚀 RECENT SAMPLES (Step 7: Enhancement) -->
+        <div class="mt-4 flex flex-wrap gap-2 items-center">
+            <span
+                class="text-[9px] font-black text-[var(--text-secondary)] uppercase flex items-center mr-2">Recent:</span>
+            <div id="recent-samples-list" class="flex flex-wrap gap-2">
+                {% if text_data %}
+                {% for item in text_data[-5:]|reverse %}
+                <button onclick="setInputText(this.getAttribute('data-text'))" data-text="{{ item.text | e }}"
+                    class="px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-bold rounded-lg hover:bg-indigo-500/20 transition-all max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap flex items-center gap-2">
+                    <span class="opacity-50 text-[8px] uppercase">{{ item.language }}</span>
+                    {{ item.text }}
+                </button>
+                {% endfor %}
+                {% else %}
+                <span class="text-[10px] font-bold text-[var(--text-secondary)]/30 uppercase italic">No history
+                    yet</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="flex justify-end mt-4">
+            <button id="run-btn" class="btn-primary px-10 py-3.5 shadow-xl flex items-center gap-3">
+                <span id="btn-text">Analyze Text</span>
+                <i id="btn-icon" class="fas fa-bolt"></i>
+                <div id="btn-spin"
+                    class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Overview -->
+    <div id="res-box" class="hidden opacity-0 translate-y-4 transition-all duration-500 dashboard-grid">
+        <div class="col-span-12 md:col-span-4 dashboard-card p-6 border-b-4 border-[var(--btn-primary)]">
+            <div class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-2">Dominant
+                Emotion</div>
+            <div id="res-badge" class="text-3xl font-black text-[var(--text-primary)] uppercase">--</div>
+        </div>
+        <div class="col-span-12 md:col-span-4 dashboard-card p-6 border-b-4 border-indigo-400">
+            <div class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-2">Confidence
+                Level</div>
+            <div id="res-conf" class="text-3xl font-black text-[var(--text-primary)]">--%</div>
+        </div>
+        <div class="col-span-12 md:col-span-4 dashboard-card p-6 border-b-4 border-emerald-400">
+            <div class="flex justify-between items-start mb-2">
+                <div class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Metadata</div>
+                <div id="res-lang"
+                    class="hidden bg-[var(--bg-main)] px-2 py-0.5 rounded text-[8px] font-black text-[var(--text-primary)] border border-[var(--border)] uppercase">
+                    EN</div>
+            </div>
+            <div id="res-time" class="text-xl font-black text-[var(--text-secondary)]">--:--:--</div>
+        </div>
+    </div>
+
+    <!-- 🔥 Professional Sentiment Analytics (Requirement: Bar+Pie Top, Line Full Bottom) -->
+    <div class="space-y-6">
+        <h3 class="text-xs font-black text-[var(--text-secondary)] uppercase tracking-[0.3em] flex items-center gap-2">
+            <span class="w-4 h-1 bg-[var(--btn-primary)] rounded-full"></span> TEXT INTELLIGENCE ANALYTICS
+        </h3>
+
+        <div class="sentiment-grid">
+            <!-- Top Row: Volume & Spread -->
+            <div class="chart-box dashboard-card">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="chart-header-mini mb-0">Emotion Distribution (Bar)</div>
+                    <button onclick="downloadChart('chart-dist', 'png')"
+                        class="w-6 h-6 rounded flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--btn-primary)] hover:text-white transition-all">
+                        <i class="fas fa-image text-[10px]"></i>
+                    </button>
+                </div>
+                <div id="chart-dist" class="w-full h-full plotly-container"></div>
+            </div>
+
+            <div class="chart-box dashboard-card">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="chart-header-mini mb-0">Emotion Market Share (Pie)</div>
+                    <button onclick="downloadChart('chart-share', 'png')"
+                        class="w-6 h-6 rounded flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--btn-primary)] hover:text-white transition-all">
+                        <i class="fas fa-image text-[10px]"></i>
+                    </button>
+                </div>
+                <div id="chart-share" class="w-full h-full plotly-container"></div>
+            </div>
+
+            <!-- Bottom Row: Historical Trend -->
+            <div class="chart-box dashboard-card full-width">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="chart-header-mini mb-0">Confidence Historical Trend (Line)</div>
+                    <button onclick="downloadChart('chart-conf', 'png')"
+                        class="w-6 h-6 rounded flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--btn-primary)] hover:text-white transition-all">
+                        <i class="fas fa-image text-[10px]"></i>
+                    </button>
+                </div>
+                <div id="chart-conf" class="w-full h-full plotly-container"></div>
+            </div>
+
+            <!-- ☁️ NEW PLOT: USER PERSONAL WORD CLOUD (Requirement: "webapp user base text module word cloud") -->
+            <div class="chart-box dashboard-card full-width border-t-2 border-indigo-500/20">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="chart-header-mini mb-0">Personal Neural Word Manifold (Context Cloud)</div>
+                    <div class="flex gap-2">
+                        <button onclick="updateWordCloud()"
+                            class="w-6 h-6 rounded flex items-center justify-center text-[var(--text-secondary)] hover:bg-indigo-500 hover:text-white transition-all"
+                            title="Sync Neural Lexicon">
+                            <i class="fas fa-sync-alt text-[10px]"></i>
+                        </button>
+                        <button onclick="downloadChart('chart-wordcloud', 'png')"
+                            class="w-6 h-6 rounded flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--btn-primary)] hover:text-white transition-all"
+                            title="Download Manifold">
+                            <i class="fas fa-download text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="chart-wordcloud" class="w-full h-full plotly-container min-h-[400px]"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.setInputText = function (text) {
+        document.getElementById('txt-input').value = text;
+        document.getElementById('txt-input').focus();
+    };
+
+    window.downloadChart = function (id, format) {
+        Plotly.downloadImage(id, {
+            format: 'png',
+            width: 1200,
+            height: 800,
+            filename: 'EmotionAI_' + id + '_' + new Date().getTime()
+        });
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const emotionColors = {
+            'Happy': '#6366f1', 'Sad': '#3b82f6', 'Angry': '#f43f5e',
+            'Neutral': '#94a3b8', 'Fear': '#8b5cf6', 'Surprise': '#f59e0b',
+            'Disgust': '#64748b', 'Sarcasm': '#ec4899'
+        };
+
+        window.updatePageAnalytics = function (allData) {
+            try {
+                // ✅ Case-insensitive module filter fix
+                const textData = allData.filter(d => (d.module || '').toLowerCase() === 'text');
+
+                // 1. Update Recent Samples List Dynamically
+                const recentList = document.getElementById('recent-samples-list');
+                if (recentList && textData.length > 0) {
+                    const top5 = textData.slice(0, 5);
+                    recentList.innerHTML = top5.map(item => `
+                        <button onclick="setInputText(this.getAttribute('data-text'))" data-text="${item.text.replace(/"/g, '&quot;')}"
+                            class="px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-bold rounded-lg hover:bg-indigo-500/20 transition-all max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap flex items-center gap-2">
+                            <span class="opacity-50 text-[8px] uppercase">${item.language || 'en'}</span>
+                            ${item.text}
+                        </button>
+                    `).join('');
+                } else if (recentList) {
+                    recentList.innerHTML = '<span class="text-[10px] font-bold text-[var(--text-secondary)]/30 uppercase italic">No history yet</span>';
+                }
+
+                if (textData.length === 0) return;
+
+                const config = getThemeConfig();
+                const emotions = textData.map(d => d.emotion);
+                const confs = textData.map(d => (d.confidence || 0) * 100);
+                const times = textData.map(d => {
+                    if (!d.timestamp) return '--';
+                    try {
+                        const dateObj = new Date(d.timestamp);
+                        const datePart = dateObj.toISOString().split('T')[0];
+                        const timePart = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                        return `${datePart} ${timePart}`;
+                    } catch (e) { return d.timestamp; }
+                });
+
+                // 2. Emotion Distribution (Bar)
+                const counts = {};
+                emotions.forEach(e => counts[e] = (counts[e] || 0) + 1);
+
+                Plotly.newPlot('chart-dist', [{
+                    x: Object.keys(counts),
+                    y: Object.values(counts),
+                    type: 'bar',
+                    marker: { color: Object.keys(counts).map(e => emotionColors[e] || '#6366f1') }
+                }], {
+                    ...getLayout("Emotion Distribution"),
+                    font: config.font,
+                    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent'
+                }, { responsive: true, displayModeBar: false });
+
+                // 3. Confidence Chart (Line)
+                Plotly.newPlot('chart-conf', [{
+                    x: times,
+                    y: confs,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    line: { shape: 'spline', color: '#6366f1' },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(99, 102, 241, 0.1)'
+                }], {
+                    ...getLayout("Confidence Trend"),
+                    font: config.font,
+                    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                    yaxis: { range: [0, 100] }
+                }, { responsive: true, displayModeBar: false });
+
+                // 4. Emotion Share (Pie)
+                Plotly.newPlot('chart-share', [{
+                    labels: Object.keys(counts),
+                    values: Object.values(counts),
+                    type: 'pie',
+                    hole: 0.4,
+                    marker: { colors: Object.keys(counts).map(e => emotionColors[e] || '#6366f1') }
+                }], {
+                    ...getLayout("Emotion Share"),
+                    font: config.font,
+                    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                    showlegend: true,
+                    legend: { font: { size: 9 }, orientation: 'h', y: -0.2 }
+                }, { responsive: true, displayModeBar: false });
+
+            } catch (e) { console.error("Text Analytics Update Error:", e); }
+        }
+
+        // ☁️ NEURAL WORD CLOUD ENGINE (Requirement: "webapp user base word cloud attractive color")
+        async function updateWordCloud() {
+            try {
+                const resp = await fetch("/api/text/wordcloud");
+                const cloudData = await resp.json();
+
+                if (!cloudData || cloudData.length === 0) {
+                    Plotly.newPlot('chart-wordcloud', [{
+                        x: [0.5], y: [0.5], text: ['CALIBRATING NEURAL LEXICON...'],
+                        mode: 'text', textfont: { size: 14, color: '#64748b' }
+                    }], {
+                        paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                        xaxis: { visible: false }, yaxis: { visible: false }
+                    });
+                    return;
+                }
+
+                const words = cloudData.map(d => d.word);
+                const counts = cloudData.map(d => d.count);
+                const maxCount = Math.max(...counts);
+
+                // 🎨 VIBRANT VAPORWAVE PALETTE
+                const palette = ['#10b981', '#6366f1', '#f43f5e', '#8b5cf6', '#f59e0b', '#3b82f6', '#ec4899'];
+
+                Plotly.newPlot('chart-wordcloud', [{
+                    x: words.map(() => Math.random() * 10),
+                    y: words.map(() => Math.random() * 10),
+                    text: words,
+                    mode: 'text',
+                    textfont: {
+                        size: counts.map(c => Math.max(12, (c / maxCount) * 75)), // Dynamic Sizing
+                        color: words.map((_, i) => palette[i % palette.length]),
+                        family: 'Outfit, sans-serif',
+                        weight: '900'
+                    },
+                    hoverinfo: 'text'
+                }], {
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    xaxis: { visible: false, range: [-1, 11] },
+                    yaxis: { visible: false, range: [-1, 11] },
+                    margin: { t: 20, b: 20, l: 20, r: 20 },
+                    showlegend: false,
+                    hovermode: 'closest'
+                }, { responsive: true, displayModeBar: false });
+            } catch (e) { console.warn("Cloud Sync Failed", e); }
+        }
+
+        function getLayout(title) {
+            return {
+                title: { text: title, font: { size: 10, weight: 'bold' }, x: 0.05 },
+                margin: { t: 40, b: 40, l: 40, r: 20 },
+                xaxis: { showgrid: false },
+                yaxis: { showgrid: false }
+            };
+        }
+
+        const input = document.getElementById('txt-input');
+        const runBtn = document.getElementById('run-btn');
+        const resBox = document.getElementById('res-box');
+
+        runBtn.addEventListener('click', async () => {
+            const text = input.value.trim();
+            if (!text) return;
+            runBtn.disabled = true;
+            document.getElementById('btn-spin').classList.remove('hidden');
+
+            try {
+                const fd = new FormData();
+                fd.append('text', text);
+                const res = await fetch('/text-emotion', { method: 'POST', body: fd });
+
+                if (!res.ok) throw new Error("Server communication failed.");
+
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+
+                resBox.classList.remove('hidden');
+                setTimeout(() => resBox.classList.remove('opacity-0', 'translate-y-4'), 50);
+
+                document.getElementById('res-badge').innerText = data.emotion;
+                document.getElementById('res-badge').style.color = emotionColors[data.emotion] || '#6366f1';
+                document.getElementById('res-conf').innerText = (data.confidence * 100).toFixed(1) + "%";
+                document.getElementById('res-time').innerText = new Date().toLocaleTimeString();
+
+                // 🔥 GLOBAL ANALYTICS SYNC: Trigger immediate update (Step 11)
+                if (typeof triggerGlobalSync === 'function') triggerGlobalSync();
+                if (data.language) {
+                    const langBadge = document.getElementById('res-lang');
+                    langBadge.innerText = data.language.toUpperCase();
+                    langBadge.classList.remove('hidden');
+                }
+
+                input.value = '';
+                // Refresh UI via global engine
+                if (typeof loadAllAnalytics === "function") loadAllAnalytics();
+                updateWordCloud(); // 🚀 Instant Refresh
+            } catch (e) {
+                console.error("Text Analyze Error:", e);
+                alert("Deciphering Failed: " + (e.message || "Unknown error"));
+            }
+            finally {
+                runBtn.disabled = false;
+                document.getElementById('btn-spin').classList.add('hidden');
+            }
+        });
+
+        if (typeof loadAllAnalytics === "function") loadAllAnalytics();
+        updateWordCloud(); // 🚀 Synchronize Historical Lexicon
+    });
+</script>
+{% endblock %}

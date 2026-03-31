@@ -1,0 +1,109 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Text Sentiment Decryption Sector{% endblock %}
+
+{% block admin_content %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <!-- 📊 ANALYTICS HUD (Top Row) -->
+    <div class="lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="admin-card h-[300px]">
+             <h3 class="font-black text-xs uppercase tracking-widest text-indigo-500 mb-6">Sentiment Volume (Bar)</h3>
+             <canvas id="textDistChart"></canvas>
+        </div>
+        <div class="admin-card h-[300px]">
+             <h3 class="font-black text-xs uppercase tracking-widest text-purple-500 mb-6">Emotional Share (Pie)</h3>
+             <canvas id="textShareChart"></canvas>
+        </div>
+        <div class="admin-card h-[300px] border-l-4 border-emerald-500">
+             <h3 class="font-black text-xs uppercase tracking-widest text-emerald-500 mb-6">Dominant Keywords (Matrix)</h3>
+             <div class="flex flex-wrap gap-3 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                 <span class="px-3 py-1 bg-emerald-500/20 text-emerald-500 rounded-full text-[10px] font-black uppercase">SAFE:92.1%</span>
+                 <span class="px-3 py-1 bg-indigo-500/20 text-indigo-500 rounded-full text-[10px] font-black uppercase">STABILITY:84.5%</span>
+                 <span class="px-3 py-1 bg-amber-500/20 text-amber-500 rounded-full text-[10px] font-black uppercase">EMERGENCY:12.3%</span>
+                 <span class="px-3 py-1 bg-rose-500/20 text-rose-500 rounded-full text-[10px] font-black uppercase">DANGER:2.1%</span>
+                 <span class="px-3 py-1 bg-purple-500/20 text-purple-500 rounded-full text-[10px] font-black uppercase">HELP:5.4%</span>
+             </div>
+             <p class="mt-8 text-[9px] font-bold opacity-40 uppercase tracking-[0.2em] leading-relaxed">System-wide semantic extraction in progress. Re-synching Sector-7.</p>
+        </div>
+    </div>
+
+    <!-- 📁 DATA INGESTION LOGS -->
+    <div class="lg:col-span-4 admin-card p-0 overflow-hidden">
+        <div class="p-6 border-b border-white/5 bg-white/2 flex justify-between items-center">
+             <h3 class="font-black text-xs uppercase tracking-widest">Global Text Audit Logs</h3>
+             <div class="flex gap-2">
+                 <button class="px-3 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 text-[9px] font-black border border-indigo-500/20">EXPORT CSV</button>
+             </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-black/20 border-b border-white/5">
+                        <th class="p-6 text-[9px] font-black uppercase tracking-widest opacity-40">User Node</th>
+                        <th class="p-6 text-[9px] font-black uppercase tracking-widest opacity-40">Message Segment</th>
+                        <th class="p-6 text-[9px] font-black uppercase tracking-widest opacity-40">Sentiment</th>
+                        <th class="p-6 text-[9px] font-black uppercase tracking-widest opacity-40">Confidence</th>
+                        <th class="p-6 text-[9px] font-black uppercase tracking-widest opacity-40">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="textAuditLogs">
+                    <!-- JS Populated -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        async function fetchLogs() {
+            const resp = await fetch("/admin/api/data");
+            const data = await resp.json();
+            const logs = data.text;
+
+            const tbody = document.getElementById('textAuditLogs');
+            tbody.innerHTML = logs.map(l => {
+                const color = l.emotion === 'happy' ? '#10b981' : (l.emotion === 'angry' ? '#ef4444' : '#6366f1');
+                return `
+                <tr class="border-b border-white/5 hover:bg-white/2 transition-all">
+                    <td class="p-6">
+                        <span class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center font-black text-[10px] text-indigo-500 uppercase">0${l.user_id % 9}</span>
+                    </td>
+                    <td class="p-6">
+                        <p class="text-[11px] font-bold opacity-80 max-w-xs truncate">${l.text}</p>
+                    </td>
+                    <td class="p-6">
+                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-[10px] font-black uppercase" style="color: ${color}; border: 1px solid ${color}20">${l.emotion.toUpperCase()}</span>
+                    </td>
+                    <td class="p-6 text-[11px] font-black opacity-60">${(l.confidence * 100).toFixed(1)}%</td>
+                    <td class="p-6 text-[10px] font-bold opacity-40">${l.timestamp}</td>
+                </tr>
+            `}).join('');
+
+            // Charting
+            const counts = {};
+            logs.forEach(l => counts[l.emotion] = (counts[l.emotion] || 0) + 1);
+            
+            new Chart(document.getElementById('textDistChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(counts).map(k => k.toUpperCase()),
+                    datasets: [{ label: 'Counts', data: Object.values(counts), backgroundColor: '#6366f1', borderRadius: 10 }]
+                },
+                options: { maintainAspectRatio: false, scales: { x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 9 } } }, y: { display: false } }, plugins: { legend: { display: false } } }
+            });
+
+            new Chart(document.getElementById('textShareChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(counts),
+                    datasets: [{ data: Object.values(counts), backgroundColor: ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'], borderWidth: 0 }]
+                },
+                options: { maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { color: 'rgba(255,255,255,0.6)', font: { weight: '800', size: 9 }, usePointStyle: true } } } }
+            });
+        }
+        fetchLogs();
+    });
+</script>
+{% endblock %}

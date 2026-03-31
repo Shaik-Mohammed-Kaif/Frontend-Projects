@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Neural Frame | Asynchronous Evaluation{% endblock %}
+
+{% block header_actions %}
+<div
+    class="flex items-center gap-3 bg-[var(--btn-primary)]/5 border border-[var(--btn-primary)]/10 rounded-xl px-4 py-2">
+    <div id="cam-indicator" class="w-1.5 h-1.5 bg-rose-500 rounded-full"></div>
+    <span id="status-txt" class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Pipeline
+        Offline</span>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8 pb-12">
+    <div class="dashboard-grid">
+        <!-- Live Video Block -->
+        <div class="col-span-12 lg:col-span-8">
+            <div class="dashboard-card border-l-4 border-[var(--btn-primary)]">
+                <div class="card-header">
+                    <h3 class="card-title">Optical Interface</h3>
+                    <label class="flex items-center gap-4 cursor-pointer group">
+                        <span
+                            class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest group-hover:text-[var(--text-primary)] transition-colors">Toggle
+                            Feed</span>
+                        <div class="relative w-12 h-6">
+                            <input type="checkbox" id="cam-toggle" class="sr-only">
+                            <div class="block w-12 h-6 bg-[var(--bg-main)] border border-[var(--border)] rounded-full transition-colors"
+                                id="slider"></div>
+                            <div class="dot absolute left-1 top-1 bg-[var(--text-secondary)] w-4 h-4 rounded-full transition-all"
+                                id="knob"></div>
+                        </div>
+                    </label>
+                </div>
+
+                <div
+                    class="relative rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center min-h-[480px] border border-[var(--border)] mt-4">
+                    <img id="video-feed" src="" class="hidden w-full h-auto object-cover opacity-90 transition-opacity">
+
+                    <div id="video-placeholder" class="text-center flex flex-col items-center justify-center p-12">
+                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-video-slash text-2xl text-white/20"></i>
+                        </div>
+                        <p class="text-[var(--text-secondary)] font-bold uppercase tracking-widest text-xs">Connection
+                            Terminated</p>
+                        <span class="text-[10px] font-medium text-white/10 uppercase tracking-widest mt-2">Awaiting
+                            Session Initialization</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric Block -->
+        <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Live Inference</h3>
+                </div>
+
+                <div class="space-y-8 py-4">
+                    <div>
+                        <span
+                            class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest block mb-2">Dominant
+                            State</span>
+                        <span id="live-badge"
+                            class="text-3xl font-black text-[var(--text-primary)] uppercase italic tracking-tight">Standby</span>
+                    </div>
+                    <div>
+                        <span
+                            class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest block mb-2">Confidence
+                            Level</span>
+                        <span id="live-conf" class="text-5xl font-black text-[var(--btn-primary)]">--%</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 pt-6 border-t border-[var(--border)]">
+                        <div>
+                            <span
+                                class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest block mb-1">Cycle
+                                FPS</span>
+                            <span id="live-fps" class="text-xl font-black text-[var(--text-primary)]">--</span>
+                        </div>
+                        <div>
+                            <span
+                                class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest block mb-1">Stability</span>
+                            <span class="text-xl font-black text-emerald-500 tracking-widest">NORMAL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Summary Results (Initially Hidden) -->
+            <div id="session-summary"
+                class="hidden opacity-0 translate-y-4 transition-all duration-700 dashboard-card border-t-2 border-[var(--btn-primary)]">
+                <div class="card-header">
+                    <h3 class="card-title">Session Wrap</h3>
+                </div>
+
+                <div class="space-y-4 mt-4">
+                    <div class="flex justify-between items-center py-2 border-b border-[var(--border)]">
+                        <span
+                            class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Duration</span>
+                        <span id="sum-time" class="text-xs font-bold text-[var(--text-primary)]">--</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-[var(--border)]">
+                        <span class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Peak
+                            Mood</span>
+                        <span id="sum-emo"
+                            class="text-xs font-bold text-[var(--btn-primary)] uppercase italic">--</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-[var(--border)]">
+                        <span class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Mean
+                            Conf</span>
+                        <span id="sum-conf" class="text-xs font-bold text-[var(--text-primary)]">--%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let pollInterval;
+    const toggle = document.getElementById('cam-toggle');
+    const knob = document.getElementById('knob');
+    const txt = document.getElementById('status-txt');
+    const feed = document.getElementById('video-feed');
+    const placeholder = document.getElementById('video-placeholder');
+    const ind = document.getElementById('cam-indicator');
+    const summary = document.getElementById('session-summary');
+    const slider = document.getElementById('slider');
+
+    toggle.addEventListener('change', async () => {
+        const state = toggle.checked;
+        summary.classList.add('hidden', 'opacity-0', 'translate-y-4');
+
+        if (state) {
+            knob.style.transform = 'translateX(24px)';
+            knob.classList.replace('bg-[var(--text-secondary)]', 'bg-white');
+            slider.classList.replace('bg-[var(--bg-main)]', 'bg-[var(--btn-primary)]');
+            txt.innerText = 'Pipeline Active';
+            txt.classList.replace('text-[var(--text-secondary)]', 'text-[var(--btn-primary)]');
+            ind.classList.replace('bg-rose-500', 'bg-emerald-500');
+
+            await fetch('/api/webcam/toggle', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ state: true }) });
+            placeholder.classList.add('hidden');
+            feed.src = '/api/webcam/feed?' + new Date().getTime();
+            feed.classList.remove('hidden');
+
+            pollInterval = setInterval(async () => {
+                try {
+                    const res = await fetch('/api/webcam/metrics');
+                    if (res.ok) {
+                        const data = await res.json();
+                        document.getElementById('live-badge').innerText = data.emotion;
+                        document.getElementById('live-conf').innerText = data.confidence;
+                        document.getElementById('live-fps').innerText = data.fps;
+                    }
+                } catch (e) { }
+            }, 800);
+
+        } else {
+            knob.style.transform = 'translateX(0)';
+            knob.classList.replace('bg-white', 'bg-[var(--text-secondary)]');
+            slider.classList.replace('bg-[var(--btn-primary)]', 'bg-[var(--bg-main)]');
+            txt.innerText = 'Pipeline Offline';
+            txt.classList.replace('text-[var(--btn-primary)]', 'text-[var(--text-secondary)]');
+            ind.classList.replace('bg-emerald-500', 'bg-rose-500');
+
+            clearInterval(pollInterval);
+
+            try {
+                const res = await fetch('/api/webcam/toggle', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ state: false }) });
+                const data = await res.json();
+
+                feed.classList.add('hidden');
+                feed.src = '';
+                placeholder.classList.remove('hidden');
+
+                document.getElementById('live-badge').innerText = 'Standby';
+                document.getElementById('live-conf').innerText = '--%';
+                document.getElementById('live-fps').innerText = '--';
+
+                if (data.success && data.summary) {
+                    document.getElementById('sum-time').innerText = data.summary.duration + "s";
+                    document.getElementById('sum-emo').innerText = data.summary.emotion;
+                    document.getElementById('sum-conf').innerText = data.summary.confidence + "%";
+
+                    summary.classList.remove('hidden');
+                    setTimeout(() => summary.classList.remove('opacity-0', 'translate-y-4'), 50);
+
+                    // 🔥 GLOBAL SYNC: Refresh dashboards after session end (Step 11)
+                    if (typeof triggerGlobalSync === 'function') triggerGlobalSync();
+                }
+            } catch (e) { }
+        }
+    });
+</script>
+{% endblock %}

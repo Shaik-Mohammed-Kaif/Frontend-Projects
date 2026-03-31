@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Developer Community | EmotionAI Platform{% endblock %}
+
+{% block content %}
+<style>
+    .community-pulse {
+        animation: globe-float 8s ease-in-out infinite;
+    }
+
+    @keyframes globe-float {
+
+        0%,
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-15px) rotate(2deg);
+        }
+    }
+</style>
+
+<div class="max-w-7xl mx-auto py-16 px-6 pb-32">
+    <!-- COMMUNITY HERO -->
+    <div class="grid lg:grid-cols-2 gap-16 items-center mb-24">
+        <div class="text-left space-y-8">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500">Global Neural
+                    Grid</span>
+            </div>
+            <h1
+                class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-[var(--text-primary)]">
+                Neural Community <br><span class="text-emerald-500">Hub</span></h1>
+            <p class="text-lg text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                Join the world's fastest-growing ecosystem of AI developers and researchers. Collaborate on the next
+                generation of emotional intelligence systems with our global network of experts.
+            </p>
+        </div>
+        <div class="relative group">
+            <div
+                class="absolute -inset-4 bg-emerald-500/10 rounded-[3rem] blur-3xl opacity-50 group-hover:opacity-100 transition-all">
+            </div>
+            <img src="/assets/public_community_hero_1774892613259.png"
+                class="relative w-full h-auto rounded-[2.5rem] shadow-2xl border border-white/5 community-pulse filter saturate-125 hover:scale-[1.02] transition-transform duration-700"
+                alt="Community Visual">
+        </div>
+    </div>
+
+    <!-- NODES -->
+    <div class="grid md:grid-cols-3 gap-8">
+        <div
+            class="dashboard-card group hover:border-emerald-500/40 transition-all p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] text-center">
+            <div
+                class="w-16 h-16 rounded-3xl bg-emerald-500/10 flex items-center justify-center mb-8 mx-auto group-hover:rotate-12 transition-transform">
+                <i class="fab fa-github text-emerald-500 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">Open Source Node
+            </h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-8 font-medium">
+                Contribute to our core neural architectures on GitHub. Join 5k+ developers refining the
+                HDF5/DistilRoBERTa pipelines.
+            </p>
+            <a href="https://github.com/emotion-ai-labs" target="_blank"
+                class="inline-block px-10 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all">Explore
+                Repo</a>
+        </div>
+
+        <div
+            class="dashboard-card group hover:border-sky-500/40 transition-all p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] text-center">
+            <div
+                class="w-16 h-16 rounded-3xl bg-sky-500/10 flex items-center justify-center mb-8 mx-auto group-hover:rotate-12 transition-transform">
+                <i class="fas fa-comments text-sky-500 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">Developer Forum
+            </h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-8 font-medium">
+                Discuss complex integration patterns and shared insights with our elite community of data scientists and
+                engineers.
+            </p>
+            <a href="#"
+                class="inline-block px-10 py-3 bg-sky-500/10 border border-sky-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-sky-500 hover:bg-sky-500 hover:text-white transition-all">Join
+                Discussion</a>
+        </div>
+
+        <div
+            class="dashboard-card group hover:border-indigo-500/40 transition-all p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] text-center">
+            <div
+                class="w-16 h-16 rounded-3xl bg-indigo-500/10 flex items-center justify-center mb-8 mx-auto group-hover:rotate-12 transition-transform">
+                <i class="fas fa-headset text-indigo-500 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">Live Support</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-8 font-medium">
+                24/7 technical liaison for enterprise partners and high-tier developers building mission-critical
+                applications.
+            </p>
+            <a href="#"
+                class="inline-block px-10 py-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-indigo-500 hover:bg-indigo-500 hover:text-white transition-all">Open
+                Ticket</a>
+        </div>
+    </div>
+
+    <!-- RETURN ACTION -->
+    <div class="mt-24 text-center">
+        <a href="{{ url_for('auth.home') }}"
+            class="inline-flex items-center gap-3 px-10 py-4 bg-[var(--bg-panel)] border border-[var(--border)] rounded-2xl text-[11px] font-black uppercase text-[var(--text-primary)] hover:border-emerald-500/50 hover:scale-105 transition-all shadow-xl">
+            <i class="fas fa-home text-emerald-500"></i> Return to Infrastructure Home Hub
+        </a>
+    </div>
+</div>
+{% endblock %}

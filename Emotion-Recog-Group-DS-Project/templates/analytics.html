@@ -1,0 +1,675 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Hub | Performance Insights{% endblock %}
+{% block page_name %}Analytics Hub{% endblock %}
+
+{% block content %}
+<style>
+    /* 🔥 TASK 6: PROFESSIONAL PLOT SIZING (STEP 1: GRID & CARD REBORN) */
+    .analytics-container {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+        gap: 32px;
+        /* Increased gap for better clarity */
+        width: 100%;
+        margin-top: 2rem;
+    }
+
+    .chart-card {
+        width: 100% !important;
+        height: 550px !important;
+        /* Standardized height */
+        padding: 24px !important;
+        border-radius: 20px !important;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .chart-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .chart-download-btn {
+        width: 30px;
+        height: 30px;
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 11px;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .chart-download-btn:hover {
+        color: var(--btn-primary);
+        border-color: var(--btn-primary);
+        background: var(--btn-primary-bg);
+    }
+
+    .kpi-card {
+        padding: 24px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .kpi-label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+
+    .kpi-value {
+        font-size: 32px;
+        font-weight: 900;
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+    }
+
+    .kpi-trend {
+        font-size: 10px;
+        font-weight: 700;
+        opacity: 0.7;
+    }
+
+    .analytics-full-width {
+        grid-column: 1 / -1;
+        /* Spans all columns */
+    }
+
+    .plotly-container {
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1;
+    }
+
+    .card-header h3 {
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+        .analytics-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .chart-card {
+            height: 450px !important;
+        }
+    }
+</style>
+
+<div class="analytics-container space-y-10 pb-12">
+    <!-- Row 1: Unified High-Fidelity KPIs -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div class="dashboard-card kpi-card border-b-4 border-blue-500">
+            <span class="kpi-label uppercase tracking-widest text-[10px] opacity-60">System Traffic</span>
+            <div class="flex items-center gap-4 mt-2">
+                <div
+                    class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="kpi-value text-3xl font-black text-[var(--text-primary)]" id="kpi-total">0</div>
+            </div>
+            <p class="text-[9px] font-bold text-blue-500 mt-2"><i class="fas fa-chart-line mr-1"></i> Cumulative Samples
+                Found</p>
+        </div>
+
+        <div class="dashboard-card kpi-card border-b-4 border-indigo-500">
+            <span class="kpi-label uppercase tracking-widest text-[10px] opacity-60">Dominant Emotion</span>
+            <div class="flex items-center gap-4 mt-2">
+                <div
+                    class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 shadow-sm">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="kpi-value text-3xl font-black text-[var(--text-primary)] truncate max-w-[120px]"
+                    id="kpi-dominant">Wait..</div>
+            </div>
+            <p class="text-[9px] font-bold text-indigo-500 mt-2 uppercase tracking-tighter">Primary Behavioral Mode</p>
+        </div>
+
+        <div class="dashboard-card kpi-card border-b-4 border-emerald-500">
+            <span class="kpi-label uppercase tracking-widest text-[10px] opacity-60">Confidence Index</span>
+            <div id="kpi-gauge" class="h-[80px]"></div>
+            <div class="kpi-value text-3xl font-black text-[var(--text-primary)] text-center" id="kpi-confidence">0%
+            </div>
+        </div>
+
+        <div class="dashboard-card kpi-card border-b-4 border-purple-500">
+            <span class="kpi-label uppercase tracking-widest text-[10px] opacity-60">Emotional Diversity</span>
+            <div class="flex items-center gap-4 mt-2">
+                <div
+                    class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 shadow-sm">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="kpi-value text-3xl font-black text-[var(--text-primary)]" id="kpi-diversity">0</div>
+            </div>
+            <p class="text-[9px] font-bold text-purple-500 mt-2 uppercase tracking-tighter">Unique Sentiments Tracked
+            </p>
+        </div>
+    </div>
+
+    <!-- Section Wrapper for Content -->
+    <div class="w-full">
+        <!-- 🔥 TASK 5: EMPTY STATE UI -->
+        <div id="analytics-empty-state"
+            class="hidden flex flex-col items-center justify-center p-20 dashboard-card border-dashed border-2 border-[var(--border)] bg-[var(--bg-main)]/50">
+            <div class="w-20 h-20 bg-[var(--btn-primary)]/10 rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-chart-pie text-3xl text-[var(--btn-primary)] animate-pulse"></i>
+            </div>
+            <h2 class="text-2xl font-black text-[var(--text-primary)] mb-2 uppercase tracking-tighter">No Analytics Data
+                Found</h2>
+            <p class="text-[var(--text-secondary)] font-bold text-xs uppercase tracking-widest text-center max-w-xs">
+                Start an analysis in any module to generate intelligence reports.</p>
+            <div class="mt-8">
+                <a href="/text-ai"
+                    class="btn-primary py-3 px-8 text-[11px] font-black uppercase tracking-widest shadow-xl">Get Started
+                    Now</a>
+            </div>
+        </div>
+
+        <div id="analytics-dashboard-content" class="analytics-grid">
+
+            <!-- 1. Emotion Distribution (Categorical) -->
+            <div class="chart-card analytics-full-width">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">1. Emotion Distribution (Global Frequency)
+                    </h3>
+                    <button onclick="downloadChart('chart-bar')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-bar" class="plotly-container"></div>
+            </div>
+
+            <!-- 2. Neural Flow Architecture (Sankey Strategy) -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">2. Neural Flow Architecture (Sankey Strategy)
+                    </h3>
+                    <button onclick="downloadChart('chart-donut')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-donut" class="plotly-container"></div>
+            </div>
+
+            <!-- 3. Module Usage (Histogram) -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">3. AI Engine Module Utilization</h3>
+                    <button onclick="downloadChart('chart-module')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-module" class="plotly-container"></div>
+            </div>
+
+            <!-- 4. Module-Emotion Behavioral Hierarchy (Treemap) -->
+            <div class="chart-card analytics-full-width">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">4. AI Engine Behavioral Hierarchy (Treemap)
+                    </h3>
+                    <button onclick="downloadChart('chart-area')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-area" class="plotly-container"></div>
+            </div>
+
+            <!-- 5. Emotion vs Module (Stacked Bar) -->
+            <div class="chart-card analytics-full-width">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">5. Module-Emotion Correlation (Stacked)</h3>
+                    <button onclick="downloadChart('chart-stacked')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-stacked" class="plotly-container"></div>
+            </div>
+
+            <!-- 6. Neural Intensity (Heatmap) -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">6. Neural Density Heatmap (Fixed Intensity)</h3>
+                    <button onclick="downloadChart('chart-hist')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-hist" class="plotly-container"></div>
+            </div>
+
+            <!-- 7. Linguistic Insights (Funnel) -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">7. Neural Confidence Dispersion (Box Plot)</h3>
+                    <button onclick="downloadChart('chart-lang')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-lang" class="plotly-container"></div>
+            </div>
+
+            <!-- 8. Live Emotion Stream (Tail 50) -->
+            <div class="chart-card analytics-full-width">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">8. Temporal Neural Pulse (Time Series)
+                    </h3>
+                    <button onclick="downloadChart('chart-live')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-live" class="plotly-container"></div>
+            </div>
+
+            <!-- 9. Radar Spread & 10. Top-3 Power -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">9. Emotional Spread Signature</h3>
+                    <button onclick="downloadChart('chart-radar')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-radar" class="plotly-container"></div>
+            </div>
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">10. Dominant Strength Comparison</h3>
+                    <button onclick="downloadChart('chart-top3')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-top3" class="plotly-container"></div>
+            </div>
+
+            <!-- 11. Hyperplane Regression -->
+            <div class="chart-card analytics-full-width">
+                <div class="card-header">
+                    <h3 class="card-title text-[var(--text-secondary)]">11. EMOTIONAL CONFIDENCE VARIANCE (REGRESSION)
+                    </h3>
+                    <button onclick="downloadChart('chart-regression')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-regression" class="plotly-container"></div>
+            </div>
+
+            <!-- 12. Three-Way Alert Velocity (Requirement: Trending Alertness) -->
+            <div class="chart-card analytics-full-width border-t-4 border-rose-500">
+                <div class="card-header">
+                    <h3 class="card-title text-rose-500">12. EMOTIONAL ALERT VELOCITY (TEMPORAL 3-WAY)</h3>
+                    <button onclick="downloadChart('chart-alert-3way')" class="chart-download-btn"><i
+                            class="fas fa-download"></i></button>
+                </div>
+                <div id="chart-alert-3way" class="plotly-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let globalRawData = [];
+
+    const emotionColors = {
+        angry: '#f43f5e',
+        disgust: '#64748b',
+        fear: '#8b5cf6',
+        happy: '#6366f1',
+        sad: '#3b82f6',
+        surprise: '#f59e0b',
+        neutral: '#94a3b8',
+        sarcasm: '#ec4899',
+        none: '#94a3b8'
+    };
+
+    // 🔥 STEP 5: APPLY TO MODULE PAGE (GLOBAL SYNC)
+    window.updatePageAnalytics = function (data) {
+        console.log("Analytics Hub Syncing:", (data || []).length, "events");
+        globalRawData = data || [];
+        updateAnalyticsUI(globalRawData);
+    };
+
+    function updateAnalyticsUI(data) {
+        let total = data.length;
+        let emotionCount = {};
+        let moduleCount = {};
+        let languageCount = {};
+        let confidenceData = [];
+        let timelineX = [];
+        let timelineY = [];
+        let timelineEmos = [];
+        let uniqueEmotions = new Set();
+
+        let modEmos = {}; // Map of {module: {emotion: count}}
+
+        data.forEach(item => {
+            const rawEmo = (item.emotion || 'neutral').toLowerCase();
+            const emo = rawEmo.charAt(0).toUpperCase() + rawEmo.slice(1);
+            emotionCount[emo] = (emotionCount[emo] || 0) + 1;
+            uniqueEmotions.add(emo);
+
+            const mod = item.module || 'Unknown';
+            moduleCount[mod] = (moduleCount[mod] || 0) + 1;
+
+            if (!modEmos[mod]) modEmos[mod] = {};
+            modEmos[mod][emo] = (modEmos[mod][emo] || 0) + 1;
+
+            const lang = item.language || 'English';
+            languageCount[lang] = (languageCount[lang] || 0) + 1;
+
+            confidenceData.push((item.confidence || 0) * 100);
+            timelineX.push(item.timestamp);
+            timelineY.push((item.confidence || 0) * 100);
+            timelineEmos.push(emo);
+        });
+
+        const avgConfidence = total > 0 ? (confidenceData.reduce((a, b) => a + b, 0) / total).toFixed(1) : 0;
+        const dominant = Object.keys(emotionCount).length > 0 ? Object.keys(emotionCount).reduce((a, b) => emotionCount[a] > emotionCount[b] ? a : b) : '--';
+
+        // UPDATE KPI CARDS
+        document.getElementById("kpi-total").innerText = total;
+        document.getElementById("kpi-dominant").innerText = dominant;
+        document.getElementById("kpi-dominant").style.color = emotionColors[dominant.toLowerCase()] || '#10b981';
+        document.getElementById("kpi-confidence").innerText = avgConfidence + "%";
+        document.getElementById("kpi-diversity").innerText = uniqueEmotions.size;
+        if (document.getElementById("conf-progress")) {
+            document.getElementById("conf-progress").value = avgConfidence;
+        }
+
+
+        renderAnalyticsGrid(data, emotionCount, moduleCount, modEmos, languageCount, timelineX, timelineY, timelineEmos, confidenceData, avgConfidence);
+    }
+
+    function parseNeuralDate(ts) {
+        if (!ts) return new Date();
+        try {
+            const parts = ts.split(' ');
+            if (parts.length < 2) return new Date(ts);
+            const dateParts = parts[0].split('-');
+            const year = "20" + dateParts[0];
+            const month = dateParts[1] - 1;
+            const day = dateParts[2];
+            const timeParts = parts[1].split(':');
+            let hour = parseInt(timeParts[0]);
+            if (parts[2] === 'PM' && hour < 12) hour += 12;
+            if (parts[2] === 'AM' && hour === 12) hour = 0;
+            return new Date(year, month, day, hour, parseInt(timeParts[1]), parseInt(timeParts[2]));
+        } catch (e) { return new Date(ts); }
+    }
+
+    async function renderAnalyticsGrid(data, emotionCount, moduleCount, modEmos, languageCount, timelineX, timelineY, timelineEmos, confidenceData, avgConfidence) {
+        const emptyState = document.getElementById('analytics-empty-state');
+        const content = document.getElementById('analytics-dashboard-content');
+
+        if (data.length === 0) {
+            if (emptyState) emptyState.classList.remove('hidden');
+            if (content) content.classList.add('hidden');
+            return;
+        } else {
+            if (emptyState) emptyState.classList.add('hidden');
+            if (content) content.classList.remove('hidden');
+        }
+
+        const config = getThemeConfig();
+        const responsiveConfig = { responsive: true, displayModeBar: false };
+        const layout = {
+            paper_bgcolor: 'rgba(99, 102, 241, 0.03)', plot_bgcolor: 'transparent', autosize: true,
+            font: { family: 'Poppins, sans-serif', size: 10, color: '#64748b' },
+            margin: { l: 40, r: 40, t: 30, b: 80 },
+            xaxis: {
+                showgrid: false,
+                zeroline: false,
+                tickfont: { size: 8 },
+                tickangle: -45,
+                nticks: 10, // ✅ PREVENT OVERLAP
+                automargin: true
+            },
+            yaxis: { showgrid: false, zeroline: false, tickfont: { size: 9 } },
+            showlegend: false
+        };
+
+        const labels = Object.keys(emotionCount);
+        const values = Object.values(emotionCount);
+        const COLORS = { indigo: '#6366f1', accent: '#10b981', blue: '#3b82f6', rose: '#f43f5e', amber: '#f59e0b', purple: '#8b5cf6' };
+        const sleep = () => new Promise(res => setTimeout(res, 5));
+
+        // 0. KPI Gauge (Confidence Index)
+        Plotly.react('kpi-gauge', [{
+            type: "indicator", mode: "gauge+number", value: avgConfidence,
+            gauge: {
+                axis: { range: [0, 100], tickwidth: 1, tickcolor: "#64748b" },
+                bar: { color: COLORS.purple },
+                bgcolor: "white", borderwidth: 2, bordercolor: "#e2e8f0",
+                steps: [{ range: [0, 50], color: "#fee2e2" }, { range: [50, 85], color: "#fef3c7" }, { range: [85, 100], color: "#d1fae5" }]
+            },
+            number: { font: { size: 20, family: 'Poppins', color: 'transparent' } }
+        }], { ...layout, margin: { t: 10, b: 10, l: 30, r: 30 }, height: 80 }, responsiveConfig);
+
+        // 1. Emotion Distribution (Bar)
+        Plotly.react('chart-bar', [{
+            x: labels, y: values, type: 'bar', marker: { color: labels.map(l => emotionColors[l.toLowerCase()] || COLORS.indigo), opacity: 0.8 }, width: 0.5
+        }], layout, responsiveConfig);
+        await sleep();
+
+        // 2. NEURAL FLOW ARCHITECTURE (Sankey Storytelling) - Requirement Replace Sunburst
+        const sankeyNodes = ["AI ENGINE", ...Object.keys(moduleCount), ...labels];
+        const moduleStartIndex = 1;
+        const emotionStartIndex = 1 + Object.keys(moduleCount).length;
+
+        let sankeyLinks = { source: [], target: [], value: [], color: [] };
+
+        // Link Engine -> Modules
+        Object.entries(moduleCount).forEach(([mod, count], i) => {
+            sankeyLinks.source.push(0);
+            sankeyLinks.target.push(moduleStartIndex + i);
+            sankeyLinks.value.push(count);
+            sankeyLinks.color.push('rgba(99, 102, 241, 0.2)');
+        });
+
+        // Link Modules -> Emotions
+        Object.entries(modEmos).forEach(([mod, emos], i) => {
+            const modIdx = moduleStartIndex + Object.keys(moduleCount).indexOf(mod);
+            Object.entries(emos).forEach(([emo, count]) => {
+                const emoIdx = emotionStartIndex + labels.indexOf(emo);
+                sankeyLinks.source.push(modIdx);
+                sankeyLinks.target.push(emoIdx);
+                sankeyLinks.value.push(count);
+                sankeyLinks.color.push((emotionColors[emo.toLowerCase()] || '#6366f1') + '20');
+            });
+        });
+
+        Plotly.react('chart-donut', [{
+            type: "sankey", orientation: "h",
+            node: {
+                pad: 15, thickness: 20, line: { color: "#fff", width: 0.5 },
+                label: sankeyNodes, color: "#6366f1"
+            },
+            link: sankeyLinks
+        }], { ...layout, margin: { t: 40, b: 20, l: 10, r: 10 }, height: 350 }, responsiveConfig);
+        await sleep();
+
+        // 3. Module Usage (Bar)
+        const mods = Object.keys(moduleCount);
+        const modVals = Object.values(moduleCount);
+        Plotly.react('chart-module', [{
+            x: mods, y: modVals, type: 'bar', marker: { color: COLORS.blue, opacity: 0.7 }, width: 0.4
+        }], layout, responsiveConfig);
+        await sleep();
+
+        // 4. NEURAL ARCHITECTURE TREEMAP (Storytelling Hierarchy)
+        let treeLabels = ["NEURAL HUB"], treeParents = [""], treeValues = [data.length];
+
+        Object.entries(modEmos).forEach(([m, emos]) => {
+            const mLabel = m.toUpperCase();
+            treeLabels.push(mLabel);
+            treeParents.push("NEURAL HUB");
+            let mSum = 0;
+            Object.entries(emos).forEach(([e, c]) => {
+                treeLabels.push(`${mLabel} - ${e.toUpperCase()}`);
+                treeParents.push(mLabel);
+                treeValues.push(c);
+                mSum += c;
+            });
+            treeValues[treeLabels.indexOf(mLabel)] = mSum;
+        });
+
+        Plotly.react('chart-area', [{
+            type: "treemap", labels: treeLabels, parents: treeParents, values: treeValues,
+            marker: { line: { width: 1, color: '#fff' } }, textinfo: "label+value"
+        }], { ...layout, margin: { t: 40, l: 15, r: 15, b: 20 }, height: 400 }, responsiveConfig);
+        await sleep();
+
+        // 5. Stacked Bar
+        const modLabels = Object.keys(moduleCount);
+        const stackedTraces = labels.map(emo => {
+            return {
+                x: modLabels,
+                y: modLabels.map(m => data.filter(d => (d.module || '').toUpperCase() === m.toUpperCase() && (d.emotion || '').toLowerCase() === emo.toLowerCase()).length),
+                name: emo, type: 'bar', marker: { color: emotionColors[emo.toLowerCase()] }
+            };
+        });
+        Plotly.react('chart-stacked', stackedTraces, { ...layout, barmode: 'stack' }, responsiveConfig);
+        await sleep();
+
+        // 6. NEURAL CONFIDENCE DISTRIBUTION (Density Hist Dist)
+        Plotly.react('chart-hist', [{
+            x: confidenceData, type: 'histogram',
+            marker: { color: COLORS.indigo, line: { color: '#fff', width: 1 } },
+            opacity: 0.7, nbinsx: 20, name: 'Density Distribution'
+        }], { ...layout, margin: { t: 30, b: 50, l: 50, r: 30 }, xaxis: { title: 'Confidence %' }, yaxis: { title: 'Frequency' } }, responsiveConfig);
+        await sleep();
+
+        // 7. NEURAL CONFIDENCE DISPERSION (Box Plot)
+        const boxTraces = labels.map(emo => {
+            return {
+                y: data.filter(d => (d.emotion || '').toLowerCase() === emo.toLowerCase()).map(d => (d.confidence || 0) * 100),
+                type: 'box', name: emo, marker: { color: emotionColors[emo.toLowerCase()] }
+            };
+        });
+        Plotly.react('chart-lang', boxTraces, { ...layout, showlegend: false }, responsiveConfig);
+        await sleep();
+
+        // 8. TEMPORAL NEURAL PULSE (Real-time Chronology)
+        Plotly.react('chart-live', [{
+            x: timelineX.slice(-50), y: timelineY.slice(-50), type: 'scatter', mode: 'lines+markers',
+            line: { color: COLORS.indigo, width: 3, shape: 'spline' },
+            marker: { size: 8, color: COLORS.purple, line: { width: 1, color: '#fff' } },
+            fill: 'tozeroy', fillcolor: 'rgba(99, 102, 241, 0.05)'
+        }], { ...layout, yaxis: { range: [0, 110], showgrid: false }, hovermode: 'closest' }, responsiveConfig);
+        await sleep();
+
+        // 9. Radar
+        Plotly.react('chart-radar', [{
+            type: 'scatterpolar', r: values, theta: labels, fill: 'toself', line: { color: COLORS.accent, width: 3 }
+        }], { ...layout, polar: { bgcolor: 'transparent', radialaxis: { visible: false }, angularaxis: { tickfont: { size: 10 } } } }, responsiveConfig);
+        await sleep();
+
+        // 10. DOMINANT STRENGTH COMPARISON (Beautiful Donut)
+        const top5 = Object.entries(emotionCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        Plotly.react('chart-top3', [{
+            labels: top5.map(e => e[0]), values: top5.map(e => e[1]),
+            type: 'pie', hole: 0.6,
+            marker: { colors: top5.map(e => emotionColors[e[0].toLowerCase()] || '#6366f1'), line: { color: '#fff', width: 2 } },
+            textinfo: 'label+percent', hoverinfo: 'label+value+percent',
+            textposition: 'outside', textfont: { size: 10, color: '#94a3b8' }
+        }], { ...layout, showlegend: false, margin: { t: 40, b: 40, l: 30, r: 30 } }, responsiveConfig);
+        await sleep();
+
+        // 11. NEURAL CLUSTER HYPERPLANE (Requirement: Clustered Scatter + Regression Band + Date Integration)
+        const scatterPoints = data.map((d, i) => ({ x: d.timestamp, y: (d.confidence || 0) * 100 }));
+        const yMean = scatterPoints.reduce((a, b) => a + b.y, 0) / (scatterPoints.length || 1);
+        const yStd = Math.sqrt(scatterPoints.reduce((a, b) => a + Math.pow(b.y - yMean, 2), 0) / (scatterPoints.length || 1));
+
+        const clusterTraces = labels.map(emo => {
+            const emoData = data.filter(d => (d.emotion || '').toLowerCase() === emo.toLowerCase());
+            return {
+                x: emoData.map(d => d.timestamp),
+                y: emoData.map(d => (d.confidence || 0) * 100),
+                mode: 'markers', name: emo, marker: { color: emotionColors[emo.toLowerCase()] || COLORS.indigo, size: 8, opacity: 0.6 }
+            };
+        });
+
+        const timeAxis = scatterPoints.map(p => p.x);
+        const hyperplaneBand = {
+            x: [...timeAxis, ...timeAxis.slice().reverse()],
+            y: [...timeAxis.map(() => yMean + yStd), ...timeAxis.slice().reverse().map(() => yMean - yStd)],
+            fill: 'toself', fillcolor: 'rgba(99, 102, 241, 0.05)', line: { color: 'transparent' },
+            name: 'Confidence Range', type: 'scatter'
+        };
+
+        Plotly.react('chart-regression', [
+            hyperplaneBand, ...clusterTraces,
+            {
+                x: [timeAxis[0], timeAxis[timeAxis.length - 1]],
+                y: [yMean, yMean],
+                mode: 'lines', name: 'Mean Accuracy',
+                line: { color: COLORS.indigo, width: 4, dash: 'dashdot' }
+            }
+        ], {
+            ...layout,
+            showlegend: true,
+            legend: { orientation: 'h', y: -0.5, x: 0.5, xanchor: 'center' },
+            yaxis: { range: [0, 110], showgrid: false },
+            xaxis: { ...layout.xaxis, showticklabels: false } // Hide ticks for this complex plot
+        }, responsiveConfig);
+
+        // 12. EMOTIONAL ALERT VELOCITY (3-WAY)
+        const alertData = data.filter(d => ['ANGRY', 'FEAR', 'SAD'].includes((d.emotion || '').toUpperCase())).reverse();
+        if (alertData.length > 0) {
+            const alertX = alertData.map(d => d.timestamp);
+            const alertY = alertData.map((_, i) => i + 1);
+            const alertColors = alertData.map(d => emotionColors[(d.emotion || 'neutral').toLowerCase()]);
+
+            Plotly.react('chart-alert-3way', [{
+                x: alertX, y: alertY, mode: 'lines+markers',
+                marker: { size: 10, color: alertColors, line: { color: '#fff', width: 2 } },
+                line: { color: '#f43f5e', width: 3, shape: 'spline' },
+                fill: 'tozeroy', fillcolor: 'rgba(244, 63, 94, 0.05)',
+                text: alertData.map(d => `Emotion: ${d.emotion}`),
+                hoverinfo: 'x+y+text'
+            }], { ...layout, showlegend: false, yaxis: { title: 'Cumulative Alerts' } }, responsiveConfig);
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll('.plotly-container').forEach(c => {
+                if (c.innerHTML !== "") Plotly.Plots.resize(c);
+            });
+        }, 300);
+    }
+
+    function downloadChart(id) {
+        const plot = document.getElementById(id);
+        Plotly.downloadImage(plot, {
+            format: 'png',
+            width: 1200,
+            height: 800,
+            filename: `EmotionAI_${id}_Report`
+        });
+    }
+
+    const themeHandler = () => {
+        if (globalRawData.length > 0) updateAnalyticsUI(globalRawData);
+    };
+
+    const resizeHandler = () => {
+        document.querySelectorAll('.plotly-container').forEach(c => {
+            if (c.innerHTML !== "") Plotly.Plots.resize(c);
+        });
+    };
+
+    window.addEventListener('themeChanged', themeHandler);
+    window.addEventListener('resize', resizeHandler);
+</script>
+{% endblock %}

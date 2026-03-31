@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service | EmotionAI Platform{% endblock %}
+
+{% block content %}
+<style>
+    .terms-card {
+        background: linear-gradient(145deg, var(--bg-panel), rgba(0, 0, 0, 0.05));
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .terms-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+        border-color: var(--btn-primary) !important;
+    }
+
+    .fade-up {
+        animation: fadeUp 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stagger-1 {
+        animation-delay: 0.1s;
+    }
+
+    .stagger-2 {
+        animation-delay: 0.2s;
+    }
+
+    .stagger-3 {
+        animation-delay: 0.3s;
+    }
+
+    .stagger-4 {
+        animation-delay: 0.4s;
+    }
+</style>
+
+<div class="max-w-7xl mx-auto py-16 px-6 pb-40">
+    <!-- TERMS HERO -->
+    <div class="grid lg:grid-cols-2 gap-16 items-center mb-32 fade-up">
+        <div class="space-y-8">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20">
+                <span class="w-2 h-2 bg-rose-500 rounded-full animate-pulse shadow-[0_0_10px_#f43f5e]"></span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-rose-500">Legal Framework
+                    v4.0.1</span>
+            </div>
+            <h1
+                class="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none text-[var(--text-primary)]">
+                Terms of <br><span class="text-rose-500">Neural Core</span>
+            </h1>
+            <p class="text-xl text-[var(--text-secondary)] leading-relaxed font-semibold max-w-xl">
+                The fundamental governance and legal boundaries of the EmotionAI Neural Interface. By accessing our
+                global infrastructure, you enter a binding agreement for ethical AI engagement and neural data
+                stewardship.
+            </p>
+            <div class="flex items-center gap-8 pt-4">
+                <div class="text-center">
+                    <p class="text-2xl font-black text-rose-500">100%</p>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Compliance
+                    </p>
+                </div>
+                <div class="w-px h-10 bg-[var(--border)]"></div>
+                <div class="text-center">
+                    <p class="text-2xl font-black text-rose-500">2048-bit</p>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Legal Hash
+                    </p>
+                </div>
+                <div class="w-px h-10 bg-[var(--border)]"></div>
+                <div class="text-center">
+                    <p class="text-2xl font-black text-rose-500">Zero</p>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Liability
+                        Esc.</p>
+                </div>
+            </div>
+        </div>
+        <div class="relative group">
+            <div
+                class="absolute inset-0 bg-rose-500/20 blur-[100px] rounded-full group-hover:bg-rose-500/30 transition-all duration-700">
+            </div>
+            <img src="https://images.unsplash.com/photo-1589254065878-42c9da997008?auto=format&fit=crop&q=80&w=1000"
+                class="relative w-full rounded-[3rem] border border-rose-500/20 shadow-2xl hover:rotate-2 hover:scale-105 transition-transform duration-700"
+                alt="Terms Concept">
+        </div>
+    </div>
+
+    <!-- TERMS GRID -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="terms-card p-10 rounded-5xl border border-[var(--border)] fade-up stagger-1">
+            <div class="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center mb-8">
+                <i class="fas fa-microchip text-2xl text-rose-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">1. Probability
+                Thresholds</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                Emotion detection is <strong>probabilistic, not deterministic</strong>. Our models (DistilRoBERTa/CNN)
+                provide predictive suggestions based on training sets—never absolute psychological truths.
+            </p>
+            <div
+                class="pt-6 border-t border-[var(--border)] text-[10px] font-black uppercase text-rose-500 tracking-widest">
+                Confidence Range: 0.1 - 1.0</div>
+        </div>
+
+        <div class="terms-card p-10 rounded-5xl border border-[var(--border)] fade-up stagger-2">
+            <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8">
+                <i class="fas fa-id-badge text-2xl text-blue-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">2. Neural Identity
+                Management</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                Your account represents a unique Neural Node. Unauthorized sub-leasing of API keys or distributed
+                identity harvesting is strictly prohibited under our operational system bylaws.
+            </p>
+            <div
+                class="pt-6 border-t border-[var(--border)] text-[10px] font-black uppercase text-blue-500 tracking-widest">
+                E-Identity Verified Daily</div>
+        </div>
+
+        <div class="terms-card p-10 rounded-5xl border border-rose-500/30 bg-rose-500/5 fade-up stagger-3">
+            <div
+                class="w-14 h-14 bg-rose-500/20 rounded-2xl flex items-center justify-center mb-8 shadow-[0_0_20px_rgba(244,63,94,0.3)]">
+                <i class="fas fa-shield-virus text-2xl text-rose-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-rose-500 uppercase tracking-tight">3. Behavioral Purge Protocol
+            </h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                Misuse of the AI for unconsented surveillance or psychological coercion will result in the
+                <strong>immediate and permanent purging</strong> of your Neural Identity and data assets.
+            </p>
+            <div
+                class="pt-6 border-t border-rose-500/20 text-[10px] font-black uppercase text-rose-600 tracking-widest">
+                Real-time Anomaly Kill-switch</div>
+        </div>
+
+        <div class="terms-card p-10 rounded-5xl border border-[var(--border)] fade-up stagger-1">
+            <div class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-8">
+                <i class="fas fa-code-branch text-2xl text-emerald-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">4. Infrastructure
+                Evolution</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                EmotionAI Labs reserves the right to modify neural weighting, algorithm architectures, and endpoint
+                accessibility without notice to ensure global system safety and accuracy.
+            </p>
+            <div
+                class="pt-6 border-t border-[var(--border)] text-[10px] font-black uppercase text-emerald-500 tracking-widest">
+                Hot-swappable Model Logic</div>
+        </div>
+
+        <div class="terms-card p-10 rounded-5xl border border-[var(--border)] fade-up stagger-2">
+            <div class="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-8">
+                <i class="fas fa-scale-balanced text-2xl text-amber-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">5. Liability
+                Thresholds</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                We are not liable for autonomous decisions made based on emotional inference results. Operators assume
+                100% responsibility for actions triggered by AI analytics.
+            </p>
+            <div
+                class="pt-6 border-t border-[var(--border)] text-[10px] font-black uppercase text-amber-500 tracking-widest">
+                User-Side Implementation Liability</div>
+        </div>
+
+        <div class="terms-card p-10 rounded-5xl border border-[var(--border)] fade-up stagger-3">
+            <div class="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-8">
+                <i class="fas fa-globe text-2xl text-indigo-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">6. Global
+                Jurisdiction</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                The Core Network operates under international cyber-governance laws. All data nodes are subject to
+                localized encryption standards and regional neural privacy mandates.
+            </p>
+            <div
+                class="pt-6 border-t border-[var(--border)] text-[10px] font-black uppercase text-indigo-500 tracking-widest">
+                Decentralized Legal Sync</div>
+        </div>
+        <div class="terms-card p-10 rounded-5xl border border-[var(--border)] fade-up stagger-1">
+            <div class="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center mb-8">
+                <i class="fas fa-triangle-exclamation text-2xl text-rose-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">7. Model Limitation
+                Disclosure</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                Users acknowledge that neural inferences may be affected by lighting, occlusions, and sarcasm. EmotionAI
+                does not guarantee 100% accuracy in high-stress emotional variance scenarios.
+            </p>
+            <div
+                class="pt-6 border-t border-[var(--border)] text-[10px] font-black uppercase text-rose-500 tracking-widest">
+                Inherent AI Bias Acknowledged</div>
+        </div>
+
+        <div class="terms-card p-10 rounded-5xl border border-[var(--border)] fade-up stagger-2">
+            <div class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-8">
+                <i class="fas fa-flask text-2xl text-emerald-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-4 text-[var(--text-primary)] uppercase tracking-tight">8. System
+                Contribution</h3>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify font-bold opacity-80 mb-6">
+                Anonymized telemetry allows our R&D hub to refine emotional architectures. Users contribute to the
+                collective intelligence by utilizing the platform under standard ethical guidelines.
+            </p>
+            <div
+                class="pt-6 border-t border-[var(--border)] text-[10px] font-black uppercase text-emerald-500 tracking-widest">
+                Collaborative Neural Training</div>
+        </div>
+    </div>
+
+    <!-- RETURN ACTION -->
+    <div class="mt-32 text-center fade-up stagger-3">
+        <a href="{{ url_for('auth.home') }}"
+            class="group inline-flex items-center gap-4 px-12 py-5 bg-[var(--text-primary)] text-[var(--bg-main)] rounded-3xl text-[12px] font-black uppercase hover:scale-110 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden relative">
+            <span class="relative z-10 flex items-center gap-3">
+                <i class="fas fa-home text-rose-500 scale-125 group-hover:rotate-12 transition-transform"></i>
+                Return to Infrastructure Home Hub
+            </span>
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-rose-600 to-rose-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

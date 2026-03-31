@@ -1,0 +1,277 @@
+/* 
+  🚀 ADVANCED EMOTION ANALYTICS DASHBOARD - STYLING 
+  Theme: Dark Mode SaaS (Obsidian & Neon)
+*/
+
+:root {
+    --dash-bg: var(--bg-main);
+    --dash-card-bg: var(--bg-panel);
+    --dash-border: var(--border);
+    --dash-text: var(--text-primary);
+    --dash-text-sec: var(--text-secondary);
+    --dash-neon-blue: #2563eb;
+    --dash-neon-purple: #7c3aed;
+    --dash-neon-pink: #db2777;
+    --dash-success: #059669;
+    --dash-danger: #dc2626;
+    --dash-warning: #d97706;
+}
+
+.dashboard-v2 {
+    color: var(--dash-text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Adaptable Glassmorphism Cards */
+.glass-card {
+    background: var(--dash-card-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--dash-border);
+    border-radius: 16px;
+    transition: border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    color: var(--dash-text);
+}
+
+.glass-card:hover {
+    border-color: var(--dash-neon-blue);
+}
+
+.kpi-card .kpi-value {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--dash-text);
+}
+
+.kpi-card .kpi-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--dash-text-sec);
+    margin-bottom: 0.5rem;
+}
+
+.kpi-card .kpi-glow {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: 0.2;
+}
+
+/* Glow Colors */
+.glow-blue {
+    background: var(--dash-neon-blue);
+}
+
+.glow-purple {
+    background: var(--dash-neon-purple);
+}
+
+.glow-pink {
+    background: var(--dash-neon-pink);
+}
+
+.glow-success {
+    background: var(--dash-success);
+}
+
+/* Animated Counters */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Chart Containers */
+.chart-container {
+    padding: 1.5rem;
+    min-height: 350px;
+}
+
+/* Sidebar Navigation (Override for V2) */
+.nav-v2-active {
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.1), transparent);
+    border-left: 3px solid var(--dash-neon-blue);
+}
+
+/* Module Tabs */
+.tab-btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.tab-btn.active {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--dash-neon-blue);
+}
+
+/* Alert System */
+.alert-card {
+    animation: flashAlert 2s infinite;
+    border: 2px solid var(--dash-danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+@keyframes flashAlert {
+    0% {
+        box-shadow: 0 0 0px rgba(239, 68, 68, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 0px rgba(239, 68, 68, 0);
+    }
+}
+
+/* History Table */
+.v2-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.v2-table th {
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #6b7280;
+    letter-spacing: 0.1em;
+}
+
+.v2-table td {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid var(--dash-border);
+    border-bottom: 1px solid var(--dash-border);
+}
+
+.v2-table tr td:first-child {
+    border-left: 1px solid var(--dash-border);
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.v2-table tr td:last-child {
+    border-right: 1px solid var(--dash-border);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Real-time Webcam Panel */
+.webcam-panel-v2 {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+}
+
+.webcam-overlay-v2 {
+    position: absolute;
+    inset: 0;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 30%);
+}
+
+.stat-badge {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Transitions */
+.page-enter {
+    animation: pageEnter 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Ripple Effect */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform .5s, opacity 1s;
+}
+
+.ripple:active:after {
+    transform: scale(0, 0);
+    opacity: .3;
+    transition: 0s;
+}

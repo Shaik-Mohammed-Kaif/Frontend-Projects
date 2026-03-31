@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Emotion Intelligence Platform{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+    <style>
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-effect 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-effect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        a,
+        button,
+        .menu-item,
+        .card,
+        .ripple-btn {
+            cursor: pointer !important;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.4s;
+            flex-shrink: 0;
+        }
+
+        .logo-img,
+        .nav-logo {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 12px;
+            transition: 0.4s;
+        }
+
+        .logo-box:hover {
+            transform: rotate(8deg) scale(1.1);
+        }
+
+        .logo-box:hover .logo-img {
+            transform: rotate(-8deg);
+        }
+
+        /* 🏛️ PROJECT BRANDING */
+        /* Requirement: Line 1/Line 2 split, bold, gradient text */
+        .project-title {
+            font-size: 32px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.2;
+            background: linear-gradient(90deg, #4f46e5, #9333ea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            text-transform: uppercase;
+        }
+
+        .project-subtitle {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            opacity: 0.8;
+            margin-top: -5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <!-- GLOBAL SIDEBAR -->
+        {% if session.get('user_id') is not none %}
+        <aside class="sidebar">
+            <div class="h-28 flex items-center justify-between px-6 mb-2">
+                <!-- 🚀 Dual-Navigation Logic (Requirement: Logo->Home, Text->Dashboard) -->
+                <div class="flex items-center gap-4 no-underline group logo-container overflow-hidden">
+                    <a href="{{ url_for('auth.home') }}" title="Go to Home" class="logo-box cursor-pointer">
+                        <svg viewBox="0 0 100 100" class="nav-logo">
+                            <defs>
+                                <linearGradient id="logoGradNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#355cff;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                                </linearGradient>
+                                <filter id="glowNav">
+                                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <rect width="100" height="100" rx="20" fill="url(#logoGradNav)" />
+                            <path
+                                d="M50 20c-15 0-25 10-25 25 0 8 4 15 10 20 2 1 4 4 4 7v3h22v-3c0-3 2-6 4-7 6-5 10-12 10-20 0-15-10-25-25-25z"
+                                fill="white" opacity="0.1" />
+                            <path d="M40 45c0-10 10-18 20-18M45 55c0-5 5-10 10-10" fill="none" stroke="white"
+                                stroke-width="2" stroke-linecap="round" opacity="0.6" />
+                            <path d="M60 45c0-10-10-18-20-18M55 55c0-5-5-10-10-10" fill="none" stroke="white"
+                                stroke-width="2" stroke-linecap="round" opacity="0.6" />
+                            <!-- Glowing Core -->
+                            <circle cx="50" cy="45" r="8" fill="#00ffff" filter="url(#glowNav)" />
+                        </svg>
+                    </a>
+                    <a href="{{ url_for('dashboard.dashboard_page') }}" title="Go to Dashboard"
+                        class="flex flex-col logo-text transition-all duration-300 cursor-pointer">
+                        <span
+                            class="font-black text-[var(--text-primary)] tracking-tight text-2xl leading-none sidebar-label">EmotionAI</span>
+                        <span
+                            class="text-[10px] font-extrabold uppercase tracking-[0.3em] text-[var(--accent)] mt-1.5 sidebar-label opacity-70">Control
+                            Center</span>
+                    </a>
+                </div>
+                <button id="toggle" title="Toggle Sidebar"
+                    class="w-10 h-10 rounded-xl bg-transparent flex items-center justify-center text-[var(--text-primary)] hover:bg-[var(--bg-main)] transition-all ripple-btn flex-shrink-0">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-2">
+                {% block sidebar_items %}
+                <a href="{{ url_for('dashboard.dashboard_page') }}"
+                    class="menu-item {{ 'active' if request.path == url_for('dashboard.dashboard_page') }}">
+                    <i class="fas fa-gauge"></i>
+                    <span class="sidebar-label">Dashboard</span>
+                </a>
+                <a href="{{ url_for('text_routes.text_page') }}"
+                    class="menu-item {{ 'active' if request.path == url_for('text_routes.text_page') }}">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="sidebar-label">Text Intelligence</span>
+                </a>
+                <a href="{{ url_for('image_bp.image_page') }}"
+                    class="menu-item {{ 'active' if request.path == url_for('image_bp.image_page') }}">
+                    <i class="fas fa-image"></i>
+                    <span class="sidebar-label">Image Intelligence</span>
+                </a>
+                <a href="{{ url_for('additional_features.webcam_page') }}"
+                    class="menu-item {{ 'active' if request.path == url_for('additional_features.webcam_page') }}">
+                    <i class="fas fa-camera"></i>
+                    <span class="sidebar-label">Live Camera</span>
+                </a>
+                <a href="{{ url_for('additional_features.dataset_page') }}"
+                    class="menu-item {{ 'active' if request.path == url_for('additional_features.dataset_page') }}">
+                    <i class="fas fa-database"></i>
+                    <span class="sidebar-label">Dataset Insights</span>
+                </a>
+                <a href="{{ url_for('analytics_hub.analytics_page') }}"
+                    class="menu-item {{ 'active' if request.path == url_for('analytics_hub.analytics_page') }}">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="sidebar-label">Analytics Hub</span>
+                </a>
+                <a href="{{ url_for('additional_features.history_page') }}"
+                    class="menu-item {{ 'active' if request.path == url_for('additional_features.history_page') }}">
+                    <i class="fas fa-history"></i>
+                    <span class="sidebar-label">History Control</span>
+                </a>
+
+                {% if session.get('role') == 'admin' %}
+                <div class="sidebar-divider my-4 border-t border-[var(--border)] opacity-20"></div>
+                <a href="/admin" class="menu-item {{ 'active' if request.path.startswith('/admin') }}">
+                    <i class="fas fa-shield-halved"></i>
+                    <span class="sidebar-label font-bold text-[var(--accent)]">Admin Panel</span>
+                </a>
+                {% endif %}
+                {% endblock %}
+            </nav>
+
+            <div class="p-5 border-t border-[var(--border)] mt-auto bg-[var(--bg-panel)]/50 backdrop-blur-sm">
+
+                <a href="{{ url_for('auth.logout') }}"
+                    class="menu-item logout text-rose-500 hover:bg-rose-500/10 border-rose-500/10">
+                    <i class="fas fa-power-off"></i>
+                    <span class="sidebar-label font-black tracking-tight">Logout</span>
+                </a>
+            </div>
+        </aside>
+        {% endif %}
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="content {% if session.get('user_id') is none %}!ml-0 w-full !max-w-none{% endif %}">
+            <header class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-4">
+                    {% block header_left %}
+                    <h1 class="header-title text-xl font-black text-[var(--text-primary)]">{% block page_name
+                        %}Dashboard{% endblock %}</h1>
+                    {% endblock %}
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <!-- Child Actions -->
+                    {% block header_actions %}{% endblock %}
+
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" title="Switch Theme"
+                        class="w-10 h-10 rounded-xl bg-[var(--bg-panel)] border border-[var(--border)] flex items-center justify-center text-[var(--text-primary)] hover:bg-[var(--bg-main)] transition-all ripple-btn">
+                        <i class="fas fa-palette"></i>
+                    </button>
+
+                    {% if session.get('user_id') is not none %}
+                    <div class="flex items-center gap-2 mr-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Active</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 bg-[var(--bg-panel)] border border-[var(--border)] p-1.5 pr-4 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer group">
+                        <div
+                            class="w-9 h-9 rounded-full bg-gradient-to-tr from-[var(--btn-primary)] to-[var(--accent)] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                            {{ session.get('full_name', 'U')[0]|upper }}
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[11px] font-black text-[var(--text-primary)] leading-tight">{{
+                                session.get('full_name', 'User') }}</span>
+                            <span
+                                class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-wider opacity-70">{{
+                                session.get('role', 'Operator') }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="page-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    <script>
+        function getThemeConfig() {
+            const styles = getComputedStyle(document.documentElement);
+            const isDark = document.body.classList.contains('dark-theme');
+
+            return {
+                bg: 'rgba(0,0,0,0)',
+                paper: 'rgba(0,0,0,0)',
+                font: {
+                    family: "'Plus Jakarta Sans', sans-serif",
+                    size: 11,
+                    color: styles.getPropertyValue('--text-primary').trim() || '#1f2933'
+                },
+                axis: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                secondaryText: styles.getPropertyValue('--text-secondary').trim() || '#6b7280'
+            };
+        }
+
+        // Global Plotly Resize Handler
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const containers = document.querySelectorAll('.plotly-container');
+                containers.forEach(container => {
+                    if (window.Plotly && container.id) {
+                        Plotly.Plots.resize(container);
+                    }
+                });
+            }, 200);
+        });
+
+        // --- Universal Chart Downloader (Plotly + Canvas/Chart.js) ---
+        function downloadChart(chartId, format = 'png') {
+            const chartEl = document.getElementById(chartId);
+            if (!chartEl) return;
+
+            // 1. Detect Plotly
+            if (chartEl.classList.contains('plotly-container') || (chartEl._fullLayout)) {
+                Plotly.downloadImage(chartEl, {
+                    format: format,
+                    filename: 'analysis_' + chartId + '_' + Date.now(),
+                    height: 700, width: 1000
+                });
+            }
+            // 2. Detect Canvas (Chart.js)
+            else {
+                const canvas = chartEl.tagName === 'CANVAS' ? chartEl : chartEl.querySelector('canvas');
+                if (canvas) {
+                    const link = document.createElement('a');
+                    link.download = `analysis_${chartId}_${Date.now()}.${format}`;
+                    link.href = canvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : 'png'}`, 1.0);
+                    link.click();
+                }
+            }
+        }
+
+        // --- 🔥 GLOBAL ANALYTICS LOADER (STEP 4) ---
+        let syncTimeout = null;
+        async function loadAllAnalytics() {
+            // 🔥 PERFORMANCE: Debounce updates (prevent flood during rapid clicks)
+            if (syncTimeout) clearTimeout(syncTimeout);
+
+            syncTimeout = setTimeout(async () => {
+                try {
+                    // Only update if the user is actually looking at this page
+                    if (document.hidden) return;
+
+                    const res = await fetch("/api/history");
+                    const data = await res.json() || [];
+
+                    if (typeof window.updatePageAnalytics === 'function') {
+                        window.updatePageAnalytics(data);
+                    }
+                    if (document.getElementById('sidebar-total-analyses')) {
+                        document.getElementById('sidebar-total-analyses').innerText = data.length;
+                    }
+                } catch (err) {
+                    console.error("Global Analytics Error:", err);
+                }
+            }, 300); // 300ms debounce buffer
+        }
+
+        window.triggerGlobalSync = function () { loadAllAnalytics(); };
+
+        window.addEventListener('load', () => {
+            loadAllAnalytics();
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

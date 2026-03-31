@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}System Documentation | EmotionAI{% endblock %}
+
+{% block content %}
+<style>
+    .docs-glow {
+        animation: soft-pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes soft-pulse {
+
+        0%,
+        100% {
+            filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.3));
+            opacity: 0.9;
+        }
+
+        50% {
+            filter: drop-shadow(0 0 35px rgba(37, 99, 235, 0.5));
+            opacity: 1;
+        }
+    }
+
+    .stagger-in {
+        animation: slideIn 0.8s backwards ease-out;
+    }
+
+    .stagger-delay-1 {
+        animation-delay: 0.2s;
+    }
+
+    .stagger-delay-2 {
+        animation-delay: 0.4s;
+    }
+</style>
+
+<div class="max-w-7xl mx-auto py-16 px-6 pb-32">
+    <!-- INFRASTRUCTURE HERO HEADER -->
+    <div class="grid lg:grid-cols-2 gap-16 items-center mb-24 stagger-in">
+        <div class="text-left space-y-8">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20">
+                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-blue-500">System Technical
+                    Core</span>
+            </div>
+            <h1
+                class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-[var(--text-primary)]">
+                Infrastructure <br><span class="text-blue-500">Documentation</span></h1>
+            <p class="text-lg text-[var(--text-secondary)] leading-relaxed text-justify font-medium">
+                EmotionAI is powered by a hybrid, scalable AI infrastructure designed for real-time emotion detection
+                across multiple modalities. Our backend architecture ensures fast processing and seamless communication
+                through absolute neural precision.
+            </p>
+        </div>
+        <div class="relative group">
+            <div
+                class="absolute -inset-4 bg-blue-500/10 rounded-[3rem] blur-3xl opacity-50 group-hover:opacity-100 transition-all">
+            </div>
+            <img src="/assets/infrastructure_system_visual_1774893417114.png"
+                class="relative w-full h-auto rounded-[2.5rem] shadow-2xl border border-white/5 docs-glow filter saturate-125 hover:scale-[1.02] transition-transform duration-700"
+                alt="Infrastructure Visualization">
+        </div>
+    </div>
+
+    <!-- CORE ARCHITECTURE INTEGRATION -->
+    <div class="grid md:grid-cols-2 gap-12 mb-24 stagger-in stagger-delay-1">
+        <div
+            class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                <i class="fas fa-layer-group text-6xl text-blue-500"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-6 text-[var(--text-primary)] uppercase tracking-tight">System Architecture
+            </h3>
+            <div class="space-y-4">
+                <div
+                    class="flex items-start gap-4 p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border)] hover:border-blue-500/30 transition-all">
+                    <i class="fas fa-microchip text-blue-500 mt-1"></i>
+                    <div>
+                        <h4 class="text-sm font-black text-blue-500 uppercase">CNN Vision Model</h4>
+                        <p class="text-[12px] text-[var(--text-secondary)] font-bold opacity-80">Optimized facial
+                            feature vectoring for high-fidelity emotion recognition.</p>
+                    </div>
+                </div>
+                <div
+                    class="flex items-start gap-4 p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border)] hover:border-indigo-500/30 transition-all">
+                    <i class="fas fa-language text-indigo-500 mt-1"></i>
+                    <div>
+                        <h4 class="text-sm font-black text-indigo-500 uppercase">NLP Sentiment Pipeline</h4>
+                        <p class="text-[12px] text-[var(--text-secondary)] font-bold opacity-80">Multi-modal text
+                            analysis using advanced transformer architectures.</p>
+                    </div>
+                </div>
+                <div
+                    class="flex items-start gap-4 p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border)] hover:border-rose-500/30 transition-all">
+                    <i class="fas fa-stream text-rose-500 mt-1"></i>
+                    <div>
+                        <h4 class="text-sm font-black text-rose-500 uppercase">Real-Time Engines</h4>
+                        <p class="text-[12px] text-[var(--text-secondary)] font-bold opacity-80">Low-latency webcam
+                            streaming for instantaneous behavioral tracking.</p>
+                    </div>
+                </div>
+                <div
+                    class="flex items-start gap-4 p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border)] hover:border-emerald-500/30 transition-all">
+                    <i class="fas fa-database text-emerald-500 mt-1"></i>
+                    <div>
+                        <h4 class="text-sm font-black text-emerald-500 uppercase">Distributed Datasets</h4>
+                        <p class="text-[12px] text-[var(--text-secondary)] font-bold opacity-80">Bulk analysis across
+                            millions of datapoints with high scalability.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-8">
+            <div class="dashboard-card p-10 bg-[var(--bg-panel)] rounded-4xl border border-[var(--border)] flex-1">
+                <h3
+                    class="text-2xl font-black mb-6 text-[var(--text-primary)] uppercase tracking-tight flex items-center gap-3">
+                    <i class="fab fa-python text-blue-500"></i> Backend Engineering
+                </h3>
+                <p class="text-sm text-[var(--text-secondary)] leading-relaxed text-justify mb-8 font-medium">
+                    Our core is architected using Python Flask APIs, ensuring rapid inference and secure transactional
+                    integrity. Data flows through specialized micro-services, coordinating model logic with real-time
+                    feedback loops.
+                </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border)] text-center">
+                        <span class="block text-xl font-black text-blue-500">50ms</span>
+                        <span class="text-[9px] font-black text-[var(--text-secondary)] uppercase opacity-60">Latency
+                            Floor</span>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border)] text-center">
+                        <span class="block text-xl font-black text-emerald-500">Secure</span>
+                        <span class="text-[9px] font-black text-[var(--text-secondary)] uppercase opacity-60">Modular
+                            API</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INFRASTRUCTURE OPTIMIZATION -->
+    <div class="stagger-in stagger-delay-2">
+        <h3 class="text-3xl font-black mb-12 text-center text-[var(--text-primary)] uppercase tracking-tighter">Engine
+            Optimization Matrix</h3>
+        <div class="grid md:grid-cols-4 gap-6">
+            <div
+                class="p-8 rounded-4xl bg-[var(--bg-panel)] border border-[var(--border)] text-center group hover:bg-blue-500/5 transition-all shadow-sm">
+                <i class="fas fa-bolt text-blue-500 text-2xl mb-6 group-hover:scale-110 transition-transform"></i>
+                <h4 class="text-[12px] font-black uppercase text-blue-500 mb-3">Zero Latency</h4>
+                <p class="text-[11px] text-[var(--text-secondary)] font-bold leading-tight opacity-80">Optimized for
+                    sub-second behavioral detection.</p>
+            </div>
+            <div
+                class="p-8 rounded-4xl bg-[var(--bg-panel)] border border-[var(--border)] text-center group hover:bg-emerald-500/5 transition-all shadow-sm">
+                <i
+                    class="fas fa-up-right-and-down-left-from-center text-emerald-500 text-2xl mb-6 group-hover:scale-110 transition-transform"></i>
+                <h4 class="text-[12px] font-black uppercase text-emerald-500 mb-3">High Scaling</h4>
+                <p class="text-[11px] text-[var(--text-secondary)] font-bold leading-tight opacity-80">Scale to millions
+                    of users across nodes.</p>
+            </div>
+            <div
+                class="p-8 rounded-4xl bg-[var(--bg-panel)] border border-[var(--border)] text-center group hover:bg-purple-500/5 transition-all shadow-sm">
+                <i
+                    class="fas fa-puzzle-piece text-purple-500 text-2xl mb-6 group-hover:scale-110 transition-transform"></i>
+                <h4 class="text-[12px] font-black uppercase text-purple-500 mb-3">Modular Core</h4>
+                <p class="text-[11px] text-[var(--text-secondary)] font-bold leading-tight opacity-80">Hot-swappable AI
+                    model architecture.</p>
+            </div>
+            <div
+                class="p-8 rounded-4xl bg-[var(--bg-panel)] border border-[var(--border)] text-center group hover:bg-amber-500/5 transition-all shadow-sm">
+                <i class="fas fa-lock text-amber-500 text-2xl mb-6 group-hover:scale-110 transition-transform"></i>
+                <h4 class="text-[12px] font-black uppercase text-amber-500 mb-3">Ironcladded</h4>
+                <p class="text-[11px] text-[var(--text-secondary)] font-bold leading-tight opacity-80">Secure,
+                    standard-compliant API nodes.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RETURN ACTION -->
+    <div class="mt-24 text-center">
+        <a href="{{ url_for('auth.home') }}"
+            class="inline-flex items-center gap-3 px-10 py-4 bg-[var(--bg-panel)] border border-[var(--border)] rounded-2xl text-[11px] font-black uppercase text-[var(--text-primary)] hover:border-blue-500/50 hover:scale-105 transition-all shadow-xl">
+            <i class="fas fa-home text-blue-500"></i> Return to Infrastructure Home Hub
+        </a>
+    </div>
+</div>
+{% endblock %}

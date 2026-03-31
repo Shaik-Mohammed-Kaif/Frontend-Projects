@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 900px; padding: 24px;">
+    <h1 style="font-size: 2.6rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px;">Deep Layered Text AI</h1>
+    <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px; max-width: 700px;">Direct execution
+        via DistilRoBERTa Transformers mapping real semantic parameters over your natural language prompts.</p>
+
+    <div class="glass-panel tilt" data-tilt data-tilt-max="2" data-tilt-speed="400" data-tilt-glare="false"
+        style="padding: 40px; margin-bottom: 40px;">
+        <div style="position: relative;">
+            <textarea id="text-input" class="modern-input"
+                style="min-height: 180px; resize: vertical; font-size: 1.1rem; margin-bottom: 0;"
+                placeholder="Enter NLP query... (e.g., 'The system infrastructure dropped, causing a massive crash')"></textarea>
+
+            <button id="analyze-btn" class="neon-btn primary"
+                style="position: absolute; width: calc(100% - 32px); bottom: 16px; left: 16px; border-radius: 8px; font-size: 1.15rem; padding: 14px;">
+                <span id="btn-text">Execute Semantic Node</span>
+                <div id="spinner" class="loader" style="display: none;"></div>
+            </button>
+        </div>
+    </div>
+
+    <div id="result-card" class="glass-panel"
+        style="display: none; opacity: 0; transform: translateY(40px) perspective(1000px) rotateX(5deg); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 40px 80px rgba(0,0,0,0.5);">
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 24px; margin-bottom: 32px;">
+            <h3 style="font-size: 1.4rem; font-weight: 700;">Diagnostic Output</h3>
+            <span id="emotion-badge" class="badge" style="font-size: 1rem; padding: 10px 24px;"></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+            <div>
+                <span
+                    style="color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">Absolute
+                    Confidence Matrix</span>
+                <span id="confidence-val"
+                    style="font-weight: 800; font-size: 3rem; background: linear-gradient(135deg, var(--text-primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 24px; justify-content: center;">
+                <div
+                    style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <span
+                        style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-bottom: 4px;">Utilized
+                        Engine Structure</span>
+                    <span id="model-val" style="color: var(--accent); font-weight: 700; font-size: 1.1rem;"></span>
+                </div>
+                <div
+                    style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <span
+                        style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-bottom: 4px;">Inference
+                        Latency Limit</span>
+                    <span id="time-val"
+                        style="color: var(--accent-secondary); font-family: monospace; font-size: 1.1rem; font-weight: 600;"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('analyze-btn');
+    const spinner = document.getElementById('spinner');
+    const txt = document.getElementById('btn-text');
+    const res = document.getElementById('result-card');
+
+    btn.addEventListener('click', async () => {
+        const text = document.getElementById('text-input').value.trim();
+        if (!text) {
+            document.getElementById('text-input').classList.add('shake');
+            setTimeout(() => document.getElementById('text-input').classList.remove('shake'), 400);
+            return;
+        }
+
+        btn.disabled = true; txt.style.display = 'none'; spinner.style.display = 'block';
+        res.style.opacity = '0'; res.style.transform = 'translateY(40px) perspective(1000px) rotateX(5deg)';
+
+        const formData = new FormData();
+        formData.append('text', text);
+
+        try {
+            const resp = await fetch('/text-detection', { method: 'POST', body: formData });
+            const data = await resp.json();
+
+            document.getElementById('emotion-badge').textContent = data.emotion;
+            document.getElementById('emotion-badge').className = `badge badge-${data.emotion}`;
+            document.getElementById('confidence-val').textContent = data.confidence;
+            document.getElementById('model-val').textContent = data.model;
+            document.getElementById('time-val').textContent = data.time;
+
+            res.style.display = 'block';
+            void res.offsetWidth; // Reflow
+            res.style.opacity = '1'; res.style.transform = 'translateY(0) perspective(1000px) rotateX(0deg)';
+        } catch (e) { console.error("Endpoint mapping error.", e); }
+
+        btn.disabled = false; txt.style.display = 'block'; spinner.style.display = 'none';
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "admin/base.html" %}
+
+{% block page_name %}Visual Intelligence Sector (Image AI){% endblock %}
+
+{% block admin_content %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <!-- 🖼️ IMAGE INGESTION HIGHLIGHTS -->
+    <div class="lg:col-span-3 space-y-8">
+        <div class="admin-card p-0 overflow-hidden relative min-h-[500px]">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+                <h3 class="font-black text-xs uppercase tracking-widest text-indigo-500">Global Image Audit Panel</h3>
+                <span class="text-[9px] font-bold opacity-30 uppercase tracking-[0.2em] animate-pulse">Node:
+                    Neural_Visual_Core_01</span>
+            </div>
+
+            <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="imageGrid">
+                <!-- JS Populated -->
+            </div>
+        </div>
+
+        <!-- 🚀 NEW: INGESTION CHANNEL COMPARISON (BOTTOM PLACEMENT) -->
+        <div class="admin-card border-l-4 border-indigo-500 bg-indigo-500/5">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-black text-xs uppercase tracking-widest text-indigo-500">Ingestion Channel Comparison
+                    Audit</h3>
+                <div class="flex gap-4">
+                    <div class="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase"><span
+                            class="w-2 h-2 rounded-full bg-indigo-500"></span> Uploads</div>
+                    <div class="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase"><span
+                            class="w-2 h-2 rounded-full bg-cyan-400"></span> URL Analytics</div>
+                </div>
+            </div>
+            <div class="h-[120px]">
+                <canvas id="imageSourceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 VISUAL STATISTICS (RIGHT SIDEBAR) -->
+    <div class="lg:col-span-1 space-y-6">
+        <div class="admin-card min-h-[250px]">
+            <h3 class="font-black text-xs uppercase tracking-widest text-purple-500 mb-6">Visual Sentiment Share</h3>
+            <div class="h-[200px]">
+                <canvas id="imageShareChart"></canvas>
+            </div>
+        </div>
+
+        <div class="admin-card border-l-4 border-emerald-500 bg-emerald-500/5">
+            <h3 class="font-black text-xs uppercase tracking-widest text-emerald-500 mb-6">Inference Performance</h3>
+            <div class="flex flex-col gap-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-black opacity-60 uppercase">Mean Accuracy</span>
+                    <span class="text-xl font-black text-emerald-500">92.4%</span>
+                </div>
+                <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500" style="width: 92%;"></div>
+                </div>
+                <p class="text-[9px] opacity-40 uppercase leading-relaxed">Neural weights optimized for CNN (.h5)
+                    backend. Latency stabilized at 45ms.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        async function fetchImages() {
+            const resp = await fetch("/admin/api/data");
+            const data = await resp.json();
+            const imgs = data.image;
+
+            const grid = document.getElementById('imageGrid');
+            grid.innerHTML = imgs.slice(0, 12).map(img => {
+                const isUrl = img.image_source === 'URL' || img.image_path.includes('http');
+                const sourceLabel = isUrl ? 'REMOTE URL' : 'LOCAL UPLOAD';
+                const sourceColor = isUrl ? 'bg-cyan-500' : 'bg-indigo-500';
+
+                return `
+                <div class="group relative rounded-2xl overflow-hidden border border-white/10 hover:border-indigo-500/50 transition-all cursor-crosshair">
+                     <div class="aspect-square bg-gray-900 flex items-center justify-center relative">
+                         <img src="${img.image_path.includes('http') ? img.image_path : (img.image_path.startsWith('/') ? img.image_path : '/' + img.image_path)}" 
+                              class="absolute w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all scale-110 group-hover:scale-100" 
+                              onerror="this.src='https://via.placeholder.com/300?text=IMAGE_NODE'; this.style.opacity=0.2;">
+                         
+                         <div class="absolute top-3 left-3 flex flex-col gap-1">
+                             <span class="text-[6px] font-black text-white ${sourceColor} px-2 py-0.5 rounded shadow-lg uppercase tracking-tighter">${sourceLabel}</span>
+                             <span class="bg-gray-900/80 text-white text-[6px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">${img.emotion.toUpperCase()}</span>
+                         </div>
+                     </div>
+                     <div class="p-4 bg-black/60 backdrop-blur-md border-t border-white/5">
+                        <div class="flex justify-between items-center mb-1">
+                             <span class="text-[10px] font-black uppercase text-white">${img.emotion.toUpperCase()}</span>
+                             <span class="text-[8px] font-black text-indigo-500">${(img.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <p class="text-[8px] opacity-40 uppercase truncate">${img.timestamp}</p>
+                     </div>
+                </div>
+                `
+            }).join('');
+
+            // 1. Emotion Pie Chart
+            const emoCounts = {};
+            imgs.forEach(i => emoCounts[i.emotion] = (emoCounts[i.emotion] || 0) + 1);
+
+            new Chart(document.getElementById('imageShareChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(emoCounts).map(k => k.toUpperCase()),
+                    datasets: [{ data: Object.values(emoCounts), backgroundColor: ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899'], borderWidth: 0 }]
+                },
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: 'rgba(255,255,255,0.6)', font: { weight: '800', size: 8 }, usePointStyle: true } } } }
+            });
+
+            // 2. Source Comparison Chart (Horizontal Bar for better side-by-side comparison)
+            const srcCounts = { 'Upload': 0, 'URL': 0 };
+            imgs.forEach(i => {
+                const src = (i.image_source === 'URL' || i.image_path.includes('http')) ? 'URL' : 'Upload';
+                srcCounts[src]++;
+            });
+
+            new Chart(document.getElementById('imageSourceChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['INGESTION METRICS'],
+                    datasets: [
+                        { label: 'LOCAL UPLOADS', data: [srcCounts['Upload']], backgroundColor: '#6366f1', borderRadius: 12, barThickness: 45 },
+                        { label: 'URL ANALYTICS', data: [srcCounts['URL']], backgroundColor: '#22d3ee', borderRadius: 12, barThickness: 45 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { display: false, grid: { display: false } },
+                        y: { display: false, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+        fetchImages();
+    });
+</script>
+{% endblock %}

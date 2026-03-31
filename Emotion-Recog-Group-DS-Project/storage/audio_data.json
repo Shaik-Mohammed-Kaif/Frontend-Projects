@@ -1,0 +1,34 @@
+[
+    {
+        "user_id": 2,
+        "audio_path": "storage/audio/audio_2_1772792948241.webm",
+        "emotion": "Fear",
+        "confidence": 39.02,
+        "duration": 4.09,
+        "timestamp": "2026-03-06T15:59:08.246212"
+    },
+    {
+        "user_id": 2,
+        "audio_path": "storage/audio/audio_2_1772792952970.webm",
+        "emotion": "Sad",
+        "confidence": 46.2,
+        "duration": 6.6,
+        "timestamp": "2026-03-06T15:59:12.973286"
+    },
+    {
+        "user_id": 2,
+        "audio_path": "storage/audio/audio_2_1772792953900.webm",
+        "emotion": "Fear",
+        "confidence": 33.67,
+        "duration": 8.26,
+        "timestamp": "2026-03-06T15:59:13.900590"
+    },
+    {
+        "user_id": 2,
+        "audio_path": "storage/audio/audio_2_1772792954725.webm",
+        "emotion": "Disgust",
+        "confidence": 33.56,
+        "duration": 8.42,
+        "timestamp": "2026-03-06T15:59:14.727025"
+    }
+]
